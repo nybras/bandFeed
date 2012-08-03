@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="30dip"
+    android:orientation="vertical" >
+    	
+    <TextView
+        android:id="@+id/band_name_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/band_name_text" />
+
+    <EditText 
+        android:id="@+id/add_band_name_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:hint="@string/add_band_name_hint" />
+    
+    <TextView
+        android:id="@+id/genre_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dip"
+        android:text="@string/genre_text" />
+    
+    <Spinner
+        android:id="@+id/first_genre_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/select_prompt" />
+    
+    <TextView
+        android:id="@+id/genre2_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/genre2_text" />
+    
+    <Spinner
+        android:id="@+id/second_genre_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/select_prompt" />
+    
+    <TextView
+        android:id="@+id/genre3_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/genre3_text" />
+    
+    <Spinner
+        android:id="@+id/third_genre_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/select_prompt" />
+    
+    <TextView
+        android:id="@id/genre_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dip" />
+
+    <Button
+        android:id="@+id/next_step_two_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/next" />
+        
+</LinearLayout>

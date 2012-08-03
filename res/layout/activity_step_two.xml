@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="30dip"
+    android:orientation="vertical" >
+    
+    <TextView 
+        android:id="@+id/standard_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/amount_of_members_text"/>
+    
+    <EditText 
+        android:id="@+id/amount_of_members_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/amount_of_members_hint" />
+    
+    <TextView 
+        android:id="@id/standard_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dip"
+        android:text="@string/where_text" />
+    
+    <Spinner 
+        android:id="@+id/where_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    
+    <TextView 
+        android:id="@id/standard_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dip"
+        android:text="@string/town_text" />
+    
+    <EditText 
+        android:id="@+id/town_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/town_hint" />
+    
+</LinearLayout>
