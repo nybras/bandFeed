@@ -35,6 +35,10 @@
             android:label="@string/title_activity_step_two" >
             
         </activity>
+        <activity
+            android:name=".AddNewBandStepThree"
+            android:label="@string/title_activity_step_three" >
+        </activity>
     </application>
 
 </manifest>

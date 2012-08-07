@@ -25,7 +25,8 @@ public final class R {
         public static final int genre2_textview=0x7f070007;
         public static final int genre3_textview=0x7f070009;
         public static final int genre_textview=0x7f070005;
-        public static final int menu_settings=0x7f070011;
+        public static final int menu_settings=0x7f070012;
+        public static final int next_step_three_button=0x7f070010;
         public static final int next_step_two_button=0x7f07000b;
         public static final int second_genre_spinner=0x7f070008;
         public static final int standard_textview=0x7f07000c;
@@ -33,13 +34,14 @@ public final class R {
         public static final int town_edit=0x7f07000f;
         public static final int where_spinner=0x7f07000e;
         public static final int wtf_button=0x7f070002;
-        public static final int wtf_textview=0x7f070010;
+        public static final int wtf_textview=0x7f070011;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int activity_step_one=0x7f030001;
-        public static final int activity_step_two=0x7f030002;
-        public static final int activity_wtf=0x7f030003;
+        public static final int activity_step_three=0x7f030002;
+        public static final int activity_step_two=0x7f030003;
+        public static final int activity_wtf=0x7f030004;
     }
     public static final class menu {
         public static final int activity_main=0x7f060000;
@@ -64,17 +66,20 @@ public final class R {
         /**  activity_step_one 
          */
         public static final int title_activity_step_one=0x7f040007;
+        /**   activity_step_three 
+         */
+        public static final int title_activity_step_three=0x7f040014;
         /**   activity_step_two 
          */
         public static final int title_activity_step_two=0x7f04000e;
         /**  activity_wtf 
          */
-        public static final int title_activity_wtf=0x7f040014;
+        public static final int title_activity_wtf=0x7f040015;
         public static final int town_hint=0x7f040013;
         public static final int town_text=0x7f040012;
         public static final int where_text=0x7f040011;
         public static final int wtf_button=0x7f040006;
-        public static final int wtf_text=0x7f040015;
+        public static final int wtf_text=0x7f040016;
     }
     public static final class style {
         public static final int AppTheme=0x7f050000;

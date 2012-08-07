@@ -1,29 +1,44 @@
 /**
  * @author Brett Flitter
  * @version Prototype1 - 02/08/2012
+ * @edited 07/08/2012
  * @title Project bandFeed
  */
 
 package com.fyp.bandfeed;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.EditText;
 import android.widget.AdapterView.OnItemSelectedListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class AddNewBandStepTwo extends Activity implements OnItemSelectedListener {
-	private ArrayList<String> locations;
+public class AddNewBandStepTwo extends Activity implements OnItemSelectedListener, OnClickListener {
+	private ArrayList<String> locations; 
+	private String bandName, genre1, genre2, genre3;
+	private EditText amountOfMembers;
+	
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_two);
         
+        Bundle extras = getIntent().getExtras();
+        bandName = extras.getString("bandName");
+        genre1 = extras.getString("genre1");
+        genre2 = extras.getString("genre2");
+        genre3 = extras.getString("genre3");
+        
+        amountOfMembers = (EditText) findViewById(R.id.amount_of_members_edit);
+        	
         locations = new ArrayList<String>();
         generateLocations();
         Collections.sort(locations);
@@ -35,6 +50,10 @@ public class AddNewBandStepTwo extends Activity implements OnItemSelectedListene
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item); // Style of drop down
         locationsSpinner.setAdapter(adapter); // Set the adapter to the spinner
         locationsSpinner.setOnItemSelectedListener(this); // Listen for a selected item
+        
+     // set up click listener for the next button
+        View nextButton = findViewById(R.id.next_step_three_button);
+        nextButton.setOnClickListener(this);
         
 	}
 	
@@ -138,6 +157,31 @@ public class AddNewBandStepTwo extends Activity implements OnItemSelectedListene
 
 	public void onNothingSelected(AdapterView<?> parent) {
 		// Do nothing
+	}
+
+	public void onClick(View v) {
+		Intent i = null;
+		switch (v.getId()) {
+		case R.id.next_step_three_button:
+			int value = 0;
+			try {
+				value = Integer.parseInt(amountOfMembers.getText().toString());
+			}
+			catch (NumberFormatException e) {
+				//TODO throw a warning box - not a number
+			}
+			if (value > 0 && value < 11 ) {
+				i = new Intent(this, AddNewBandStepThree.class);
+				i.putExtra("bandName", bandName); 
+				i.putExtra("genre1", genre1);
+				i.putExtra("genre2", genre2);
+				i.putExtra("genre3", genre3);
+				i.putExtra("amountOfMembers", value);
+					
+				startActivity(i);
+				break;
+			}
+		}
 	}
 
 }

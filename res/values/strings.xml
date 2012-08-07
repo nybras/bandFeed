@@ -27,6 +27,9 @@
 	<string name="town_text">Which town is your band based in?</string>
 	<string name="town_hint">Type town..</string>
 	
+	<!--  activity_step_three -->
+	<string name="title_activity_step_three">Add your band - step 3</string>
+	
 	<!-- activity_wtf -->
 	<string name="title_activity_wtf">About bandFeed</string>
 	<string name="wtf_text">Author: Brett Flitter"\n"Version: Prototype 1"\n"Title: Project bandFeed</string>
