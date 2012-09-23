@@ -1,13 +1,15 @@
 /**
  * @author Brett Flitter
  * @version Prototype1 - 02/08/2012
- * @edited 07/08/2012
+ * @edited 21/09/2012
  * @title Project bandFeed
  */
 
 package com.fyp.bandfeed;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,47 +22,55 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class AddNewBandStepTwo extends Activity implements OnItemSelectedListener, OnClickListener {
-	private ArrayList<String> locations; 
-	private String bandName, genre1, genre2, genre3;
+public class AddNewBandStepTwo extends Activity implements
+		OnItemSelectedListener, OnClickListener {
+	private ArrayList<String> locations;
+	private String bandName;
+	private String genre1;
+	private String genre2;
+	private String genre3;
+	private Spinner locationsSpinner;
 	private EditText amountOfMembers;
-	
-	
+	private EditText town;
+
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_step_two);
-        
-        Bundle extras = getIntent().getExtras();
-        bandName = extras.getString("bandName");
-        genre1 = extras.getString("genre1");
-        genre2 = extras.getString("genre2");
-        genre3 = extras.getString("genre3");
-        
-        amountOfMembers = (EditText) findViewById(R.id.amount_of_members_edit);
-        	
-        locations = new ArrayList<String>();
-        generateLocations();
-        Collections.sort(locations);
-        
-        // Search R.layout to see different layout styles
-        // Connecting an arrayList up to a Spinner - first genre spinner
-        Spinner locationsSpinner = (Spinner) findViewById(R.id.where_spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getLocations());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item); // Style of drop down
-        locationsSpinner.setAdapter(adapter); // Set the adapter to the spinner
-        locationsSpinner.setOnItemSelectedListener(this); // Listen for a selected item
-        
-     // set up click listener for the next button
-        View nextButton = findViewById(R.id.next_step_three_button);
-        nextButton.setOnClickListener(this);
-        
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_step_two);
+
+		Bundle extras = getIntent().getExtras();
+		bandName = extras.getString("bandName");
+		genre1 = extras.getString("genre1");
+		genre2 = extras.getString("genre2");
+		genre3 = extras.getString("genre3");
+
+		amountOfMembers = (EditText) findViewById(R.id.amount_of_members_edit);
+		town = (EditText) findViewById(R.id.town_edit);
+
+		locations = new ArrayList<String>();
+		generateLocations();
+		Collections.sort(locations);
+
+		// Search R.layout to see different layout styles
+		// Connecting an arrayList up to a Spinner - first genre spinner
+		locationsSpinner = (Spinner) findViewById(R.id.where_spinner);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, getLocations());
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+		locationsSpinner.setAdapter(adapter);
+		// Set the adapter to the spinner
+		locationsSpinner.setOnItemSelectedListener(this);
+
+		// set up click listener for the next button
+		View nextButton = findViewById(R.id.next_step_three_button);
+		nextButton.setOnClickListener(this);
+
 	}
-	
+
 	public ArrayList<String> getLocations() {
 		return locations;
 	}
-	
+
 	private void generateLocations() {
 		locations.add(" Select..");
 		locations.add("Aberdeenshire");
@@ -77,7 +87,7 @@ public class AddNewBandStepTwo extends Activity implements OnItemSelectedListene
 		locations.add("Buteshire");
 		locations.add("Caernarfonshire");
 		locations.add("Caithness");
-		locations.add("Cambridgeshire"); 
+		locations.add("Cambridgeshire");
 		locations.add("Cardiganshire");
 		locations.add("Carmarthenshire");
 		locations.add("Cheshire");
@@ -151,7 +161,8 @@ public class AddNewBandStepTwo extends Activity implements OnItemSelectedListene
 		locations.add("Yorkshire");
 	}
 
-	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+	public void onItemSelected(AdapterView<?> parent, View view, int pos,
+			long id) {
 		parent.getItemAtPosition(pos);
 	}
 
@@ -160,28 +171,57 @@ public class AddNewBandStepTwo extends Activity implements OnItemSelectedListene
 	}
 
 	public void onClick(View v) {
+
 		Intent i = null;
-		switch (v.getId()) {
-		case R.id.next_step_three_button:
-			int value = 0;
-			try {
-				value = Integer.parseInt(amountOfMembers.getText().toString());
-			}
-			catch (NumberFormatException e) {
-				//TODO throw a warning box - not a number
-			}
-			if (value > 0 && value < 11 ) {
-				i = new Intent(this, AddNewBandStepThree.class);
-				i.putExtra("bandName", bandName); 
-				i.putExtra("genre1", genre1);
-				i.putExtra("genre2", genre2);
-				i.putExtra("genre3", genre3);
-				i.putExtra("amountOfMembers", value);
-					
-				startActivity(i);
-				break;
-			}
+
+		int value = 0;
+		try {
+			value = Integer.parseInt(amountOfMembers.getText().toString());
+		} catch (NumberFormatException e) {
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			// Dialog Message
+			builder.setMessage("Not a whole number!")
+					.setCancelable(false)
+					.setNegativeButton("OK",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									dialog.cancel();
+								}
+							});
+			AlertDialog alert = builder.create();
+			alert.show();
+
+		}
+		if (value > 0 && value < 11) {
+			i = new Intent(this, AddNewBandStepThree.class);
+			i.putExtra("bandName", bandName);
+			i.putExtra("genre1", genre1);
+			i.putExtra("genre2", genre2);
+			i.putExtra("genre3", genre3);
+			i.putExtra("amountOfMembers", value);
+			i.putExtra("county", (String) locationsSpinner
+					.getItemAtPosition(locationsSpinner
+							.getSelectedItemPosition()));
+			i.putExtra("town", town.getText().toString().trim());
+
+			startActivity(i);
+
+		} else {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			// Dialog Message
+			builder.setMessage("Number must between 1 and 10!")
+					.setCancelable(false)
+					.setNegativeButton("OK",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									dialog.cancel();
+								}
+							});
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
 	}
-
 }

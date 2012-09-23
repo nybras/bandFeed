@@ -13,7 +13,7 @@
         android:layout_height="120dp"
         android:layout_gravity="center"
         android:paddingBottom="20dip"
-        android:src="@drawable/band_feed_icon"
+        android:src="@drawable/band_feed_equally_sized"
         android:contentDescription="@string/band_feed_symbol_description" />
     
     <Button 

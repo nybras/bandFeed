@@ -3,35 +3,45 @@
     <string name="app_name">bandFeed</string>
     <string name="menu_settings">Settings</string>
     <string name="next">Next</string>
+
+    <!-- activity_main -->
+    <string name="title_activity_main">bandFeed</string>
+    <string name="band_feed_symbol_description">bandFeed symbol</string>
+    <string name="add_new_band_button">Add your band</string>
+    <string name="wtf_button">WTF is bandFeed?</string>
+
+    <!-- activity_step_one -->
+    <string name="title_activity_step_one">Add your band - step 1</string>
+    <string name="band_name_text">Enter your Band name</string>
+    <string name="add_band_name_hint">Band Name</string>
+    <string name="genre_text">Select 3 genre categories that best describe your band"\n""\n"1st genre</string>
+    <string name="select_prompt">Select..</string>
+    <string name="genre2_text">2nd genre</string>
+    <string name="genre3_text">3rd genre</string>
+
+    <!-- activity_step_two -->
+    <string name="title_activity_step_two">Add your band - step 2</string>
+    <string name="amount_of_members_text">Please type the amount of members in your band</string>
+    <string name="amount_of_members_hint">Type amount of members..</string>
+    <string name="where_text">Which county is your band based in? Bands must come from the UK!</string>
+    <string name="town_text">Which town is your band based in?</string>
+    <string name="town_hint">Type town..</string>
+
+    <!-- activity_step_three -->
+    <string name="title_activity_step_three">Add your band - step 3</string>
     
-	<!-- activity_main -->
-	<string name="title_activity_main">bandFeed</string>
-	<string name="band_feed_symbol_description">bandFeed symbol</string>
-	<string name="add_new_band_button">Add your band</string>
-	<string name="wtf_button">WTF is bandFeed?</string>
+    <!-- activity_step_four -->
+    <string name="bio_text">Type a short Biography. Remember you have included a lot of details already, such as where the band is based and your members etc. You don\'t need to mention them again.</string>
+	<string name="bio_hint">Type Bio..</string>
+	<string name="logo_text">Click to select a band logo or photo</string>
+	<string name="soundCloud_text">If you have a soundCloud account for your band and want to share your music add your page. E.g. soundcloud.com/<b>myband</b>.
+	     Please only type the part that is in bold.</string>
+    <string name="soundCloud_hint">Type your page name e.g. theofficialbandits</string>
 	
-	<!-- activity_step_one -->
-	<string name="title_activity_step_one">Add your band - step 1</string>
-	<string name="band_name_text">Enter your Band name</string>
-	<string name="add_band_name_hint">Band Name</string>
-	<string name="genre_text">Select 3 genre categories that best describe your band"\n""\n"1st genre</string>
-	<string name="select_prompt">Select..</string>
-	<string name="genre2_text">2nd genre</string>
-	<string name="genre3_text">3rd genre</string>
-	
-	<!--  activity_step_two -->
-	<string name="title_activity_step_two">Add your band - step 2</string>
-	<string name="amount_of_members_text">Please type the amount of members in your band</string>
-	<string name="amount_of_members_hint">Type amount of members..</string>
-	<string name="where_text">Which county is your band based in? Bands must come from the UK!</string>
-	<string name="town_text">Which town is your band based in?</string>
-	<string name="town_hint">Type town..</string>
-	
-	<!--  activity_step_three -->
-	<string name="title_activity_step_three">Add your band - step 3</string>
-	
-	<!-- activity_wtf -->
-	<string name="title_activity_wtf">About bandFeed</string>
-	<string name="wtf_text">Author: Brett Flitter"\n"Version: Prototype 1"\n"Title: Project bandFeed</string>
-	
+    <!-- activity_wtf -->
+    <string name="title_activity_wtf">About bandFeed</string>
+    <string name="wtf_text">Author: Brett Flitter"\n"Version: Prototype 1"\n"Title: Project bandFeed</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_add_new_band_step_four">AddNewBandStepFour</string>
+
 </resources>

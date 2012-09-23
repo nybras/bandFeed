@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="30dip" >
+
+        <TextView
+            android:id="@+id/bio_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dip"
+            android:text="@string/bio_text" />
+
+        <EditText
+            android:id="@+id/bio_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="200dip"
+            android:hint="@string/bio_hint" />
+        
+         <TextView
+            android:id="@+id/soundCloud_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dip"
+            android:paddingBottom="10dip"
+            android:text="@string/soundCloud_text" />
+
+        <EditText
+            android:id="@+id/soundCloud_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/soundCloud_hint" />
+
+        <TextView
+            android:id="@+id/logo_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="20dip"
+            android:paddingTop="10dip"
+            android:text="@string/logo_text" />
+
+        <ImageView
+            android:id="@+id/select_logo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/band_feed_symbol_description"
+            android:src="@drawable/band_feed_equally_sized" />
+
+        <TextView
+            android:id="@+id/standard_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dip" />
+
+        <Button
+            android:id="@+id/next_step_five_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/next" />
+    </LinearLayout>
+
+</ScrollView>
