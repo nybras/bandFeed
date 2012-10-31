@@ -29,19 +29,30 @@
 
     <!-- activity_step_three -->
     <string name="title_activity_step_three">Add your band - step 3</string>
-    
+
     <!-- activity_step_four -->
+    <string name="title_activity_step_four">Add your band - step 4</string>
     <string name="bio_text">Type a short Biography. Remember you have included a lot of details already, such as where the band is based and your members etc. You don\'t need to mention them again.</string>
-	<string name="bio_hint">Type Bio..</string>
-	<string name="logo_text">Click to select a band logo or photo</string>
-	<string name="soundCloud_text">If you have a soundCloud account for your band and want to share your music add your page. E.g. soundcloud.com/<b>myband</b>.
+    <string name="bio_hint">Type Bio..</string>
+    <string name="logo_text">Click to select a band logo or photo</string>
+    <string name="soundCloud_text">If you have a soundCloud account for your band and want to share your music add your page. E.g. soundcloud.com/<b>myband</b>.
 	     Please only type the part that is in bold.</string>
     <string name="soundCloud_hint">Type your page name e.g. theofficialbandits</string>
-	
+
     <!-- activity_wtf -->
     <string name="title_activity_wtf">About bandFeed</string>
     <string name="wtf_text">Author: Brett Flitter"\n"Version: Prototype 1"\n"Title: Project bandFeed</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_add_new_band_step_four">AddNewBandStepFour</string>
+    <string name="title_activity_band_profile">BandProfile</string>
+
+    <!-- activity_browse -->
+    <string name="title_activity_search">Search</string>
+    <string name="search_for_bands">Enter one or more search criteria (more search criteria to come)</string>
+    <string name="search_band_name_text">Search by band name</string>
+    <string name="band_name_hint">Enter band name</string>
+    <string name="search">Search</string>
+    <string name="title_activity_search_results">Search Results</string>
+    <string name="title_activity_band_profile_db">BandProfileDB</string>
 
 </resources>

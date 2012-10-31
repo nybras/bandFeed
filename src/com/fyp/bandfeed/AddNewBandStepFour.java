@@ -7,19 +7,30 @@
 
 package com.fyp.bandfeed;
 
+//import android.os.StrictMode;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,6 +46,16 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 	private Bitmap bitmap;
 	private boolean selected;
 	private EditText bio, soundCloudPage;
+
+	private ProgressDialog progressDialog;
+
+	// url to create new profile
+	private static String CreateProfileURL = "http://bandfeed.co.uk/api/create_profile.php";
+	// private static String CreateProfileURL =
+	// "http://129.168.0.3:3401/bandFeed/api/create_profile.php";
+
+	// JSON NODE names
+	private static final String TAG_SUCCESS = "success";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +73,11 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 
 		View nextButton = findViewById(R.id.next_step_five_button);
 		nextButton.setOnClickListener(this);
+
+		// StrictMode.ThreadPolicy policy = new
+		// StrictMode.ThreadPolicy.Builder()
+		// .permitAll().build();
+		// StrictMode.setThreadPolicy(policy);
 
 	}
 
@@ -74,9 +100,9 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 
 			break;
 		case R.id.next_step_five_button:
-			if (selected && bio.getText().toString() != "") {
-				createProfileOfBand();
-			}
+
+			//createProfileOfBandOnSD();
+			new CreateNewProfile().execute();
 
 			break;
 		}
@@ -96,10 +122,12 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 				try {
 					bitmap = decodeUri(selectedImage);
 					imageSelector.setImageBitmap(bitmap);
+					setSelected(true);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					setSelected(false);
 				}
+			} else {
+				setSelected(false);
 			}
 		}
 	}
@@ -135,7 +163,8 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 
 	}
 
-	private void createProfileOfBand() {
+	@SuppressWarnings("unused")
+	private void createProfileOfBandOnSD() {
 		String dirPath = getFilesDir().getAbsolutePath() + File.separator
 				+ bandName.toString();
 		File projDir = new File(dirPath);
@@ -170,11 +199,13 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 			// an page existence check
 			out.close();
 
-			File f = new File(dirPath + File.separator + bandName + ".jpg");
-			FileOutputStream ostream = new FileOutputStream(f);
-			// FileOutputStream to write a file
-			bitmap.compress(CompressFormat.JPEG, 100, ostream);
-			ostream.close();
+			if (isSelected()) {
+				File f = new File(dirPath + File.separator + bandName + ".jpg");
+				FileOutputStream ostream = new FileOutputStream(f);
+				// FileOutputStream to write a file
+				bitmap.compress(CompressFormat.JPEG, 100, ostream);
+				ostream.close();
+			}
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -192,6 +223,92 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+
+	class CreateNewProfile extends AsyncTask<String, String, String> {
+
+		JSONParser jsonParser = new JSONParser();
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			progressDialog = new ProgressDialog(AddNewBandStepFour.this);
+			progressDialog.setMessage("Uploading Profile..");
+			progressDialog.setIndeterminate(false);
+			progressDialog.setCancelable(true);
+			progressDialog.show();
+		}
+
+		/**
+		 * Creating product
+		 * */
+		@Override
+		protected String doInBackground(String... args) {
+
+			// Building Parameters
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("band_name", bandName.toString()));
+			params.add(new BasicNameValuePair("genre1", extras
+					.getString("genre1")));
+			params.add(new BasicNameValuePair("genre2", extras
+					.getString("genre1")));
+			params.add(new BasicNameValuePair("genre3", extras
+					.getString("genre3")));
+			params.add(new BasicNameValuePair("county", extras
+					.getString("county")));
+			params.add(new BasicNameValuePair("town", extras.getString("town")));
+			params.add(new BasicNameValuePair("members", ""
+					+ extras.getInt("amountOfMembers")));
+			params.add(new BasicNameValuePair("soundc_link", soundCloudPage
+					.getText().toString().trim()));
+			params.add(new BasicNameValuePair("pic_link", "" + "none yet"));
+
+			// getting JSON Object
+			// Note that create product url accepts POST method
+			JSONObject json = jsonParser.makeHttpRequest(CreateProfileURL,
+					"POST", params);
+
+			// check log cat for response
+			Log.d("Create Response", json.toString());
+
+			// check for success tag
+			try {
+				int success = json.getInt(TAG_SUCCESS);
+
+				if (success == 1) {
+					// successfully created product
+					
+					Intent i = new Intent(getApplicationContext(),
+							MainActivity.class);
+					startActivity(i);
+
+					// closing this screen
+					finish();
+				} else {
+					// failed to create product
+					Intent i = new Intent(getApplicationContext(),
+							MainActivity.class);
+					startActivity(i);
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		@Override
+		protected void onPostExecute(String file_url) {
+			// dismiss the dialog once done
+			progressDialog.dismiss();
+		}
+
 	}
 
 }

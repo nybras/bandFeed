@@ -1,3 +1,4 @@
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fyp.bandfeed"
     android:versionCode="1"
@@ -6,15 +7,14 @@
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="15" />
-    
-    <uses-permission 
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
@@ -42,13 +42,25 @@
         </activity>
         <activity
             android:name=".AddNewBandStepFour"
-            android:label="@string/title_activity_add_new_band_step_four" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/title_activity_step_four" >
+        </activity>
+        <activity
+            android:name=".BandProfileSD"
+            android:label="@string/title_activity_band_profile" >
+        </activity>
+        <activity
+            android:name=".BandProfileDB"
+            android:label="@string/title_activity_band_profile" >
+        </activity>
+        <activity
+            android:name=".Browse"
+            android:label="@string/title_activity_search" >
+        </activity>
+        <activity
+            android:name=".SearchResults"
+            android:label="@string/title_activity_search_results" >
         </activity>
     </application>
 
 </manifest>
+
