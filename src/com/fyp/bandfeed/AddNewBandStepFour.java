@@ -1,5 +1,5 @@
 /**
- * @author Brett Flitter
+x * @author Brett Flitter
  * @version Prototype1 - 25/08/2012
  * @edited 21/09/2012
  * @title Project bandFeed
@@ -13,11 +13,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
+//import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+//import java.io.FileOutputStream;
+//import java.io.IOException;
+//import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +28,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
+//import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.Menu;
@@ -45,6 +45,7 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 	private Bundle extras;
 	private Bitmap bitmap;
 	private boolean selected;
+	@SuppressWarnings("unused")
 	private EditText bio, soundCloudPage;
 
 	private ProgressDialog progressDialog;
@@ -74,10 +75,6 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 		View nextButton = findViewById(R.id.next_step_five_button);
 		nextButton.setOnClickListener(this);
 
-		// StrictMode.ThreadPolicy policy = new
-		// StrictMode.ThreadPolicy.Builder()
-		// .permitAll().build();
-		// StrictMode.setThreadPolicy(policy);
 
 	}
 
@@ -163,59 +160,59 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 
 	}
 
-	@SuppressWarnings("unused")
-	private void createProfileOfBandOnSD() {
-		String dirPath = getFilesDir().getAbsolutePath() + File.separator
-				+ bandName.toString();
-		File projDir = new File(dirPath);
-		if (!projDir.exists()) {
-			projDir.mkdirs();
-		}
-		try {
-			String path = dirPath + File.separator + bandName.toString()
-					+ ".profile";
-
-			FileOutputStream fOut = new FileOutputStream(path);
-			OutputStreamWriter out = new OutputStreamWriter(fOut);
-
-			// OutputStreamWriter out = new OutputStreamWriter(openFileOutput(
-			// path, MODE_APPEND));
-			// The above comment caused all sorts of problems
-			out.write("#" + bandName + "\r\n");
-			out.write("#" + extras.getString("genre1") + "\r\n");
-			out.write("#" + extras.getString("genre2") + "\r\n");
-			out.write("#" + extras.getString("genre3") + "\r\n");
-			out.write("#" + extras.getString("county") + "\r\n");
-			out.write("#" + extras.getString("town") + "\r\n");
-			out.write("#" + extras.getInt("amountOfMembers") + "\r\n");
-			out.write("#" + bio.getText().toString().trim() + "\r\n");
-
-			String[] splitz = extras.getString("namesAndRoles").split("#");
-			for (String s : splitz) {
-				out.write("#" + s + "\r\n");
-			}
-			out.write("#" + soundCloudPage.getText().toString().trim());
-			// TODO Make sure user doesn't add 'soundcloud.com'. Possibly make
-			// an page existence check
-			out.close();
-
-			if (isSelected()) {
-				File f = new File(dirPath + File.separator + bandName + ".jpg");
-				FileOutputStream ostream = new FileOutputStream(f);
-				// FileOutputStream to write a file
-				bitmap.compress(CompressFormat.JPEG, 100, ostream);
-				ostream.close();
-			}
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+//	@SuppressWarnings("unused")
+//	private void createProfileOfBandOnSD() {
+//		String dirPath = getFilesDir().getAbsolutePath() + File.separator
+//				+ bandName.toString();
+//		File projDir = new File(dirPath);
+//		if (!projDir.exists()) {
+//			projDir.mkdirs();
+//		}
+//		try {
+//			String path = dirPath + File.separator + bandName.toString()
+//					+ ".profile";
+//
+//			FileOutputStream fOut = new FileOutputStream(path);
+//			OutputStreamWriter out = new OutputStreamWriter(fOut);
+//
+//			// OutputStreamWriter out = new OutputStreamWriter(openFileOutput(
+//			// path, MODE_APPEND));
+//			// The above comment caused all sorts of problems
+//			out.write("#" + bandName + "\r\n");
+//			out.write("#" + extras.getString("genre1") + "\r\n");
+//			out.write("#" + extras.getString("genre2") + "\r\n");
+//			out.write("#" + extras.getString("genre3") + "\r\n");
+//			out.write("#" + extras.getString("county") + "\r\n");
+//			out.write("#" + extras.getString("town") + "\r\n");
+//			out.write("#" + extras.getInt("amountOfMembers") + "\r\n");
+//			out.write("#" + bio.getText().toString().trim() + "\r\n");
+//
+//			String[] splitz = extras.getString("namesAndRoles").split("#");
+//			for (String s : splitz) {
+//				out.write("#" + s + "\r\n");
+//			}
+//			out.write("#" + soundCloudPage.getText().toString().trim());
+//			// TODO Make sure user doesn't add 'soundcloud.com'. Possibly make
+//			// an page existence check
+//			out.close();
+//
+//			if (isSelected()) {
+//				File f = new File(dirPath + File.separator + bandName + ".jpg");
+//				FileOutputStream ostream = new FileOutputStream(f);
+//				// FileOutputStream to write a file
+//				bitmap.compress(CompressFormat.JPEG, 100, ostream);
+//				ostream.close();
+//			}
+//
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//	}
 
 	public boolean isSelected() {
 		return selected;
@@ -247,6 +244,7 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 		 * */
 		@Override
 		protected String doInBackground(String... args) {
+			
 
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -279,16 +277,26 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 				int success = json.getInt(TAG_SUCCESS);
 
 				if (success == 1) {
-					// successfully created product
+					// successfully created profile
 					
+					ConnectToRabbitMQ connection = new ConnectToRabbitMQ(bandName.toString(), null);
+					if (connection.createExchange()) {
+						// connection and exchange has been made
+						connection.dispose();
 					Intent i = new Intent(getApplicationContext(),
 							MainActivity.class);
 					startActivity(i);
-
+					}
+					else {
+						// TODO failed to create exchange
+						Intent i = new Intent(getApplicationContext(),
+								MainActivity.class);
+						startActivity(i);
+					}
 					// closing this screen
-					finish();
+					
 				} else {
-					// failed to create product
+					// TODO failed to create profile
 					Intent i = new Intent(getApplicationContext(),
 							MainActivity.class);
 					startActivity(i);

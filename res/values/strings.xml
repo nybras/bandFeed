@@ -3,6 +3,7 @@
     <string name="app_name">bandFeed</string>
     <string name="menu_settings">Settings</string>
     <string name="next">Next</string>
+    <string name="globals">Globals</string>
 
     <!-- activity_main -->
     <string name="title_activity_main">bandFeed</string>
@@ -11,7 +12,7 @@
     <string name="wtf_button">WTF is bandFeed?</string>
 
     <!-- activity_step_one -->
-    <string name="title_activity_step_one">Add your band - step 1</string>
+    <string name="title_activity_step_one">Add your band</string>
     <string name="band_name_text">Enter your Band name</string>
     <string name="add_band_name_hint">Band Name</string>
     <string name="genre_text">Select 3 genre categories that best describe your band"\n""\n"1st genre</string>
@@ -28,10 +29,10 @@
     <string name="town_hint">Type town..</string>
 
     <!-- activity_step_three -->
-    <string name="title_activity_step_three">Add your band - step 3</string>
+    <string name="title_activity_step_three">Add your band</string>
 
     <!-- activity_step_four -->
-    <string name="title_activity_step_four">Add your band - step 4</string>
+    <string name="title_activity_step_four">Add your band</string>
     <string name="bio_text">Type a short Biography. Remember you have included a lot of details already, such as where the band is based and your members etc. You don\'t need to mention them again.</string>
     <string name="bio_hint">Type Bio..</string>
     <string name="logo_text">Click to select a band logo or photo</string>
@@ -43,7 +44,7 @@
     <string name="title_activity_wtf">About bandFeed</string>
     <string name="wtf_text">Author: Brett Flitter"\n"Version: Prototype 1"\n"Title: Project bandFeed</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_add_new_band_step_four">AddNewBandStepFour</string>
+    <string name="title_activity_add_new_band_step_four">Add a New Band</string>
     <string name="title_activity_band_profile">BandProfile</string>
 
     <!-- activity_browse -->
@@ -54,5 +55,20 @@
     <string name="search">Search</string>
     <string name="title_activity_search_results">Search Results</string>
     <string name="title_activity_band_profile_db">BandProfileDB</string>
+    <string name="title_activity_feed_all">FeedAllActivity</string>
+    <string name="title_activity_test_fan_out">TestFanOut</string>
+
+    <!-- activity_test_fan_out -->
+    <string name="send_message_text">Send a message to fan out to all subscribers</string>
+    <string name="send_message_hint">Type message..</string>
+    <string name="send_test_message">Send</string>
+
+    <!-- activity_feed_all -->
+    <string name="receive_test_message">Receive</string>
+    <string name="title_activity_become_afeeder">Create a user account</string>
+    
+    <!-- activity_become_afeeder -->
+    <string name="username_text">Please a create a username for yourself</string>
+    <string name="add_username_hint">Type username..</string>
 
 </resources>

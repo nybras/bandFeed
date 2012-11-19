@@ -24,13 +24,15 @@ import android.widget.ScrollView;
 
 public class MainActivity extends Activity implements OnClickListener {
 
-	private SparseArray<String> ids; //Instead of HashMap
+	private SparseArray<String> ids; // Instead of HashMap
+	private boolean userCreated;
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		userCreated = false;
 		ids = new SparseArray<String>();
 
 		// set up a scrollable view that is linear with a vertical orientation
@@ -48,13 +50,14 @@ public class MainActivity extends Activity implements OnClickListener {
 		linearLayout.setPadding(30, 30, 30, 30);
 
 		this.setContentView(scrollView, lp);
-		
+
 		final float scale = getResources().getDisplayMetrics().density;
 		int dip = (int) (100 * scale + 0.5f);
 		// Don't understand this
-		
+
 		ImageView bandFeedLogo = new ImageView(this);
-		LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+		LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(
+				LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		bandFeedLogo.setLayoutParams(vp);
 		bandFeedLogo.setScaleType(ImageView.ScaleType.CENTER_CROP);
 		bandFeedLogo.setLayoutParams(new LinearLayout.LayoutParams(
@@ -62,11 +65,10 @@ public class MainActivity extends Activity implements OnClickListener {
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 		bandFeedLogo.setMaxHeight(2);
 		bandFeedLogo.setMaxWidth(2);
-		bandFeedLogo.setImageDrawable(getResources().getDrawable(R.drawable.band_feed_equally_sized));
+		bandFeedLogo.setImageDrawable(getResources().getDrawable(
+				R.drawable.band_feed_equally_sized));
 		bandFeedLogo.setPadding(0, 0, 0, 20);
 		linearLayout.addView(bandFeedLogo);
-
-		
 
 		String dirPath = getFilesDir().getAbsolutePath() + File.separator;
 		File f = new File(dirPath);
@@ -74,20 +76,35 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		if (files.length > 0) {
 			for (File file : files) {
-				Button button = new Button(this);
-				// button to next activity
-				Integer id = findId(1);
-				button.setId(id);
-				ids.put(id, file.getName());
-				button.setLayoutParams(new LinearLayout.LayoutParams(
-						(int) (dip * scale),
-						LinearLayout.LayoutParams.WRAP_CONTENT));
-				// Need to read up on this
-				// http://stackoverflow.com/questions/5691411/dynamically-change-the-width-of-a-button-in-android
-				button.setText(file.getName());
-				button.setOnClickListener(this);
-				linearLayout.addView(button);
+
+				// TODO remove all this and have it so user is checked on
+				// database
+				if (file.getName().equals("User")) {
+					userCreated = true;
+
+				} else {
+					Button button = new Button(this);
+					// button to next activity
+					Integer id = findId(1);
+					button.setId(id);
+					ids.put(id, file.getName());
+					button.setLayoutParams(new LinearLayout.LayoutParams(
+							(int) (dip * scale),
+							LinearLayout.LayoutParams.WRAP_CONTENT));
+					// Need to read up on this
+					// http://stackoverflow.com/questions/5691411/dynamically-change-the-width-of-a-button-in-android
+					button.setText(file.getName());
+					button.setOnClickListener(this);
+					linearLayout.addView(button);
+				}
+
 			}
+		}
+
+		if (!userCreated) {
+			// TODO remove all this and have it so user is checked on database
+			Intent i = new Intent(this, BecomeAFeeder.class);
+			startActivity(i);
 		}
 
 		Button newBandButton = new Button(this);
@@ -98,7 +115,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		newBandButton.setText("Create a new Band profile");
 		newBandButton.setOnClickListener(this);
 		linearLayout.addView(newBandButton);
-		
+
 		Button browseButton = new Button(this);
 		// button to next activity
 		Integer id2 = findId(1);
@@ -107,7 +124,25 @@ public class MainActivity extends Activity implements OnClickListener {
 		browseButton.setText("Browse bands");
 		browseButton.setOnClickListener(this);
 		linearLayout.addView(browseButton);
-	
+
+		Button sendMessageButton = new Button(this);
+		// button to next activity
+		Integer id3 = findId(1);
+		sendMessageButton.setId(id3);
+		ids.put(id3, "sendMessageButton");
+		sendMessageButton.setText("Test Send Message");
+		sendMessageButton.setOnClickListener(this);
+		linearLayout.addView(sendMessageButton);
+
+		Button receiveMessageButton = new Button(this);
+		// button to next activity
+		Integer id4 = findId(1);
+		receiveMessageButton.setId(id4);
+		ids.put(id4, "receiveMessageButton");
+		receiveMessageButton.setText("Test Receive Message");
+		receiveMessageButton.setOnClickListener(this);
+		linearLayout.addView(receiveMessageButton);
+
 		Button aboutButton = new Button(this);
 		// button to next activity
 		Integer id1 = findId(1);
@@ -125,8 +160,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	/**
-	 * Decides from the given buttons which new view to open up 
-	 * @param v takes the button that has just been clicked
+	 * Decides from the given buttons which new view to open up
+	 * 
+	 * @param v
+	 *            takes the button that has just been clicked
 	 */
 
 	public void onClick(View v) {
@@ -139,6 +176,12 @@ public class MainActivity extends Activity implements OnClickListener {
 			startActivity(i);
 		} else if (ids.get(v.getId()).equals("browseButton")) {
 			i = new Intent(this, Browse.class);
+			startActivity(i);
+		} else if (ids.get(v.getId()).equals("sendMessageButton")) {
+			i = new Intent(this, TestFanOut.class);
+			startActivity(i);
+		} else if (ids.get(v.getId()).equals("receiveMessageButton")) {
+			i = new Intent(this, FeedAll.class);
 			startActivity(i);
 		} else {
 			i = new Intent(this, BandProfileSD.class);
@@ -156,4 +199,5 @@ public class MainActivity extends Activity implements OnClickListener {
 		return id++;
 
 	}
+
 }

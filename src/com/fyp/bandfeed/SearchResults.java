@@ -118,7 +118,7 @@ public class SearchResults extends Activity implements OnClickListener {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			progressDialog = new ProgressDialog(SearchResults.this);
-			progressDialog.setMessage("Loading profile..");
+			progressDialog.setMessage("Loading Profile..");
 			progressDialog.setIndeterminate(false);
 			progressDialog.setCancelable(true);
 			progressDialog.show();
