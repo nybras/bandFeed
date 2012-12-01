@@ -93,6 +93,11 @@ public class Browse extends Activity implements OnClickListener {
 				// Note that create product url accepts POST method
 				JSONObject json = jsonParser.makeHttpRequest(GetProfileURL,
 						"GET", params);
+				
+				// TODO NEED TO CREATE A PHP API THAN ONLY RETEIVES NAMES AND GENRES OR WHATEVER DEPENDING ON SEARCH CRITERIA
+				// TODO NEED TO CREATE A PHP API THAN ONLY RETEIVES NAMES AND GENRES OR WHATEVER DEPENDING ON SEARCH CRITERIA
+				// TODO NEED TO CREATE A PHP API THAN ONLY RETEIVES NAMES AND GENRES OR WHATEVER DEPENDING ON SEARCH CRITERIA
+				// e.g. need to change the getProfileURL to the new api!!
 
 				// check log cat for response
 				Log.d("Profile Response", json.toString());
@@ -101,13 +106,16 @@ public class Browse extends Activity implements OnClickListener {
 
 				success = json.getInt(TAG_SUCCESS);
 
+				
 				if (success == 1) {
 					// successfully received product details
-					JSONArray profileObj = json.getJSONArray("bprofile"); // JSON
-																			// Array
+					JSONArray profileObj = json.getJSONArray("bprofile"); // JSON array
+					// JSONArray membersObj = json.getJSONArray("bmembers");     NOT NEED
+																			
 
 					// get first object from JSON Array
 					JSONObject profile = profileObj.getJSONObject(0);
+					//JSONObject members = membersObj.getJSONObject(0);   NOT NEEDED
 
 					// display product data in EditText
 					// txtName.setText(profile.getString(TAG_NAME));
@@ -118,7 +126,7 @@ public class Browse extends Activity implements OnClickListener {
 							SearchResults.class);
 
 					// TODO Display returned results from search query
-					i.putExtra("success", true);
+					i.putExtra("success", true);  // Not a good way about going about this
 					i.putExtra("band_name", profile.getString("band_name"));
 					startActivity(i);
 

@@ -4,10 +4,11 @@
     <string name="menu_settings">Settings</string>
     <string name="next">Next</string>
     <string name="globals">Globals</string>
+    <string name="test">test</string>
 
     <!-- activity_main -->
     <string name="title_activity_main">bandFeed</string>
-    <string name="band_feed_symbol_description">bandFeed symbol</string>
+    <string name="band_feed_symbol_description">Image</string>
     <string name="add_new_band_button">Add your band</string>
     <string name="wtf_button">WTF is bandFeed?</string>
 
@@ -62,13 +63,19 @@
     <string name="send_message_text">Send a message to fan out to all subscribers</string>
     <string name="send_message_hint">Type message..</string>
     <string name="send_test_message">Send</string>
+    <string name="send_from_text">From which band?</string>
+    <string name="send_from_hint">Type band name..</string>
 
     <!-- activity_feed_all -->
     <string name="receive_test_message">Receive</string>
     <string name="title_activity_become_afeeder">Create a user account</string>
-    
+
     <!-- activity_become_afeeder -->
     <string name="username_text">Please a create a username for yourself</string>
     <string name="add_username_hint">Type username..</string>
+    <string name="title_activity_display_profile">Profile</string>
+    
+    <!-- activity_display_profile -->
+    <string name="profile_sub_toall_button">Subscribe to all!</string>
 
 </resources>

@@ -146,17 +146,22 @@ public class AddNewBandStepThree extends Activity implements OnClickListener {
 			i.putExtra("amountOfMembers", amountOfMembers);
 			i.putExtra("county", county);
 			i.putExtra("town", town);
-			StringBuilder sb = new StringBuilder();
-			for (int m = 1; m < amountOfMembers + 1; m++) {
-				if (m == 1) {
-					sb.append(names[m - 1].getText().toString().trim());
-					sb.append("%" + roles[m - 1].getText().toString().trim());
-				} else {
-					sb.append("#" + names[m - 1].getText().toString().trim());
-					sb.append("%" + roles[m - 1].getText().toString().trim());
-				}
+			for (int j = 0; j < amountOfMembers; j++) {
+				i.putExtra("names"+j, names[j].getText().toString().trim());
+				i.putExtra("roles"+j, roles[j].getText().toString().trim());
 			}
-			i.putExtra("namesAndRoles", sb.toString());
+			
+//			StringBuilder sb = new StringBuilder();
+//			for (int m = 1; m < amountOfMembers + 1; m++) {
+//				if (m == 1) {
+//					sb.append(names[m - 1].getText().toString().trim());
+//					sb.append("%" + roles[m - 1].getText().toString().trim());
+//				} else {
+//					sb.append("#" + names[m - 1].getText().toString().trim());
+//					sb.append("%" + roles[m - 1].getText().toString().trim());
+//				}
+//			}
+//			i.putExtra("namesAndRoles", sb.toString());
 			startActivity(i);
 
 		} else {

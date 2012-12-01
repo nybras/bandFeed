@@ -148,14 +148,16 @@ public class SearchResults extends Activity implements OnClickListener {
 
 				if (success == 1) {
 					// successfully received product details
-					JSONArray profileObj = json.getJSONArray("bprofile"); // JSON
-																			// Array
+					JSONArray profileObj = json.getJSONArray("bprofile"); // JSON array
+					JSONArray membersObj = json.getJSONArray("bmembers");
+																			
 
 					// get first object from JSON Array
 					JSONObject profile = profileObj.getJSONObject(0);
+					JSONObject members = membersObj.getJSONObject(0);
 
 					Intent i = new Intent(getApplicationContext(),
-							BandProfileDB.class);
+							DisplayProfile.class);
 
 					// TODO Display returned results from search query
 					i.putExtra("band_name", profile.getString("band_name"));
@@ -164,10 +166,20 @@ public class SearchResults extends Activity implements OnClickListener {
 					i.putExtra("genre3", profile.getString("genre3"));
 					i.putExtra("county", profile.getString("county"));
 					i.putExtra("town", profile.getString("town"));
+					i.putExtra("amountOfMembers", profile.getInt("amountOfMembers"));
 					i.putExtra("soundc_link", profile.getString("soundc_link"));
 					i.putExtra("pic_link", profile.getString("pic_link"));
 					i.putExtra("updated_at", profile.getString("updated_at"));
 					i.putExtra("created_at", profile.getString("created_at"));
+					i.putExtra("bio", profile.getString("bio"));
+
+					
+					
+					for (int j = 0; j < profile.getInt("amountOfMembers"); j++) {
+						i.putExtra("name"+j, members.getString("name"+j));
+						i.putExtra("role"+j, members.getString("role"+j));
+					}
+					
 
 					startActivity(i);
 

@@ -1,6 +1,10 @@
 package com.fyp.bandfeed;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -13,6 +17,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,19 +28,25 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FeedAll extends Activity implements OnClickListener{
+public class FeedAll extends Activity implements OnClickListener {
 
 	private ArrayList<String> messages = new ArrayList<String>();
 	private ProgressDialog progressDialog;
 	private GetMessages task;
 	private LinearLayout linearLayout;
+	String queueName;
+	private SparseArray<String> ids; // Instead of HashMap
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 
+		ids = new SparseArray<String>();
+		
+		
+		
+		queueName = getUsername().trim();
 
 		// set up a scrollable view that is linear with a vertical orientation
 		ScrollView scrollView = new ScrollView(this);
@@ -51,7 +63,7 @@ public class FeedAll extends Activity implements OnClickListener{
 		linearLayout.setPadding(30, 30, 30, 30);
 
 		this.setContentView(scrollView, lp);
-		
+
 		final float scale = getResources().getDisplayMetrics().density;
 		int dip = (int) (100 * scale + 0.5f);
 		// Don't understand this
@@ -62,17 +74,64 @@ public class FeedAll extends Activity implements OnClickListener{
 				(int) (dip * scale), LinearLayout.LayoutParams.WRAP_CONTENT));
 		// Need to read up on this
 		// http://stackoverflow.com/questions/5691411/dynamically-change-the-width-of-a-button-in-android
+		
+		Integer id2 = findId(1);
+		nextButton.setId(id2);
+		ids.put(id2, "nextButton");
 		nextButton.setText("Get");
 		nextButton.setOnClickListener(this);
 		linearLayout.addView(nextButton);
+
+		Button backButton = new Button(this);
+		Integer id1 = findId(1);
+		backButton.setId(id1);
+		ids.put(id1, "backButton");
+		backButton.setText("Back to home screen");
+		backButton.setOnClickListener(this);
+		linearLayout.addView(backButton);
+
+	}
+	
+	private String getUsername() {
 		
+		String username = "";
+		String line;
+
+		String path = getFilesDir().getAbsolutePath() + File.separator
+				+ "User" + File.separator + "User";
+
+		try {
+
+			FileInputStream fin = new FileInputStream(path + ".profile");
+
+			// prepare the file for reading
+			InputStreamReader inputreader = new InputStreamReader(fin);
+			BufferedReader buffreader = new BufferedReader(inputreader);
+
+			// read every line of the file into the line-variable, on line
+			// at the time
+			while ((line = buffreader.readLine()) != null) {
+				// do something with the settings from the file
+				username += line;
+			}
+
+			// close the file again
+			fin.close();
+		} catch (java.io.FileNotFoundException e) {
+			// do something if the myfilename.txt does not exits
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+		return username;
 	}
 
 	public void setPageUp() {
 
 		if (messages.isEmpty()) {
-			Toast toast = Toast.makeText(this, "No new messages", Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(this, "No new messages",
+					Toast.LENGTH_SHORT);
 			toast.show();
 
 		} else {
@@ -86,7 +145,7 @@ public class FeedAll extends Activity implements OnClickListener{
 				linearLayout.addView(textViewMessage);
 				it.remove(); // Empty array as it goes along
 			}
-		}	
+		}
 	}
 
 	class GetMessages extends AsyncTask<String, String, String> {
@@ -107,12 +166,14 @@ public class FeedAll extends Activity implements OnClickListener{
 		@Override
 		protected String doInBackground(String... params) {
 
-			String queueName = "nybras";
 
 			ConnectToRabbitMQ connection = new ConnectToRabbitMQ(null,
 					queueName);
+
+			// TODO try and make this work again with the below code back in the
+			// ConnectToRabbitMQ class
 			
-			// TODO try and make this work again with the below code back in the ConnectToRabbitMQ class
+			//queueName = "bunty";
 
 			try {
 				if (connection.connectToRabbitMQ()) {
@@ -130,6 +191,7 @@ public class FeedAll extends Activity implements OnClickListener{
 						String message = new String(delivery.getBody());
 						messages.add(message);
 					}
+					connection.dispose();
 
 				}
 			} catch (IOException e) {
@@ -153,17 +215,34 @@ public class FeedAll extends Activity implements OnClickListener{
 			// dismiss the dialog once done
 			progressDialog.dismiss();
 			setPageUp();
-			
 
 		}
 
 	}
 
 	public void onClick(View v) {
+
 		
-		task = new GetMessages();
-		task.execute();
-		
+		if (ids.get(v.getId()).equals("backButton")) {
+			Intent i = null;
+			i = new Intent(this, MainActivity.class);
+			startActivity(i);
+		} else {
+
+			task = new GetMessages();
+			task.execute();
+		}
+
+	}
+
+	private int findId(int id) {
+		// create an ID
+		View v = findViewById(id);
+		while (v != null) {
+			v = findViewById(++id);
+		}
+		return id++;
+
 	}
 
 }

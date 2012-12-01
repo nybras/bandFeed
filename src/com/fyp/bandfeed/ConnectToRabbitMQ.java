@@ -145,11 +145,12 @@ public class ConnectToRabbitMQ {
 			connectionFactory.setUsername("admin");
 			connectionFactory.setPassword("prrpm5uBbf");
 			connectionFactory.setHost(server);
-			connectionFactory.setRequestedHeartbeat(10); // Might not need this but probably good for 3G
+			
 			connection = connectionFactory.newConnection();
 			channel = connection.createChannel();
 
-			return true;
+			
+			
 		} catch (IOException e) {
 			return false;
 		} catch (ShutdownSignalException e) {
@@ -157,6 +158,8 @@ public class ConnectToRabbitMQ {
 		} catch (ConsumerCancelledException e) {
 			return false;
 		}
+		
+		return true;
 		
 	}
 }

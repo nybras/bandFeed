@@ -14,20 +14,24 @@ import android.widget.EditText;
 
 public class TestFanOut extends Activity implements OnClickListener {
 
-	private EditText input;
+	private EditText inputMessage, inputBand;
 	private Button sendButton;
 	private ProgressDialog progressDialog;
-	private static final String EXCHANGE_NAME = "gummy";
-
+	private String EXCHANGE_NAME;
+	private boolean messageSent;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_test_fan_out);
 
-		input = (EditText) findViewById(R.id.send_message_edit);
+		inputMessage = (EditText) findViewById(R.id.send_message_edit);
+		inputBand = (EditText) findViewById(R.id.send_from_edit);
 
 		sendButton = (Button) findViewById(R.id.send_test_message_button);
 		sendButton.setOnClickListener(this);
+		
+		messageSent = false;
 
 	}
 
@@ -57,7 +61,7 @@ public class TestFanOut extends Activity implements OnClickListener {
 
 			
 			
-			String message = input.getText().toString();
+			String message = inputMessage.getText().toString();
 			
 			
 			ConnectToRabbitMQ connection = new ConnectToRabbitMQ(EXCHANGE_NAME,
@@ -65,14 +69,17 @@ public class TestFanOut extends Activity implements OnClickListener {
 			if (connection.sendMessage(message.getBytes())) {
 				connection.dispose();
 				
-				Intent i = new Intent(getApplicationContext(), MainActivity.class);
-				startActivity(i);
+				
+				messageSent = true;
+//				Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//				startActivity(i);
 				
 			} else {
 				//TODO if message wasn't sent
+				messageSent = false;
 				
-				Intent i = new Intent(getApplicationContext(), MainActivity.class);
-				startActivity(i);
+//				Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//				startActivity(i);
 			}
 
 			return null;
@@ -85,12 +92,19 @@ public class TestFanOut extends Activity implements OnClickListener {
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
+			
+			if (messageSent) {
+				Intent i = new Intent(getApplicationContext(), MainActivity.class);
+				startActivity(i);
+			}
+			
 		}
 
 	}
 
 	public void onClick(View v) {
-
+		
+		EXCHANGE_NAME = inputBand.getText().toString().trim();
 		new CreateConnection().execute();
 	}
 }

@@ -17,6 +17,18 @@
         android:layout_height="wrap_content" 
         android:hint="@string/send_message_hint" />
     
+    <TextView
+        android:id="@+id/send_from_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/send_from_text" />
+
+    <EditText 
+        android:id="@+id/send_from_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:hint="@string/send_from_hint" />
+    
     <Button
         android:id="@+id/send_test_message_button"
         android:layout_width="150dp"

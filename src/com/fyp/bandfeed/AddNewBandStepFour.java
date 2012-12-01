@@ -1,5 +1,5 @@
 /**
-x * @author Brett Flitter
+ x * @author Brett Flitter
  * @version Prototype1 - 25/08/2012
  * @edited 21/09/2012
  * @title Project bandFeed
@@ -45,7 +45,6 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 	private Bundle extras;
 	private Bitmap bitmap;
 	private boolean selected;
-	@SuppressWarnings("unused")
 	private EditText bio, soundCloudPage;
 
 	private ProgressDialog progressDialog;
@@ -118,6 +117,7 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 				Uri selectedImage = imageReturnedIntent.getData();
 				try {
 					bitmap = decodeUri(selectedImage);
+					
 					imageSelector.setImageBitmap(bitmap);
 					setSelected(true);
 				} catch (FileNotFoundException e) {
@@ -160,59 +160,6 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 
 	}
 
-//	@SuppressWarnings("unused")
-//	private void createProfileOfBandOnSD() {
-//		String dirPath = getFilesDir().getAbsolutePath() + File.separator
-//				+ bandName.toString();
-//		File projDir = new File(dirPath);
-//		if (!projDir.exists()) {
-//			projDir.mkdirs();
-//		}
-//		try {
-//			String path = dirPath + File.separator + bandName.toString()
-//					+ ".profile";
-//
-//			FileOutputStream fOut = new FileOutputStream(path);
-//			OutputStreamWriter out = new OutputStreamWriter(fOut);
-//
-//			// OutputStreamWriter out = new OutputStreamWriter(openFileOutput(
-//			// path, MODE_APPEND));
-//			// The above comment caused all sorts of problems
-//			out.write("#" + bandName + "\r\n");
-//			out.write("#" + extras.getString("genre1") + "\r\n");
-//			out.write("#" + extras.getString("genre2") + "\r\n");
-//			out.write("#" + extras.getString("genre3") + "\r\n");
-//			out.write("#" + extras.getString("county") + "\r\n");
-//			out.write("#" + extras.getString("town") + "\r\n");
-//			out.write("#" + extras.getInt("amountOfMembers") + "\r\n");
-//			out.write("#" + bio.getText().toString().trim() + "\r\n");
-//
-//			String[] splitz = extras.getString("namesAndRoles").split("#");
-//			for (String s : splitz) {
-//				out.write("#" + s + "\r\n");
-//			}
-//			out.write("#" + soundCloudPage.getText().toString().trim());
-//			// TODO Make sure user doesn't add 'soundcloud.com'. Possibly make
-//			// an page existence check
-//			out.close();
-//
-//			if (isSelected()) {
-//				File f = new File(dirPath + File.separator + bandName + ".jpg");
-//				FileOutputStream ostream = new FileOutputStream(f);
-//				// FileOutputStream to write a file
-//				bitmap.compress(CompressFormat.JPEG, 100, ostream);
-//				ostream.close();
-//			}
-//
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//	}
 
 	public boolean isSelected() {
 		return selected;
@@ -258,11 +205,30 @@ public class AddNewBandStepFour extends Activity implements OnClickListener {
 			params.add(new BasicNameValuePair("county", extras
 					.getString("county")));
 			params.add(new BasicNameValuePair("town", extras.getString("town")));
-			params.add(new BasicNameValuePair("members", ""
+			params.add(new BasicNameValuePair("amountOfMembers", ""
 					+ extras.getInt("amountOfMembers")));
-			params.add(new BasicNameValuePair("soundc_link", soundCloudPage
-					.getText().toString().trim()));
-			params.add(new BasicNameValuePair("pic_link", "" + "none yet"));
+			
+			String sc = soundCloudPage
+					.getText().toString().trim();
+			if (sc.equals("")) {
+				sc = "Not available";
+			}
+			
+			params.add(new BasicNameValuePair("soundc_link", sc));
+			params.add(new BasicNameValuePair("pic_link", "" + "Not available"));
+			
+			String bs = bio.getText().toString().trim();
+			if (bs.equals("")) {
+				bs = "Not available";
+			}
+			
+			params.add(new BasicNameValuePair("bio", "" + bs));
+			
+			
+			for (int i = 0; i < extras.getInt("amountOfMembers"); i++) {
+				params.add(new BasicNameValuePair("name"+i, extras.getString("names"+i)));
+				params.add(new BasicNameValuePair("role"+i, extras.getString("roles"+i)));
+			}
 
 			// getting JSON Object
 			// Note that create product url accepts POST method
