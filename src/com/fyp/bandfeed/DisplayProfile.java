@@ -4,16 +4,22 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +28,8 @@ public class DisplayProfile extends Activity implements OnClickListener {
 	private String band_name;
 	private boolean subscriptionCreated;
 	private ProgressDialog progressDialog;
+	private ImageView profileImage;
+	private Bitmap bitmap = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -30,6 +38,12 @@ public class DisplayProfile extends Activity implements OnClickListener {
 
 		Bundle extras = getIntent().getExtras();
 		band_name = extras.getString("band_name");
+
+		if (extras.getInt("image") == 1) {
+			profileImage = (ImageView) findViewById(R.id.profile_image);
+			getImage();
+
+		}
 
 		TextView bandName = (TextView) findViewById(R.id.profile_name);
 		bandName.setText(band_name);
@@ -115,6 +129,35 @@ public class DisplayProfile extends Activity implements OnClickListener {
 
 	}
 
+	private void getImage() {
+		new Thread(new Runnable() {
+			public void run() {
+
+				try {
+
+					URL url = new URL("http://bandfeed.co.uk/images/"
+							+ band_name + ".jpg");
+					HttpURLConnection connection = (HttpURLConnection) url
+							.openConnection();
+					connection.setDoInput(true);
+					connection.connect();
+					InputStream input = connection.getInputStream();
+					bitmap = BitmapFactory.decodeStream(input);
+
+				} catch (IOException e) {
+					e.printStackTrace();
+					// TODO
+				}
+
+				profileImage.post(new Runnable() {
+					public void run() {
+						profileImage.setImageBitmap(bitmap);
+					}
+				});
+			}
+		}).start();
+	}
+
 	class CreateSubscription extends AsyncTask<String, String, String> {
 
 		@Override
@@ -133,12 +176,11 @@ public class DisplayProfile extends Activity implements OnClickListener {
 			String username = "";
 			String line;
 
-			String path = getFilesDir().getAbsolutePath() + File.separator
-					+ "User" + File.separator + "User";
+			String path = getFilesDir().getAbsolutePath();
 
 			try {
 
-				FileInputStream fin = new FileInputStream(path + ".profile");
+				FileInputStream fin = new FileInputStream(path + File.separator + "user.profile");
 
 				// prepare the file for reading
 				InputStreamReader inputreader = new InputStreamReader(fin);

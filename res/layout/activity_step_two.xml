@@ -15,6 +15,7 @@
         android:id="@+id/amount_of_members_edit"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:inputType="number"
         android:hint="@string/amount_of_members_hint" />
     
     <TextView 
@@ -40,6 +41,7 @@
         android:id="@+id/town_edit"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:inputType="textCapWords" 
         android:hint="@string/town_hint" />
     
     <TextView 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="30dip"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/username_login_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/username_login_text" />
+
+    <EditText 
+        android:id="@+id/add_username_login_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:hint="@string/add_username_hint" />
+    
+    <TextView
+        android:id="@+id/password_login_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/password_login_text" />
+    
+    <EditText 
+        android:id="@+id/add_password_login_edit"
+        android:inputType="textPassword"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:hint="@string/add_password_hint" />
+    
+    <TextView
+        android:id="@id/username_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:paddingBottom="10dip" />
+   
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/login" />
+    
+    <Button
+        android:id="@+id/signup_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/signup" />
+
+</LinearLayout>

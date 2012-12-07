@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">bandFeed</string>
@@ -71,11 +72,20 @@
     <string name="title_activity_become_afeeder">Create a user account</string>
 
     <!-- activity_become_afeeder -->
-    <string name="username_text">Please a create a username for yourself</string>
+    <string name="username_text">Please create a username for yourself</string>
+    <string name="password_text">Please create a password</string>
     <string name="add_username_hint">Type username..</string>
+    <string name="add_password_hint">Type password..</string>
     <string name="title_activity_display_profile">Profile</string>
-    
+
     <!-- activity_display_profile -->
     <string name="profile_sub_toall_button">Subscribe to all!</string>
+    <string name="title_activity_login">Login</string>
+
+	<!--  activity_login -->
+	<string name="username_login_text">Please enter your username</string>
+    <string name="password_login_text">Please enter your password</string>
+    <string name="login">Login</string>
+    <string name="signup">Sign up</string>
 
 </resources>

@@ -6,7 +6,11 @@
 
 package com.fyp.bandfeed;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -21,21 +25,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener {
 
 	private SparseArray<String> ids; // Instead of HashMap
-	private boolean userCreated;
+	private boolean userLoggedIn;
+	private String user;
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		userCreated = false;
+		
+		userLoggedIn = false;
+		user = "";
 		ids = new SparseArray<String>();
 
-		// set up a scrollable view that is linear with a vertical orientation
+		// set up a scroll view that is linear with a vertical orientation
 		ScrollView scrollView = new ScrollView(this);
 		LinearLayout.LayoutParams lp;
 		lp = new LinearLayout.LayoutParams(
@@ -51,10 +58,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		this.setContentView(scrollView, lp);
 
-		final float scale = getResources().getDisplayMetrics().density;
-		int dip = (int) (100 * scale + 0.5f);
-		// Don't understand this
-
+		// Set Image with parameters
 		ImageView bandFeedLogo = new ImageView(this);
 		LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(
 				LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
@@ -70,87 +74,107 @@ public class MainActivity extends Activity implements OnClickListener {
 		bandFeedLogo.setPadding(0, 0, 0, 20);
 		linearLayout.addView(bandFeedLogo);
 
+		// Make a check to see if a User has already logged in (checks app's
+		// memory)
 		String dirPath = getFilesDir().getAbsolutePath() + File.separator;
 		File f = new File(dirPath);
 		File[] files = f.listFiles();
 
 		if (files.length > 0) {
 			for (File file : files) {
+				if (file.getName().equals("user.profile")) {
 
-				// TODO remove all this and have it so user is checked on
-				// database
-				if (file.getName().equals("User")) {
-					userCreated = true;
+					String line;
 
-				} else {
-					Button button = new Button(this);
-					// button to next activity
-					Integer id = findId(1);
-					button.setId(id);
-					ids.put(id, file.getName());
-					button.setLayoutParams(new LinearLayout.LayoutParams(
-							(int) (dip * scale),
-							LinearLayout.LayoutParams.WRAP_CONTENT));
-					// Need to read up on this
-					// http://stackoverflow.com/questions/5691411/dynamically-change-the-width-of-a-button-in-android
-					button.setText(file.getName());
-					button.setOnClickListener(this);
-					linearLayout.addView(button);
+					try {
+						FileInputStream fin = new FileInputStream(dirPath
+								+ "user.profile");
+
+						// prepare the file for reading
+						InputStreamReader inputreader = new InputStreamReader(
+								fin);
+						BufferedReader buffreader = new BufferedReader(
+								inputreader);
+
+						// read every line of the file into the line-variable,
+						// on line at the time
+						while ((line = buffreader.readLine()) != null) {
+							// do something with the settings from the file
+							user += line;
+						}
+
+						// close the file again
+						fin.close();
+					} catch (java.io.FileNotFoundException e) {
+						// do something if the myfilename.txt does not exits
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					userLoggedIn = true;
 				}
-
 			}
 		}
 
-		if (!userCreated) {
-			// TODO remove all this and have it so user is checked on database
-			Intent i = new Intent(this, BecomeAFeeder.class);
+		else {
+			// User has not logged in yet so start the login activity
+			Intent i = new Intent(this, Login.class);
 			startActivity(i);
 		}
 
-		Button newBandButton = new Button(this);
-		// button to next activity
-		Integer id = findId(1);
-		newBandButton.setId(id);
-		ids.put(id, "newBandButton");
-		newBandButton.setText("Create a new Band profile");
-		newBandButton.setOnClickListener(this);
-		linearLayout.addView(newBandButton);
+		if (userLoggedIn) {
 
-		Button browseButton = new Button(this);
-		// button to next activity
-		Integer id2 = findId(1);
-		browseButton.setId(id2);
-		ids.put(id2, "browseButton");
-		browseButton.setText("Browse bands");
-		browseButton.setOnClickListener(this);
-		linearLayout.addView(browseButton);
+			// User has logged in and so the activity can be completed
+			TextView welcome = new TextView(this);
+			welcome.setText("Welcome " + user + "!");
+			welcome.setGravity(Gravity.CENTER);
+			linearLayout.addView(welcome);
 
-		Button sendMessageButton = new Button(this);
-		// button to next activity
-		Integer id3 = findId(1);
-		sendMessageButton.setId(id3);
-		ids.put(id3, "sendMessageButton");
-		sendMessageButton.setText("Test Send Message");
-		sendMessageButton.setOnClickListener(this);
-		linearLayout.addView(sendMessageButton);
+			Button newBandButton = new Button(this);
+			// button to next activity
+			Integer id = findId(1);
+			newBandButton.setId(id);
+			ids.put(id, "newBandButton");
+			newBandButton.setText("Create a new Band profile");
+			newBandButton.setOnClickListener(this);
+			linearLayout.addView(newBandButton);
 
-		Button receiveMessageButton = new Button(this);
-		// button to next activity
-		Integer id4 = findId(1);
-		receiveMessageButton.setId(id4);
-		ids.put(id4, "receiveMessageButton");
-		receiveMessageButton.setText("Test Receive Message");
-		receiveMessageButton.setOnClickListener(this);
-		linearLayout.addView(receiveMessageButton);
+			Button browseButton = new Button(this);
+			// button to next activity
+			Integer id2 = findId(1);
+			browseButton.setId(id2);
+			ids.put(id2, "browseButton");
+			browseButton.setText("Browse bands");
+			browseButton.setOnClickListener(this);
+			linearLayout.addView(browseButton);
 
-		Button aboutButton = new Button(this);
-		// button to next activity
-		Integer id1 = findId(1);
-		aboutButton.setId(id1);
-		ids.put(id1, "aboutButton");
-		aboutButton.setText("About");
-		aboutButton.setOnClickListener(this);
-		linearLayout.addView(aboutButton);
+			Button sendMessageButton = new Button(this);
+			// button to next activity
+			Integer id3 = findId(1);
+			sendMessageButton.setId(id3);
+			ids.put(id3, "sendMessageButton");
+			sendMessageButton.setText("Test Send Message");
+			sendMessageButton.setOnClickListener(this);
+			linearLayout.addView(sendMessageButton);
+
+			Button receiveMessageButton = new Button(this);
+			// button to next activity
+			Integer id4 = findId(1);
+			receiveMessageButton.setId(id4);
+			ids.put(id4, "receiveMessageButton");
+			receiveMessageButton.setText("Test Receive Message");
+			receiveMessageButton.setOnClickListener(this);
+			linearLayout.addView(receiveMessageButton);
+
+			Button aboutButton = new Button(this);
+			// button to next activity
+			Integer id1 = findId(1);
+			aboutButton.setId(id1);
+			ids.put(id1, "aboutButton");
+			aboutButton.setText("About");
+			aboutButton.setOnClickListener(this);
+			linearLayout.addView(aboutButton);
+		}
 	}
 
 	@Override
@@ -169,24 +193,22 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		Intent i = null;
 		if (ids.get(v.getId()).equals("newBandButton")) {
-			i = new Intent(this, AddNewBandStepOne.class);
+			i = new Intent(this, StepOne.class);
 			startActivity(i);
 		} else if (ids.get(v.getId()).equals("aboutButton")) {
-			i = new Intent(this, WTF.class);
+			i = new Intent(this, About.class);
 			startActivity(i);
 		} else if (ids.get(v.getId()).equals("browseButton")) {
-			i = new Intent(this, Browse.class);
+			i = new Intent(this, BrowseCriteria.class);
 			startActivity(i);
 		} else if (ids.get(v.getId()).equals("sendMessageButton")) {
-			i = new Intent(this, TestFanOut.class);
+			i = new Intent(this, SendMessages.class);
 			startActivity(i);
 		} else if (ids.get(v.getId()).equals("receiveMessageButton")) {
-			i = new Intent(this, FeedAll.class);
+			i = new Intent(this, ReceiveMessages.class);
 			startActivity(i);
 		} else {
-			i = new Intent(this, BandProfileSD.class);
-			i.putExtra("profile", ids.get(v.getId()));
-			startActivity(i);
+			// Do nothing
 		}
 	}
 
@@ -199,5 +221,4 @@ public class MainActivity extends Activity implements OnClickListener {
 		return id++;
 
 	}
-
 }

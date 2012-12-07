@@ -23,7 +23,7 @@ public class UploadImage {
 		nameValuePairs = new ArrayList<NameValuePair>();
 	}
 
-	public void getPicture(Bitmap bitmap) {
+	public void getPicture(Bitmap bitmap, String bandName) {
 
 		//Bitmap bitmap = BitmapFactory.decodeFile(“/sdcard/android.jpg”);
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -34,22 +34,26 @@ public class UploadImage {
 		String image_str = Base64.encodeBytes(byte_arr);
 		
 		nameValuePairs.add(new BasicNameValuePair("image", image_str));
+		nameValuePairs.add(new BasicNameValuePair("bandName", bandName));
+		
 	}
 
-	public void makeConnection() {
+	public String makeConnection() {
 		try {
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(
-					"http://bandfeed.co.uk/api/create_profile.php");
+					"http://bandfeed.co.uk/images/upload_image.php");
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 			HttpResponse response = httpclient.execute(httppost);
-			@SuppressWarnings("unused")
+			
 			String the_string_response = convertResponseToString(response);
+			return the_string_response;
 
 		} catch (Exception e) {
 			// Connection Error
 			System.out.println("Error in http connection " + e.toString());
 		}
+		return null;
 	}
 
 	public String convertResponseToString(HttpResponse response)
@@ -91,4 +95,6 @@ public class UploadImage {
 		}
 		return res;
 	}
+	
+
 }

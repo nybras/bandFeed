@@ -21,6 +21,7 @@
             android:id="@+id/bio_edit"
             android:layout_width="fill_parent"
             android:layout_height="200dip"
+            android:inputType="textCapSentences"
             android:hint="@string/bio_hint" />
         
          <TextView
@@ -35,6 +36,7 @@
             android:id="@+id/soundCloud_edit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:inputType="textWebEditText"
             android:hint="@string/soundCloud_hint" />
 
         <TextView
