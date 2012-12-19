@@ -45,7 +45,7 @@ public class StepThree extends Activity implements OnClickListener {
 		roles = new EditText[amountOfMembers];
 		// array to hold the member's roles
 
-		// set up a scrollable view that is linear with a vertical orientation
+		// set up a scroll view that is linear with a vertical orientation
 		ScrollView scrollView = new ScrollView(this);
 		LinearLayout.LayoutParams lp;
 		lp = new LinearLayout.LayoutParams(
@@ -93,6 +93,7 @@ public class StepThree extends Activity implements OnClickListener {
 			linearLayout.addView(textViewSpace);
 
 		}
+				
 		final float scale = getResources().getDisplayMetrics().density;
 		int dip = (int) (100 * scale + 0.5f);
 		// Don't understand this
@@ -107,6 +108,7 @@ public class StepThree extends Activity implements OnClickListener {
 		nextButton.setText("Next");
 		nextButton.setOnClickListener(this);
 		linearLayout.addView(nextButton);
+
 	}
 
 	private int findId(int id) {
@@ -147,21 +149,10 @@ public class StepThree extends Activity implements OnClickListener {
 			i.putExtra("county", county);
 			i.putExtra("town", town);
 			for (int j = 0; j < amountOfMembers; j++) {
-				i.putExtra("names"+j, names[j].getText().toString().trim());
-				i.putExtra("roles"+j, roles[j].getText().toString().trim());
+				i.putExtra("names" + j, names[j].getText().toString().trim());
+				i.putExtra("roles" + j, roles[j].getText().toString().trim());
 			}
-			
-//			StringBuilder sb = new StringBuilder();
-//			for (int m = 1; m < amountOfMembers + 1; m++) {
-//				if (m == 1) {
-//					sb.append(names[m - 1].getText().toString().trim());
-//					sb.append("%" + roles[m - 1].getText().toString().trim());
-//				} else {
-//					sb.append("#" + names[m - 1].getText().toString().trim());
-//					sb.append("%" + roles[m - 1].getText().toString().trim());
-//				}
-//			}
-//			i.putExtra("namesAndRoles", sb.toString());
+
 			startActivity(i);
 
 		} else {

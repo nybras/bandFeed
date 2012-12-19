@@ -23,8 +23,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class StepOne extends Activity implements
-		OnItemSelectedListener, OnClickListener {
+public class StepOne extends Activity implements OnItemSelectedListener,
+		OnClickListener {
 
 	private ArrayList<String> genres;
 	private Spinner firstGenreSpinner, secondGenreSpinner, thirdGenreSpinner;
@@ -85,9 +85,10 @@ public class StepOne extends Activity implements
 		String genre3 = (String) thirdGenreSpinner
 				.getItemAtPosition(thirdGenreSpinner.getSelectedItemPosition());
 		String bandName = bandNameEditText.getText().toString();
-		
-//		SOMETHING TO LOOK INTO
-//		Instead of doing getText().toString().equals("") or vice-versa, it may be faster to do getText().length() == 0
+
+		// SOMETHING TO LOOK INTO
+		// Instead of doing getText().toString().equals("") or vice-versa, it
+		// may be faster to do getText().length() == 0
 		if (bandName.equals("") || genre1.equals(" Select..")
 				|| genre2.equals(" Select..") || genre3.equals(" Select..")) {
 

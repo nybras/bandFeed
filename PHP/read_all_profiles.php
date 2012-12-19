@@ -25,6 +25,9 @@ if (mysql_num_rows($result) > 0) {
     while ($row = mysql_fetch_array($result)) {
         // temp user array
         $bprofile = array();
+
+ /// THIS IS FUCKED
+
             $bprofile["band_name"] = $result["band_name"];
             $bprofile["genre1"] = $result["genre1"];
             $bprofile["genre2"] = $result["genre2"];

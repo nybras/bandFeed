@@ -6,83 +6,73 @@
     <string name="next">Next</string>
     <string name="globals">Globals</string>
     <string name="test">test</string>
+    <string name="title_activity_step">Add your band</string>
 
     <!-- activity_main -->
     <string name="title_activity_main">bandFeed</string>
     <string name="band_feed_symbol_description">Image</string>
     <string name="add_new_band_button">Add your band</string>
-    <string name="wtf_button">WTF is bandFeed?</string>
 
     <!-- activity_step_one -->
-    <string name="title_activity_step_one">Add your band</string>
-    <string name="band_name_text">Enter your Band name</string>
-    <string name="add_band_name_hint">Band Name</string>
-    <string name="genre_text">Select 3 genre categories that best describe your band"\n""\n"1st genre</string>
+    <string name="band_name_text">Enter the name of your band</string>
+    <string name="add_band_name_hint">Type band name..</string>
+    <string name="genre_text">Select 3 genres that best describe your band"\n""\n"1st genre</string>
     <string name="select_prompt">Select..</string>
     <string name="genre2_text">2nd genre</string>
     <string name="genre3_text">3rd genre</string>
 
     <!-- activity_step_two -->
-    <string name="title_activity_step_two">Add your band - step 2</string>
-    <string name="amount_of_members_text">Please type the amount of members in your band</string>
+    <string name="amount_of_members_text">How many members are in your band?</string>
     <string name="amount_of_members_hint">Type amount of members..</string>
     <string name="where_text">Which county is your band based in? Bands must come from the UK!</string>
     <string name="town_text">Which town is your band based in?</string>
     <string name="town_hint">Type town..</string>
 
-    <!-- activity_step_three -->
-    <string name="title_activity_step_three">Add your band</string>
 
     <!-- activity_step_four -->
-    <string name="title_activity_step_four">Add your band</string>
-    <string name="bio_text">Type a short Biography. Remember you have included a lot of details already, such as where the band is based and your members etc. You don\'t need to mention them again.</string>
-    <string name="bio_hint">Type Bio..</string>
-    <string name="logo_text">Click to select a band logo or photo</string>
-    <string name="soundCloud_text">If you have a soundCloud account for your band and want to share your music add your page. E.g. soundcloud.com/<b>myband</b>.
-	     Please only type the part that is in bold.</string>
-    <string name="soundCloud_hint">Type your page name e.g. theofficialbandits</string>
+    <string name="webpage_text">Enter your website address"\n"(if you have one)</string>
+    <string name="webpage_hint">Type website url..</string>
+    <string name="logo_text">Click to select a band logo or photo for your band</string>
+    <string name="soundCloud_text">Enter your SoundCloud address"\n"(if you have one)</string>
+    <string name="soundCloud_hint">Type Sound Cloud url..</string>
+    <string name="you_are_text">Which member of the band is you?</string>
 
-    <!-- activity_wtf -->
-    <string name="title_activity_wtf">About bandFeed</string>
-    <string name="wtf_text">Author: Brett Flitter"\n"Version: Prototype 1"\n"Title: Project bandFeed</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_add_new_band_step_four">Add a New Band</string>
-    <string name="title_activity_band_profile">BandProfile</string>
+    <!-- activity_about -->
+    <string name="title_activity_about">About bandFeed</string>
+    <string name="about_text">Author: Brett Flitter"\n"Version: Prototype 1"\n"Title: Project bandFeed</string>
 
     <!-- activity_browse -->
     <string name="title_activity_search">Search</string>
     <string name="search_for_bands">Enter one or more search criteria (more search criteria to come)</string>
     <string name="search_band_name_text">Search by band name</string>
-    <string name="band_name_hint">Enter band name</string>
+    <string name="band_name_hint">Type band name..</string>
     <string name="search">Search</string>
     <string name="title_activity_search_results">Search Results</string>
-    <string name="title_activity_band_profile_db">BandProfileDB</string>
-    <string name="title_activity_feed_all">FeedAllActivity</string>
-    <string name="title_activity_test_fan_out">TestFanOut</string>
+    <string name="title_activity_receive_messages">Receieve messages</string>
+    <string name="title_activity_send_messages">Send a message</string>
 
-    <!-- activity_test_fan_out -->
-    <string name="send_message_text">Send a message to fan out to all subscribers</string>
+    <!-- activity_send_messagest -->
+    <string name="send_message_text">Send a message to your subscribers</string>
     <string name="send_message_hint">Type message..</string>
     <string name="send_test_message">Send</string>
-    <string name="send_from_text">From which band?</string>
-    <string name="send_from_hint">Type band name..</string>
+    <string name="send_from_text">Message to be sent from which band?</string>
 
-    <!-- activity_feed_all -->
+    <!-- activity_receive_messages -->
     <string name="receive_test_message">Receive</string>
-    <string name="title_activity_become_afeeder">Create a user account</string>
 
-    <!-- activity_become_afeeder -->
+    <!-- activity_signup -->
+    <string name="title_activity_signup">Create a user account</string>
     <string name="username_text">Please create a username for yourself</string>
     <string name="password_text">Please create a password</string>
     <string name="add_username_hint">Type username..</string>
     <string name="add_password_hint">Type password..</string>
-    <string name="title_activity_display_profile">Profile</string>
 
     <!-- activity_display_profile -->
+     <string name="title_activity_display_profile">Profile</string>
     <string name="profile_sub_toall_button">Subscribe to all!</string>
-    <string name="title_activity_login">Login</string>
 
 	<!--  activity_login -->
+	<string name="title_activity_login">Login</string>
 	<string name="username_login_text">Please enter your username</string>
     <string name="password_login_text">Please enter your password</string>
     <string name="login">Login</string>

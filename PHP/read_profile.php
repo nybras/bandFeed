@@ -19,9 +19,9 @@ if (isset($_GET["band_name"])) {
     $band_name = $_GET['band_name'];
  
     // get a product from products table
-    $result = mysql_query("SELECT * FROM `bprofile` WHERE `band_name` = '$band_name'");
+    $result = mysql_query("SELECT * FROM `band_profile` WHERE `band_name` = '$band_name'");
 
-	$result2 = mysql_query("SELECT name, role FROM `bmembers` WHERE `band` = '$band_name'") or die(mysql_error());
+	$result2 = mysql_query("SELECT name, role FROM `band_members` WHERE `band` = '$band_name'") or die(mysql_error());
  
 // check for empty result
 if (mysql_num_rows($result2) > 0) {
@@ -59,10 +59,12 @@ if (mysql_num_rows($result2) > 0) {
 			$bprofile["county"] = $result["county"];
 			$bprofile["town"] = $result["town"];
 			$bprofile["amountOfMembers"] = $result["amountOfMembers"];
-			$bprofile["soundc_link"] = $result["soundc_link"];
+			$bprofile["soundCloud"] = $result["soundCloud"];
+			$bprofile["webpage"] = $result["webpage"];
 			$bprofile["image"] = $result["image"];
             $bprofile["created_at"] = $result["created_at"];
             $bprofile["updated_at"] = $result["updated_at"];
+		$bprofile["followers"] = $result["followers"];
 		$bprofile["bio"] = $result["bio"];
 		
 				

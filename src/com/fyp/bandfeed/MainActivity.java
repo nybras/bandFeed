@@ -6,18 +6,13 @@
 
 package com.fyp.bandfeed;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.Menu;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -31,15 +26,14 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private SparseArray<String> ids; // Instead of HashMap
 	private boolean userLoggedIn;
-	private String user;
+	private SharedPreferences prefs;
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		userLoggedIn = false;
-		user = "";
 		ids = new SparseArray<String>();
 
 		// set up a scroll view that is linear with a vertical orientation
@@ -74,49 +68,13 @@ public class MainActivity extends Activity implements OnClickListener {
 		bandFeedLogo.setPadding(0, 0, 0, 20);
 		linearLayout.addView(bandFeedLogo);
 
-		// Make a check to see if a User has already logged in (checks app's
-		// memory)
-		String dirPath = getFilesDir().getAbsolutePath() + File.separator;
-		File f = new File(dirPath);
-		File[] files = f.listFiles();
+		prefs = getSharedPreferences("userPrefs", 0);
+		String username = prefs.getString("userName", null);
+		int numOfBands = prefs.getInt("numOfBands", 0);
 
-		if (files.length > 0) {
-			for (File file : files) {
-				if (file.getName().equals("user.profile")) {
-
-					String line;
-
-					try {
-						FileInputStream fin = new FileInputStream(dirPath
-								+ "user.profile");
-
-						// prepare the file for reading
-						InputStreamReader inputreader = new InputStreamReader(
-								fin);
-						BufferedReader buffreader = new BufferedReader(
-								inputreader);
-
-						// read every line of the file into the line-variable,
-						// on line at the time
-						while ((line = buffreader.readLine()) != null) {
-							// do something with the settings from the file
-							user += line;
-						}
-
-						// close the file again
-						fin.close();
-					} catch (java.io.FileNotFoundException e) {
-						// do something if the myfilename.txt does not exits
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					userLoggedIn = true;
-				}
-			}
-		}
-
-		else {
+		if (username != null) {
+			userLoggedIn = true;
+		} else {
 			// User has not logged in yet so start the login activity
 			Intent i = new Intent(this, Login.class);
 			startActivity(i);
@@ -126,7 +84,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			// User has logged in and so the activity can be completed
 			TextView welcome = new TextView(this);
-			welcome.setText("Welcome " + user + "!");
+			welcome.setText("Welcome " + username + "!");
 			welcome.setGravity(Gravity.CENTER);
 			linearLayout.addView(welcome);
 
@@ -148,14 +106,16 @@ public class MainActivity extends Activity implements OnClickListener {
 			browseButton.setOnClickListener(this);
 			linearLayout.addView(browseButton);
 
-			Button sendMessageButton = new Button(this);
-			// button to next activity
-			Integer id3 = findId(1);
-			sendMessageButton.setId(id3);
-			ids.put(id3, "sendMessageButton");
-			sendMessageButton.setText("Test Send Message");
-			sendMessageButton.setOnClickListener(this);
-			linearLayout.addView(sendMessageButton);
+			if (numOfBands > 0) {
+				Button sendMessageButton = new Button(this);
+				// button to next activity
+				Integer id3 = findId(1);
+				sendMessageButton.setId(id3);
+				ids.put(id3, "sendMessageButton");
+				sendMessageButton.setText("Test Send Message");
+				sendMessageButton.setOnClickListener(this);
+				linearLayout.addView(sendMessageButton);
+			}
 
 			Button receiveMessageButton = new Button(this);
 			// button to next activity
@@ -182,6 +142,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
+
 
 	/**
 	 * Decides from the given buttons which new view to open up
@@ -221,4 +182,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		return id++;
 
 	}
+	
+
 }

@@ -17,13 +17,27 @@ if (isset($_GET["name"]) && isset($_GET["password"])) {
 	$db = new DB_CONNECT();
  
     // get a product from products table
-    $result = mysql_query("SELECT `name` FROM `busers` WHERE `name` = '$name' AND `password` = '$password'");
-	
-	//if (strcmp($result,$password)) {
+    $result = mysql_query("SELECT `username` FROM `users` WHERE `username` = '$name' AND `password` = '$password'");
+		
 	if ($result) {
+
+		$result2 = mysql_query("SELECT `band` FROM `band_members` WHERE `user_accepted` ='$name'");  
+
+       	if (mysql_num_rows($result2) > 0) {
 	
-	    // success
+ 		$response["bands"] = array();
+
+           	while ($row = mysql_fetch_array($result2)) {
+			array_push($response["bands"], $row);
+			}
+
 		$response["success"] = 1;
+		$response["success2"] = 1;
+		
+		} else {
+			$response["success"] = 1;
+			$response["success2"] = 0;
+		}
  
 		// echoing JSON response
 		echo json_encode($response);
@@ -31,6 +45,7 @@ if (isset($_GET["name"]) && isset($_GET["password"])) {
 		// username or passwordincorrect
 		$response["success"] = 0;
 		$response["message"] = "Username or Password incorrect";
+		$response["success2"] = 0;
  
 		// echo no users JSON
 		echo json_encode($response);
@@ -40,7 +55,7 @@ if (isset($_GET["name"]) && isset($_GET["password"])) {
     // no username or password entered
     $response["success"] = 0;
     $response["message"] = "No Username or Password entered";
- 
+	$response["success"] = 0; 
     // echo no users JSON
     echo json_encode($response);
 }

@@ -1,15 +1,11 @@
 package com.fyp.bandfeed;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,6 +14,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -33,8 +31,8 @@ public class Login extends Activity implements OnClickListener {
 	private ProgressDialog progressDialog;
 	private boolean loggedIn;
 
-	// url to create new profile
-	private static String CreateProfileURL = "http://bandfeed.co.uk/api/login_user.php";
+	private static String loginUserURL = "http://bandfeed.co.uk/api/login_user.php";
+
 	// JSON NODE names
 	private static final String TAG_SUCCESS = "success";
 
@@ -53,6 +51,7 @@ public class Login extends Activity implements OnClickListener {
 
 		Button signUp = (Button) findViewById(R.id.signup_button);
 		signUp.setOnClickListener(this);
+
 	}
 
 	@Override
@@ -87,8 +86,6 @@ public class Login extends Activity implements OnClickListener {
 
 	class LoginUser extends AsyncTask<String, String, String> {
 
-		// CREATES A PERSONALISED QUEUE FOR THE USER
-
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -113,8 +110,8 @@ public class Login extends Activity implements OnClickListener {
 
 			// getting JSON Object
 			// Note that create profile url accepts POST method
-			JSONObject json = jsonParser.makeHttpRequest(CreateProfileURL,
-					"GET", params);
+			JSONObject json = jsonParser.makeHttpRequest(loginUserURL, "GET",
+					params);
 
 			// check log cat for response
 			Log.d("Create Response", json.toString());
@@ -126,39 +123,27 @@ public class Login extends Activity implements OnClickListener {
 				if (success == 1) {
 					// successfully logged in
 
+					final SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
+					Editor editor = prefs.edit();
+					editor.putString("userName", usernameEditText.getText()
+							.toString().trim());
+					editor.commit();
+
 					loggedIn = true;
 
-					// Creates username in phone memory as a confirmation
-					// that
-					// user has logged in
-					// TODO this is not safe
+					int success2 = json.getInt("success2");
 
-					String dirPath = getFilesDir().getAbsolutePath();
-					File projDir = new File(dirPath);
-					if (!projDir.exists()) {
-						projDir.mkdirs();
-					}
-					try {
-						String path = dirPath + File.separator + "user.profile";
-
-						FileOutputStream fOut = new FileOutputStream(path);
-						OutputStreamWriter out = new OutputStreamWriter(fOut);
-
-						out.write(usernameEditText.getText().toString().trim()
-								+ "\r\n");
-
-						out.close();
-
-						Intent i = new Intent(getApplicationContext(),
-								MainActivity.class);
-						startActivity(i);
-
-					} catch (FileNotFoundException e) {
-
-						loggedIn = false;
-					} catch (IOException e) {
-
-						loggedIn = false;
+					if (success2 == 1) {
+						JSONArray bandsObj = json.getJSONArray("bands"); // JSON
+						// array
+						editor.putInt("numOfBands", bandsObj.length());
+						editor.commit();
+						
+						for (int i = 0; i < bandsObj.length(); i++) {
+							JSONObject band = bandsObj.getJSONObject(i);
+							editor.putString("band" + i, band.getString("band"));
+							editor.commit();
+						}
 					}
 
 				} else {
@@ -175,13 +160,21 @@ public class Login extends Activity implements OnClickListener {
 
 		@Override
 		protected void onPostExecute(String file_url) {
+
 			// dismiss the dialog once done
 			progressDialog.dismiss();
-			informUserSubscript();
+
+			if (loggedIn) {
+				Intent i = new Intent(getApplicationContext(),
+						MainActivity.class);
+				startActivity(i);
+			} else {
+				informUser();
+			}
 		}
 	}
 
-	public void informUserSubscript() {
+	public void informUser() {
 
 		if (!loggedIn) {
 			Toast toast = Toast

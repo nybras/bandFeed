@@ -27,7 +27,7 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 	private ProgressDialog progressDialog;
 
 	// url to create new profile
-	private static String GetProfileURL = "http://bandfeed.co.uk/api/read_profile.php";
+	private static String GetProfileNames = "http://bandfeed.co.uk/api/read_names.php";
 
 	// JSON NODE names
 	private static final String TAG_SUCCESS = "success";
@@ -86,7 +86,7 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 
 				// getting JSON Object
 				// Note that create product url accepts POST method
-				JSONObject json = jsonParser.makeHttpRequest(GetProfileURL,
+				JSONObject json = jsonParser.makeHttpRequest(GetProfileNames,
 						"GET", params);
 
 				// TODO NEED TO CREATE A PHP API THAN ONLY RETEIVES NAMES AND
@@ -106,19 +106,25 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 
 				if (success == 1) {
 					// successfully received product details
-					JSONArray profileObj = json.getJSONArray("bprofile"); // JSON
+					JSONArray profileObj = json.getJSONArray("names"); // JSON
 																			// array
 
-					// get first object from JSON Array
-					JSONObject profile = profileObj.getJSONObject(0);
+					
+					
+					
 
 					Intent i = new Intent(getApplicationContext(),
 							ResultsFromSearch.class);
 
 					// TODO Display returned results from search query
-					i.putExtra("success", true); // Not a good way about going
-													// about this
-					i.putExtra("band_name", profile.getString("band_name"));
+					i.putExtra("success", true); 
+					i.putExtra("numOfReturns", profileObj.length());					
+					for (int num = 0; num < profileObj.length(); num++ ) {
+						// get first object from JSON Array
+						JSONObject profile = profileObj.getJSONObject(num);
+					i.putExtra("band_name" + num, profile.getString("band_name"));
+					}
+					
 					startActivity(i);
 
 				} else {

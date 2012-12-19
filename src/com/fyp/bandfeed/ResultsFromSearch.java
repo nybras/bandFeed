@@ -31,7 +31,7 @@ public class ResultsFromSearch extends Activity implements OnClickListener {
 	private SparseArray<String> ids;
 	private ProgressDialog progressDialog;
 	private String profile;
-	
+
 	// url to create new profile
 	private static String GetProfileURL = "http://bandfeed.co.uk/api/read_profile.php";
 	// private static String CreateProfileURL =
@@ -66,15 +66,17 @@ public class ResultsFromSearch extends Activity implements OnClickListener {
 		this.setContentView(scrollView, lp);
 
 		if (extras.getBoolean("success")) {
-			String bandName = extras.getString("band_name");
-			Button profileButton = new Button(this);
-			// button to next activity
-			Integer id = findId(1);
-			profileButton.setId(id);
-			ids.put(id, bandName);
-			profileButton.setText(bandName);
-			profileButton.setOnClickListener(this);
-			linearLayout.addView(profileButton);
+			for (int i = 0; i < extras.getInt("numOfReturns"); i++) {
+				String bandName = extras.getString("band_name"+i);
+				Button profileButton = new Button(this);
+				// button to next activity
+				Integer id = findId(1);
+				profileButton.setId(id);
+				ids.put(id, bandName);
+				profileButton.setText(bandName);
+				profileButton.setOnClickListener(this);
+				linearLayout.addView(profileButton);
+			}
 		} else {
 			TextView noProfileText = new TextView(this);
 			noProfileText.setText("No profiles match..");
@@ -99,12 +101,12 @@ public class ResultsFromSearch extends Activity implements OnClickListener {
 	}
 
 	public void onClick(View v) {
-//		Intent i = null;
-//		i = new Intent(this, BandProfileDB.class);
-//		i.putExtra("profile", ids.get(v.getId()));
+		// Intent i = null;
+		// i = new Intent(this, BandProfileDB.class);
+		// i.putExtra("profile", ids.get(v.getId()));
 		profile = ids.get(v.getId());
 		new OpenProfile().execute();
-		
+
 	}
 
 	class OpenProfile extends AsyncTask<String, String, String> {
@@ -124,7 +126,6 @@ public class ResultsFromSearch extends Activity implements OnClickListener {
 			progressDialog.show();
 		}
 
-		
 		@Override
 		protected String doInBackground(String... args) {
 
@@ -148,9 +149,9 @@ public class ResultsFromSearch extends Activity implements OnClickListener {
 
 				if (success == 1) {
 					// successfully received product details
-					JSONArray profileObj = json.getJSONArray("bprofile"); // JSON array
+					JSONArray profileObj = json.getJSONArray("bprofile"); // JSON
+																			// array
 					JSONArray membersObj = json.getJSONArray("bmembers");
-																			
 
 					// get first object from JSON Array
 					JSONObject profile = profileObj.getJSONObject(0);
@@ -166,20 +167,20 @@ public class ResultsFromSearch extends Activity implements OnClickListener {
 					i.putExtra("genre3", profile.getString("genre3"));
 					i.putExtra("county", profile.getString("county"));
 					i.putExtra("town", profile.getString("town"));
-					i.putExtra("amountOfMembers", profile.getInt("amountOfMembers"));
-					i.putExtra("soundc_link", profile.getString("soundc_link"));
+					i.putExtra("amountOfMembers",
+							profile.getInt("amountOfMembers"));
+					i.putExtra("soundCloud", profile.getString("soundCloud"));
+					i.putExtra("webpage", profile.getString("webpage"));
 					i.putExtra("image", profile.getInt("image"));
 					i.putExtra("updated_at", profile.getString("updated_at"));
 					i.putExtra("created_at", profile.getString("created_at"));
 					i.putExtra("bio", profile.getString("bio"));
+					i.putExtra("followers", profile.getInt("followers"));
 
-					
-					
 					for (int j = 0; j < profile.getInt("amountOfMembers"); j++) {
-						i.putExtra("name"+j, members.getString("name"+j));
-						i.putExtra("role"+j, members.getString("role"+j));
+						i.putExtra("name" + j, members.getString("name" + j));
+						i.putExtra("role" + j, members.getString("role" + j));
 					}
-					
 
 					startActivity(i);
 

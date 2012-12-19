@@ -13,11 +13,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//import java.io.File;
 import java.io.FileNotFoundException;
-//import java.io.FileOutputStream;
-//import java.io.IOException;
-//import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +21,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 //import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -34,19 +34,29 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
-public class StepFour extends Activity implements OnClickListener {
+public class StepFour extends Activity implements OnClickListener,
+		OnItemSelectedListener {
 
 	private String bandName;
 	private ImageView imageSelector;
 	private static final int SELECT_PHOTO = 1;
 	private Bundle extras;
 	private Bitmap bitmap;
+	private boolean profileCreated;
 	private boolean selected;
-	private EditText bio, soundCloudPage;
+	private EditText webpage, soundCloudPage;
 	private String imageResponse;
+	private Spinner nameSpinner;
+	private ArrayList<String> names;
+	private String name;
 
 	private ProgressDialog progressDialog;
 
@@ -60,14 +70,30 @@ public class StepFour extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_step_four);
 
+		profileCreated = false;
+
 		imageSelector = (ImageView) findViewById(R.id.select_logo);
 		imageSelector.setOnClickListener(this);
 
-		bio = (EditText) findViewById(R.id.bio_edit);
+		webpage = (EditText) findViewById(R.id.webpage_edit);
 		soundCloudPage = (EditText) findViewById(R.id.soundCloud_edit);
 		extras = getIntent().getExtras();
 		bandName = extras.getString("bandName");
 		setSelected(false);
+
+		names = new ArrayList<String>();
+		generateNames();
+
+		nameSpinner = (Spinner) findViewById(R.id.you_are_spinner);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, getNames());
+		// Style of drop down
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+
+		// Set the adapter to the spinner
+		nameSpinner.setAdapter(adapter);
+		// Listen for a selected item
+		nameSpinner.setOnItemSelectedListener(this);
 
 		View nextButton = findViewById(R.id.next_step_five_button);
 		nextButton.setOnClickListener(this);
@@ -89,10 +115,29 @@ public class StepFour extends Activity implements OnClickListener {
 			startActivityForResult(photoPickerIntent, SELECT_PHOTO);
 			setSelected(true);
 			break;
-			
+
 		case R.id.next_step_five_button:
-			new CreateNewProfile().execute();
-			break;
+			name = (String) nameSpinner.getItemAtPosition(nameSpinner
+					.getSelectedItemPosition());
+			if (name.equals(" Select..")) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				// Dialog Message
+				builder.setMessage("Please select the band member that is you!")
+						.setCancelable(false)
+						.setNegativeButton("OK",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.cancel();
+									}
+								});
+				AlertDialog alert = builder.create();
+				alert.show();
+				break;
+			} else {
+				new CreateNewProfile().execute();
+				break;
+			}
 		}
 	}
 
@@ -165,26 +210,28 @@ public class StepFour extends Activity implements OnClickListener {
 			params.add(new BasicNameValuePair("town", extras.getString("town")));
 			params.add(new BasicNameValuePair("amountOfMembers", ""
 					+ extras.getInt("amountOfMembers")));
+			params.add(new BasicNameValuePair("bio", "Not available yet"));
 
 			String sc = soundCloudPage.getText().toString().trim();
 			if (sc.equals("")) {
-				sc = "Not available";
+				sc = "Not available yet";
 			}
+			String wp = webpage.getText().toString().trim();
+			if (wp.equals("")) {
+				wp = "Not available yet";
+			}
+			params.add(new BasicNameValuePair("webpage", wp));
+			params.add(new BasicNameValuePair("soundCloud", sc));
+			params.add(new BasicNameValuePair("user_accepted", name));
+			final SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
+			final String username = prefs.getString("userName", null);
+			params.add(new BasicNameValuePair("user_name", username));
 
-			params.add(new BasicNameValuePair("soundc_link", sc));
 			if (isSelected()) {
 				params.add(new BasicNameValuePair("image", "" + 1));
 			} else {
 				params.add(new BasicNameValuePair("image", "" + 0));
 			}
-
-			String bs = bio.getText().toString().trim();
-			if (bs.equals("")) {
-				bs = "Not available";
-			}
-
-			params.add(new BasicNameValuePair("bio", "" + bs));
-
 			for (int i = 0; i < extras.getInt("amountOfMembers"); i++) {
 				params.add(new BasicNameValuePair("name" + i, extras
 						.getString("names" + i)));
@@ -207,31 +254,33 @@ public class StepFour extends Activity implements OnClickListener {
 				if (success == 1) {
 					// successfully created profile
 
+					// CREATE EXCHANGE
 					ConnectToRabbitMQ connection = new ConnectToRabbitMQ(
 							bandName.toString(), null);
 					if (connection.createExchange()) {
 						// connection and exchange has been made
 						connection.dispose();
 
-						Intent i = new Intent(getApplicationContext(),
-								MainActivity.class);
-						startActivity(i);
+						profileCreated = true;
+						String un = prefs.getString("userName", null);
+						CheckForBands nb = new CheckForBands(un);
+						ArrayList<String> bands = nb.check();
+						Editor editor = prefs.edit();
+						for (int i = 0; i < bands.size(); i++) {
+							editor.putString("band" + i, bands.get(i));
+						}
+						editor.putInt("numOfBands", bands.size());
+						editor.commit();
+						
 					} else {
-						// TODO failed to create exchange
-						Intent i = new Intent(getApplicationContext(),
-								MainActivity.class);
-						startActivity(i);
+						informUser("Failed to create Exchange");
+						profileCreated = false;
 					}
-					// closing this screen
-
 				} else {
-					// TODO failed to create profile
-					Intent i = new Intent(getApplicationContext(),
-							MainActivity.class);
-					startActivity(i);
+					profileCreated = false;
 				}
 			} catch (JSONException e) {
-				e.printStackTrace();
+				profileCreated = false;
 			}
 
 			if (isSelected()) {
@@ -253,10 +302,23 @@ public class StepFour extends Activity implements OnClickListener {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
 
+			if (profileCreated == false) {
+				informUser("Failed to create Profile");
+				// TODO DELETE EXISTIING PROFILE ENTRY IF APPLICABLE
+			}
+			Intent i = new Intent(getApplicationContext(), MainActivity.class);
+			startActivity(i);
+
 		}
 
 	}
-	
+
+	public void informUser(String msg) {
+		Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+		toast.show();
+
+	}
+
 	private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
 		// http://stackoverflow.com/questions/2507898/how-to-pick-a-image-from-gallery-sd-card-for-my-app-in-android?answertab=oldest#tab-top
 		// Decode image size (prevents memory issues)
@@ -288,4 +350,25 @@ public class StepFour extends Activity implements OnClickListener {
 
 	}
 
+	public void onItemSelected(AdapterView<?> parent, View view, int pos,
+			long id) {
+		parent.getItemAtPosition(pos);
+	}
+
+	public void onNothingSelected(AdapterView<?> arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private ArrayList<String> getNames() {
+		return names;
+	}
+
+	private void generateNames() {
+
+		names.add(" Select..");
+		for (int i = 0; i < extras.getInt("amountOfMembers"); i++) {
+			names.add(extras.getString("names" + i));
+		}
+	}
 }

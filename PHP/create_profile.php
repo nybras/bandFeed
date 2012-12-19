@@ -11,7 +11,7 @@ $roles = array();
 $response = array();
  
 // check for required fields
-if (isset($_POST['band_name']) && isset($_POST['genre1']) && isset($_POST['genre2']) && isset($_POST['genre3']) && isset($_POST['county']) && isset($_POST['town']) && isset($_POST['amountOfMembers']) && isset($_POST['soundc_link']) && isset($_POST['image']) && isset($_POST['bio'])) {
+if (isset($_POST['band_name']) && isset($_POST['genre1']) && isset($_POST['genre2']) && isset($_POST['genre3']) && isset($_POST['county']) && isset($_POST['town']) && isset($_POST['amountOfMembers']) && isset($_POST['soundCloud']) && isset($_POST['image']) && isset($_POST['webpage']) && isset($_POST['user_accepted']) && isset($_POST['user_name']) && isset($_POST['bio'])) {
  
     $band_name = $_POST['band_name'];
     $genre1 = $_POST['genre1'];
@@ -20,9 +20,13 @@ if (isset($_POST['band_name']) && isset($_POST['genre1']) && isset($_POST['genre
 	$county = $_POST['county'];
 	$town = $_POST['town'];
 	$amountOfMembers = $_POST['amountOfMembers'];
-	$soundc_link = $_POST['soundc_link'];
+	$soundCloud = $_POST['soundCloud'];
 	$image = $_POST['image'];
+	$webpage = $_POST['webpage'];
+	$user_name = $_POST['user_name'];
+	$user_accepted = $_POST['user_accepted'];
 	$bio = $_POST['bio'];
+	$followers = 0;
 
 	
 	// put the band members and their roles into PHP arrays
@@ -39,14 +43,19 @@ if (isset($_POST['band_name']) && isset($_POST['genre1']) && isset($_POST['genre
     $db = new DB_CONNECT();
  
     // mysql inserting a new band profile
-    $result = mysql_query("INSERT INTO bprofile(band_name, genre1, genre2, genre3, county, town, amountOfMembers, soundc_link, image, bio) VALUES('$band_name', '$genre1', '$genre2', '$genre3', '$county', '$town', '$amountOfMembers', '$soundc_link', '$image', '$bio')");
+    $result = mysql_query("INSERT INTO band_profile(band_name, genre1, genre2, genre3, county, town, amountOfMembers, soundCloud, webpage, image, bio, followers) VALUES('$band_name', '$genre1', '$genre2', '$genre3', '$county', '$town', '$amountOfMembers', '$soundCloud', '$webpage', '$image', '$bio', '$followers')");
 	
 	// mysql inserting new members
 	$results = array();
 	for ($j=0; $j<$amountOfMembers; $j++)
-  	{
-  		$results[$j] = mysql_query("INSERT INTO bmembers(band, name, role) VALUES('$band_name', '$names[$j]', '$roles[$j]')");
+  	{	
+		
+  		$results[$j] = mysql_query("INSERT INTO band_members(band, name, role) VALUES('$band_name', '$names[$j]', '$roles[$j]')");
   	}
+
+	$query = "UPDATE band_members SET user_accepted = '$user_name' WHERE name = '$user_accepted' AND band = '$band_name'";
+	$result2 = mysql_query($query);
+	
 
 	if (count($results) == $amountOfMembers) {
 		$result = True;

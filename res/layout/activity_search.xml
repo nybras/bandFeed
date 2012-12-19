@@ -26,6 +26,7 @@
             android:id="@+id/search_band_name_edit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:inputType="textCapWords"
             android:hint="@string/band_name_hint" />
         <TextView
             android:layout_width="wrap_content"

@@ -17,19 +17,19 @@ if (isset($_POST["name"]) && isset($_POST["password"])) {
 	$db = new DB_CONNECT();
  
     // check for existing name in busers table
-    $result = mysql_query("SELECT * FROM `busers` WHERE `name` = '$name'");
+    $result = mysql_query("SELECT * FROM `users` WHERE `username` = '$name'");
 
 	if (mysql_num_rows($result) > 0) {
 		// username already in use
 		$response["success"] = 0;
-		$response["message"] = "Username already in usezzz";
+		$response["message"] = "Username already in use";
  
 		// echo no users JSON
 		echo json_encode($response);
 
 
 	} else {
-		$result2 = mysql_query("INSERT INTO busers(name, password) VALUES('$name', '$password')");
+		$result2 = mysql_query("INSERT INTO users(username, password) VALUES('$name', '$password')");
 	
 		if ($result2) {
 

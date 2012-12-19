@@ -110,6 +110,21 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="@string/test" />
+        
+        <TextView
+            android:id="@+id/profile_webpage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/test"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/profile_webpage_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="@string/test" />
 
         <TextView
             android:id="@+id/profile_location"
@@ -124,6 +139,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:text="@string/test" />
+        
+        <TextView
+            android:id="@+id/profile_followers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textSize="12sp"
             android:text="@string/test" />
 
         <TextView

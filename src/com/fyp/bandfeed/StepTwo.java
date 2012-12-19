@@ -44,6 +44,7 @@ public class StepTwo extends Activity implements
 		genre2 = extras.getString("genre2");
 		genre3 = extras.getString("genre3");
 
+		
 		amountOfMembers = (EditText) findViewById(R.id.amount_of_members_edit);
 		town = (EditText) findViewById(R.id.town_edit);
 

@@ -27,32 +27,28 @@
         </activity>
         <activity
             android:name="com.fyp.bandfeed.StepOne"
-            android:label="@string/title_activity_step_one" >
+            android:label="@string/title_activity_step" >
         </activity>
         <activity
-            android:name="com.fyp.bandfeed.WTF"
-            android:label="@string/title_activity_wtf" >
+            android:name="com.fyp.bandfeed.About"
+            android:label="@string/title_activity_about" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.StepTwo"
-            android:label="@string/title_activity_step_two" >
+            android:label="@string/title_activity_step" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.StepThree"
-            android:label="@string/title_activity_step_three" >
+            android:label="@string/title_activity_step" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.StepThreeA"
+            android:label="@string/title_activity_step" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.StepFour"
-            android:label="@string/title_activity_step_four" >
-        </activity>
-        <activity
-            android:name="com.fyp.bandfeed.BandProfileSD"
-            android:label="@string/title_activity_band_profile" >
-        </activity>
-        <activity
-            android:name="com.fyp.bandfeed.BandProfileDB"
-            android:label="@string/title_activity_band_profile" >
-        </activity>
+            android:label="@string/title_activity_step" >
+        </activity>>
         <activity
             android:name="com.fyp.bandfeed.BrowseCriteria"
             android:label="@string/title_activity_search" >
@@ -63,15 +59,15 @@
         </activity>
         <activity
             android:name="com.fyp.bandfeed.ReceiveMessages"
-            android:label="@string/title_activity_feed_all" >
+            android:label="@string/title_activity_receive_messages" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.SendMessages"
-            android:label="@string/title_activity_test_fan_out" >
+            android:label="@string/title_activity_send_messages" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.SignUp"
-            android:label="@string/title_activity_become_afeeder" >
+            android:label="@string/title_activity_signup" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.DisplayProfile"
@@ -84,3 +80,4 @@
     </application>
 
 </manifest>
+

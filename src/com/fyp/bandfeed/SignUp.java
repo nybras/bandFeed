@@ -102,11 +102,6 @@ public class SignUp extends Activity implements OnClickListener {
 						signedUp = true;
 					}
 
-					if (signedUp) {
-						Intent i = new Intent(getApplicationContext(),
-								Login.class);
-						startActivity(i);
-					}
 					else {
 						// TODO deal with queue not being created!
 						signedUp = false;
@@ -128,7 +123,10 @@ public class SignUp extends Activity implements OnClickListener {
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
-			if (!signedUp) {
+			if (signedUp) {
+				Intent i = new Intent(getApplicationContext(), Login.class);
+				startActivity(i);
+			} else {
 				informUser();
 			}
 		}

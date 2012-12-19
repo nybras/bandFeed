@@ -11,33 +11,47 @@
         android:padding="30dip" >
 
         <TextView
-            android:id="@+id/bio_textview"
+            android:id="@+id/webpage_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="10dip"
-            android:text="@string/bio_text" />
+            android:text="@string/webpage_text" />
 
         <EditText
-            android:id="@+id/bio_edit"
+            android:id="@+id/webpage_edit"
             android:layout_width="fill_parent"
-            android:layout_height="200dip"
-            android:inputType="textCapSentences"
-            android:hint="@string/bio_hint" />
-        
-         <TextView
+            android:layout_height="wrap_content"
+            android:hint="@string/webpage_hint"
+            android:inputType="textWebEditText" />
+
+        <TextView
             android:id="@+id/soundCloud_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="20dip"
             android:paddingBottom="10dip"
+            android:paddingTop="20dip"
             android:text="@string/soundCloud_text" />
 
         <EditText
             android:id="@+id/soundCloud_edit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:inputType="textWebEditText"
-            android:hint="@string/soundCloud_hint" />
+            android:hint="@string/soundCloud_hint"
+            android:inputType="textWebEditText" />
+
+        <TextView
+            android:id="@+id/you_are_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dip"
+            android:paddingTop="20dip"
+            android:text="@string/you_are_text" />
+
+        <Spinner
+            android:id="@+id/you_are_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/select_prompt" />
 
         <TextView
             android:id="@+id/logo_textview"
@@ -53,8 +67,8 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            android:scaleType="centerCrop"
             android:contentDescription="@string/band_feed_symbol_description"
+            android:scaleType="centerCrop"
             android:src="@drawable/band_feed_equally_sized" />
 
         <TextView

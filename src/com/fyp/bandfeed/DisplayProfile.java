@@ -1,11 +1,7 @@
 package com.fyp.bandfeed;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -13,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.Menu;
@@ -104,12 +101,21 @@ public class DisplayProfile extends Activity implements OnClickListener {
 		samples.setText("Samples");
 
 		TextView samplesText = (TextView) findViewById(R.id.profile_samples_text);
-		samplesText.setText("Not available yet, see soundcloud.com\\"
-				+ extras.getString("soundc_link"));
+		samplesText.setText(extras.getString("soundCloud"));
 
+		TextView webpage = (TextView) findViewById(R.id.profile_webpage);
+		webpage.setText("Webpage");
+
+		TextView webpageText = (TextView) findViewById(R.id.profile_webpage_text);
+		webpageText.setText(extras.getString("webpage"));
+		
 		TextView createdText = (TextView) findViewById(R.id.profile_created);
 		createdText.setText("Profile created:" + "\n"
 				+ extras.getString("created_at"));
+		
+		TextView followersText = (TextView) findViewById(R.id.profile_followers);
+		followersText.setText("Followers:" + "\n"
+				+ extras.getInt("followers"));
 
 		Button subscribeToAll = (Button) findViewById(R.id.profile_sub_toall);
 		subscribeToAll.setOnClickListener(this);
@@ -172,35 +178,9 @@ public class DisplayProfile extends Activity implements OnClickListener {
 
 		@Override
 		protected String doInBackground(String... params) {
-
-			String username = "";
-			String line;
-
-			String path = getFilesDir().getAbsolutePath();
-
-			try {
-
-				FileInputStream fin = new FileInputStream(path + File.separator + "user.profile");
-
-				// prepare the file for reading
-				InputStreamReader inputreader = new InputStreamReader(fin);
-				BufferedReader buffreader = new BufferedReader(inputreader);
-
-				// read every line of the file into the line-variable, on line
-				// at the time
-				while ((line = buffreader.readLine()) != null) {
-					// do something with the settings from the file
-					username += line;
-				}
-
-				// close the file again
-				fin.close();
-			} catch (java.io.FileNotFoundException e) {
-				// do something if the myfilename.txt does not exits
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
+			SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
+			String username = prefs.getString("userName", null);
 
 			ConnectToRabbitMQ connection = new ConnectToRabbitMQ(band_name,
 					username.trim());
