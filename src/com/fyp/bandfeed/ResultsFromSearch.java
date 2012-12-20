@@ -44,7 +44,7 @@ public class ResultsFromSearch extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_search_results);
+
 
 		ids = new SparseArray<String>();
 		extras = getIntent().getExtras();

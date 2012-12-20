@@ -137,19 +137,15 @@ public final class R {
         public static final int password_login_text=0x7f040032;
         public static final int password_text=0x7f04002b;
         public static final int profile_sub_toall_button=0x7f04002f;
-        /**  activity_receive_messages 
-         */
         public static final int receive_test_message=0x7f040028;
         public static final int search=0x7f040020;
         public static final int search_band_name_text=0x7f04001e;
         public static final int search_for_bands=0x7f04001d;
         public static final int select_prompt=0x7f04000c;
-        public static final int send_from_text=0x7f040027;
-        public static final int send_message_hint=0x7f040025;
-        /**  activity_send_messagest 
-         */
-        public static final int send_message_text=0x7f040024;
-        public static final int send_test_message=0x7f040026;
+        public static final int send_from_text=0x7f040026;
+        public static final int send_message_hint=0x7f040024;
+        public static final int send_message_text=0x7f040023;
+        public static final int send_test_message=0x7f040025;
         public static final int signup=0x7f040034;
         public static final int soundCloud_hint=0x7f040018;
         public static final int soundCloud_text=0x7f040017;
@@ -166,12 +162,16 @@ public final class R {
         /**  activity_main 
          */
         public static final int title_activity_main=0x7f040006;
-        public static final int title_activity_receive_messages=0x7f040022;
+        /**  activity_receive_messages 
+         */
+        public static final int title_activity_receive_messages=0x7f040027;
         /**  activity_browse 
          */
         public static final int title_activity_search=0x7f04001c;
         public static final int title_activity_search_results=0x7f040021;
-        public static final int title_activity_send_messages=0x7f040023;
+        /**  activity_send_messagest 
+         */
+        public static final int title_activity_send_messages=0x7f040022;
         /**  activity_signup 
          */
         public static final int title_activity_signup=0x7f040029;

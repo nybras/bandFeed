@@ -43,21 +43,21 @@
 
     <!-- activity_browse -->
     <string name="title_activity_search">Search</string>
-    <string name="search_for_bands">Enter one or more search criteria (more search criteria to come)</string>
+    <string name="search_for_bands">Enter one or more search criteria"\n"(more search criteria to come)</string>
     <string name="search_band_name_text">Search by band name</string>
     <string name="band_name_hint">Type band name..</string>
     <string name="search">Search</string>
     <string name="title_activity_search_results">Search Results</string>
-    <string name="title_activity_receive_messages">Receieve messages</string>
-    <string name="title_activity_send_messages">Send a message</string>
 
     <!-- activity_send_messagest -->
+    <string name="title_activity_send_messages">Send a message</string>
     <string name="send_message_text">Send a message to your subscribers</string>
     <string name="send_message_hint">Type message..</string>
     <string name="send_test_message">Send</string>
     <string name="send_from_text">Message to be sent from which band?</string>
 
     <!-- activity_receive_messages -->
+    <string name="title_activity_receive_messages">Receive messages</string>
     <string name="receive_test_message">Receive</string>
 
     <!-- activity_signup -->
