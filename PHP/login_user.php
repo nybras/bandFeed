@@ -19,7 +19,7 @@ if (isset($_GET["name"]) && isset($_GET["password"])) {
     // get a product from products table
     $result = mysql_query("SELECT `username` FROM `users` WHERE `username` = '$name' AND `password` = '$password'");
 		
-	if ($result) {
+	if (mysql_num_rows($result) > 0) {
 
 		$result2 = mysql_query("SELECT `band` FROM `band_members` WHERE `user_accepted` ='$name'");  
 

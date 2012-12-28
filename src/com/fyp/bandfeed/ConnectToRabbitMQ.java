@@ -18,6 +18,7 @@ public class ConnectToRabbitMQ {
 	private static final String exchangeType = "direct";
 	private String exchange;
 	private String queue;
+	private AppendToLog logIt;
 
 
 	private Channel channel = null;
@@ -33,6 +34,7 @@ public class ConnectToRabbitMQ {
 	public ConnectToRabbitMQ(String exchange, String queue) {
 		this.exchange = exchange;
 		this.queue = queue;
+		logIt = new AppendToLog();
 
 	}
 
@@ -57,9 +59,11 @@ public class ConnectToRabbitMQ {
 		try {
 			if (connectToRabbitMQ()) {
 				channel.exchangeDeclare(exchange, exchangeType, true);
+				logIt.append(exchange + " EXCHANGE CREATED");
 			}
 			return true;
 		} catch (IOException e) {
+			logIt.append(exchange + " EXCHANGE FAILED");
 			return false;
 		}
 	}
@@ -68,9 +72,11 @@ public class ConnectToRabbitMQ {
 		try {
 			if (connectToRabbitMQ()) {
 				channel.queueDeclare(queue, true, false, false, null);
+				logIt.append(queue + " QUEUE CREATED");
 			}
 			return true;
 		} catch (IOException e) {
+			logIt.append(queue + " QUEUE FAILED");
 			return false;
 		}
 	}
@@ -79,20 +85,25 @@ public class ConnectToRabbitMQ {
 		try {
 			if (connectToRabbitMQ()) {
 				channel.queueBind(queue, exchange, "");
+				logIt.append("BIND CREATED BETWEEN " + queue + " AND " + exchange);
 			}
 			return true;
 		} catch (IOException e) {
+			logIt.append("FAILED TO BIND " + queue + " AND " + exchange);
 			return false;
 		}
 	}
 
-	public boolean sendMessage(byte[] message) {
+	public boolean sendMessage(byte[] message, String strMes) {
+		
 		try {
 			if (connectToRabbitMQ()) {
 				channel.basicPublish(exchange, "", null, message);
+				logIt.append(exchange + " PUBLISHED MESSAGE: " + strMes);
 			}
 			return true;
 		} catch (IOException e) {
+			logIt.append(exchange + " FAILED TO PUBLISH MESSAGE: " + strMes);
 			return false;
 		}
 	}
@@ -114,19 +125,21 @@ public class ConnectToRabbitMQ {
 					String message = new String(delivery.getBody());
 					messages.add(message);
 					
-					//if (message != null) {
-					//	noMessageYet = false;
-					//}
 				}
+				logIt.append(queue + " RETRIEVED MESSAGES");
 				
 			}
 		} catch (IOException e) {
+			logIt.append(queue + " FAILED TO RETREIVED MESSAGES");
 			return null;
 		} catch (ShutdownSignalException e) {
+			logIt.append(queue + " FAILED TO RETRIEVE MESSAGES");
 			return null;
 		} catch (ConsumerCancelledException e) {
+			logIt.append(queue + " FAILED TO RETRIEVE MESSAGES");
 			return null;
 		} catch (InterruptedException e) {
+			logIt.append(queue + " FAILED TO RETRIEVE MESSAGES");
 			return null;
 		}
 		

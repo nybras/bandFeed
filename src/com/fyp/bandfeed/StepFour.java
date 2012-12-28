@@ -57,6 +57,7 @@ public class StepFour extends Activity implements OnClickListener,
 	private Spinner nameSpinner;
 	private ArrayList<String> names;
 	private String name;
+	private AppendToLog logIt;
 
 	private ProgressDialog progressDialog;
 
@@ -71,6 +72,8 @@ public class StepFour extends Activity implements OnClickListener,
 		setContentView(R.layout.activity_step_four);
 
 		profileCreated = false;
+		
+		logIt = new AppendToLog();
 
 		imageSelector = (ImageView) findViewById(R.id.select_logo);
 		imageSelector.setOnClickListener(this);
@@ -253,6 +256,8 @@ public class StepFour extends Activity implements OnClickListener,
 
 				if (success == 1) {
 					// successfully created profile
+					logIt.append(bandName + " CREATED BAND PROFILE");
+					
 
 					// CREATE EXCHANGE
 					ConnectToRabbitMQ connection = new ConnectToRabbitMQ(
@@ -275,9 +280,11 @@ public class StepFour extends Activity implements OnClickListener,
 					} else {
 						informUser("Failed to create Exchange");
 						profileCreated = false;
+						logIt.append(bandName + " FAILED TO CREATE BAND PROFILE");
 					}
 				} else {
 					profileCreated = false;
+					logIt.append(bandName + " FAILED TO CREATE BAND PROFILE");
 				}
 			} catch (JSONException e) {
 				profileCreated = false;

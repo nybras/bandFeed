@@ -1,10 +1,6 @@
 package com.fyp.bandfeed;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -18,6 +14,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.View;
@@ -36,6 +33,7 @@ public class ReceiveMessages extends Activity implements OnClickListener {
 	private LinearLayout linearLayout;
 	String queueName;
 	private SparseArray<String> ids; // Instead of HashMap
+	private AppendToLog logIt;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -43,9 +41,7 @@ public class ReceiveMessages extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		ids = new SparseArray<String>();
-		
-		
-		
+		logIt = new AppendToLog();
 		queueName = getUsername().trim();
 
 		// set up a scrollable view that is linear with a vertical orientation
@@ -94,39 +90,13 @@ public class ReceiveMessages extends Activity implements OnClickListener {
 	
 	private String getUsername() {
 		
-		String username = "";
-		String line;
-
-		String path = getFilesDir().getAbsolutePath();
-
-		try {
-
-			FileInputStream fin = new FileInputStream(path + File.separator + "user.profile");
-
-			// prepare the file for reading
-			InputStreamReader inputreader = new InputStreamReader(fin);
-			BufferedReader buffreader = new BufferedReader(inputreader);
-
-			// read every line of the file into the line-variable, on line
-			// at the time
-			while ((line = buffreader.readLine()) != null) {
-				// do something with the settings from the file
-				username += line;
-			}
-
-			// close the file again
-			fin.close();
-		} catch (java.io.FileNotFoundException e) {
-			// do something if the myfilename.txt does not exits
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
+		String username = prefs.getString("userName", null);
 		
 		return username;
 	}
 
-	public void setPageUp() {
+	public void printMessages() {
 
 		if (messages.isEmpty()) {
 			Toast toast = Toast.makeText(this, "No new messages",
@@ -171,8 +141,6 @@ public class ReceiveMessages extends Activity implements OnClickListener {
 
 			// TODO try and make this work again with the below code back in the
 			// ConnectToRabbitMQ class
-			
-			//queueName = "bunty";
 
 			try {
 				if (connection.connectToRabbitMQ()) {
@@ -191,16 +159,17 @@ public class ReceiveMessages extends Activity implements OnClickListener {
 						messages.add(message);
 					}
 					connection.dispose();
+					logIt.append(queueName + " RETRIEVED MESSAGES");
 
 				}
 			} catch (IOException e) {
-
+				logIt.append(queueName + " FAILED TO RETRIEVE MESSAGES");
 			} catch (ShutdownSignalException e) {
-
+				logIt.append(queueName + " FAILED TO RETRIEVE MESSAGES");
 			} catch (ConsumerCancelledException e) {
-
+				logIt.append(queueName + " FAILED TO RETRIEVE MESSAGES");
 			} catch (InterruptedException e) {
-
+				logIt.append(queueName + " FAILED TO RETRIEVE MESSAGES");
 			}
 
 			return null;
@@ -213,10 +182,8 @@ public class ReceiveMessages extends Activity implements OnClickListener {
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
-			setPageUp();
-
+			printMessages();
 		}
-
 	}
 
 	public void onClick(View v) {
@@ -243,5 +210,4 @@ public class ReceiveMessages extends Activity implements OnClickListener {
 		return id++;
 
 	}
-
 }

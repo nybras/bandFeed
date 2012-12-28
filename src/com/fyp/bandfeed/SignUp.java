@@ -28,6 +28,7 @@ public class SignUp extends Activity implements OnClickListener {
 	private EditText password2EditText;
 	private ProgressDialog progressDialog;
 	private boolean signedUp;
+	private AppendToLog logIt;
 
 	// url to create new profile
 	private static String CreateProfileURL = "http://bandfeed.co.uk/api/create_user.php";
@@ -40,6 +41,7 @@ public class SignUp extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_become_afeeder);
 
 		signedUp = false;
+		logIt = new AppendToLog();
 
 		usernameEditText = (EditText) findViewById(R.id.add_username_edit);
 		passwordEditText = (EditText) findViewById(R.id.add_password_edit);
@@ -72,11 +74,13 @@ public class SignUp extends Activity implements OnClickListener {
 		protected String doInBackground(String... args) {
 
 			JSONParser jsonParser = new JSONParser();
+			
+			String name = usernameEditText
+					.getText().toString().trim();
 
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("name", usernameEditText
-					.getText().toString().trim()));
+			params.add(new BasicNameValuePair("name", name));
 			params.add(new BasicNameValuePair("password", passwordEditText
 					.getText().toString().trim()));
 
@@ -94,6 +98,7 @@ public class SignUp extends Activity implements OnClickListener {
 
 				if (success == 1) {
 					// successfully logged in
+					logIt.append(name + " CREATED ACCOUNT IN DATABASE");
 
 					ConnectToRabbitMQ connection = new ConnectToRabbitMQ(null,
 							usernameEditText.getText().toString());
@@ -105,11 +110,13 @@ public class SignUp extends Activity implements OnClickListener {
 					else {
 						// TODO deal with queue not being created!
 						signedUp = false;
+						logIt.append(name + " FAILED TO CREATE ACCOUNT IN DATABASE");
 					}
 
 				} else {
 					// User failed to log in
 					signedUp = false;
+					logIt.append(name + " FAILED TO CREATE ACCOUNT IN DATABASE");
 
 				}
 			} catch (JSONException e) {

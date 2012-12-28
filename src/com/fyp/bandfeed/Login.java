@@ -30,6 +30,7 @@ public class Login extends Activity implements OnClickListener {
 	private EditText passwordEditText;
 	private ProgressDialog progressDialog;
 	private boolean loggedIn;
+	private AppendToLog logIt;
 
 	private static String loginUserURL = "http://bandfeed.co.uk/api/login_user.php";
 
@@ -42,6 +43,7 @@ public class Login extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_login);
 
 		loggedIn = false;
+		logIt = new AppendToLog();
 
 		usernameEditText = (EditText) findViewById(R.id.add_username_login_edit);
 		passwordEditText = (EditText) findViewById(R.id.add_password_login_edit);
@@ -101,10 +103,11 @@ public class Login extends Activity implements OnClickListener {
 
 			JSONParser jsonParser = new JSONParser();
 
+			String name = usernameEditText
+					.getText().toString().trim();
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("name", usernameEditText
-					.getText().toString().trim()));
+			params.add(new BasicNameValuePair("name", name));
 			params.add(new BasicNameValuePair("password", passwordEditText
 					.getText().toString().trim()));
 
@@ -122,6 +125,7 @@ public class Login extends Activity implements OnClickListener {
 
 				if (success == 1) {
 					// successfully logged in
+					logIt.append(name + " LOGGED IN");
 
 					final SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
 					Editor editor = prefs.edit();
@@ -149,6 +153,7 @@ public class Login extends Activity implements OnClickListener {
 				} else {
 					// User failed to log in
 					loggedIn = false;
+					logIt.append(name + " FAILED TO LOG IN");
 
 				}
 			} catch (JSONException e) {

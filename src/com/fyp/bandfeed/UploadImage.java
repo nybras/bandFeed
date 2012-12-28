@@ -68,6 +68,7 @@ public class UploadImage {
 
 		if (contentLength < 0) {
 			// Picture will not send
+			//TODO deal with this
 		} else {
 			byte[] data = new byte[512];
 			int len = 0;

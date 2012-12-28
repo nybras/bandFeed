@@ -85,21 +85,14 @@ public class SendMessages extends Activity implements OnClickListener,
 
 			ConnectToRabbitMQ connection = new ConnectToRabbitMQ(EXCHANGE_NAME,
 					null);
-			if (connection.sendMessage(message.getBytes())) {
+			if (connection.sendMessage(message.getBytes(), message)) {
 				connection.dispose();
 
 				messageSent = true;
-				// Intent i = new Intent(getApplicationContext(),
-				// MainActivity.class);
-				// startActivity(i);
 
 			} else {
 				// TODO if message wasn't sent
 				messageSent = false;
-
-				// Intent i = new Intent(getApplicationContext(),
-				// MainActivity.class);
-				// startActivity(i);
 			}
 
 			return null;
