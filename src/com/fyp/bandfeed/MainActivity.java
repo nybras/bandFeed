@@ -11,13 +11,16 @@ import android.app.Activity;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -126,23 +129,62 @@ public class MainActivity extends Activity implements OnClickListener {
 			receiveMessageButton.setOnClickListener(this);
 			linearLayout.addView(receiveMessageButton);
 
-			Button aboutButton = new Button(this);
-			// button to next activity
-			Integer id1 = findId(1);
-			aboutButton.setId(id1);
-			ids.put(id1, "aboutButton");
-			aboutButton.setText("About");
-			aboutButton.setOnClickListener(this);
-			linearLayout.addView(aboutButton);
+//			Button aboutButton = new Button(this);
+//			// button to next activity
+//			Integer id1 = findId(1);
+//			aboutButton.setId(id1);
+//			ids.put(id1, "aboutButton");
+//			aboutButton.setText("About");
+//			aboutButton.setOnClickListener(this);
+//			linearLayout.addView(aboutButton);
 		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_main, menu);
+		getMenuInflater().inflate(R.menu.menu, menu);
 		return true;
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		String username = prefs.getString("userName", null);
+		if (username == null) {
+			this.finish();
+		}
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// respond to menu item selection
+		Toast toast = null;
+		switch (item.getItemId()) {
+		case R.id.about:
+			startActivity(new Intent(this, About.class));
+			return true;
+		case R.id.settings:
+			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
+					Toast.LENGTH_SHORT);
+			toast.show();
+			return true;
+		case R.id.send_feedback:
+			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
+					Toast.LENGTH_SHORT);
+			toast.show();
+			return true;
+		case R.id.log_out:
+			Editor editor = prefs.edit();
+			editor.clear();
+			editor.commit();
+			//startActivity(new Intent(this, MainActivity.class));
+			Intent intent = new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        finish();
+	        startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 
 	/**
 	 * Decides from the given buttons which new view to open up
@@ -155,9 +197,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		Intent i = null;
 		if (ids.get(v.getId()).equals("newBandButton")) {
 			i = new Intent(this, StepOne.class);
-			startActivity(i);
-		} else if (ids.get(v.getId()).equals("aboutButton")) {
-			i = new Intent(this, About.class);
 			startActivity(i);
 		} else if (ids.get(v.getId()).equals("browseButton")) {
 			i = new Intent(this, BrowseCriteria.class);
@@ -182,6 +221,5 @@ public class MainActivity extends Activity implements OnClickListener {
 		return id++;
 
 	}
-	
 
 }

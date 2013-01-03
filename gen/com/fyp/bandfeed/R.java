@@ -16,6 +16,7 @@ public final class R {
         public static final int ic_launcher=0x7f020002;
     }
     public static final class id {
+        public static final int about=0x7f070046;
         public static final int about_textview=0x7f070000;
         public static final int add_band_name_edit=0x7f070037;
         public static final int add_password2_edit=0x7f070006;
@@ -31,9 +32,9 @@ public final class R {
         public static final int genre2_textview=0x7f07003a;
         public static final int genre3_textview=0x7f07003c;
         public static final int genre_textview=0x7f070038;
+        public static final int log_out=0x7f070045;
         public static final int login_button=0x7f070023;
         public static final int logo_textview=0x7f070032;
-        public static final int menu_settings=0x7f070043;
         public static final int next_step_five_button=0x7f070035;
         public static final int next_step_three_button=0x7f070042;
         public static final int next_step_two_button=0x7f07003e;
@@ -66,10 +67,12 @@ public final class R {
         public static final int search_button=0x7f070026;
         public static final int second_genre_spinner=0x7f07003b;
         public static final int select_logo=0x7f070033;
+        public static final int send_feedback=0x7f070044;
         public static final int send_from_textview=0x7f070029;
         public static final int send_message_edit=0x7f070028;
         public static final int send_message_textview=0x7f070027;
         public static final int send_test_message_button=0x7f07002b;
+        public static final int settings=0x7f070043;
         public static final int signup_button=0x7f070024;
         public static final int soundCloud_edit=0x7f07002f;
         public static final int soundCloud_textview=0x7f07002e;
@@ -98,94 +101,86 @@ public final class R {
         public static final int activity_step_two=0x7f030009;
     }
     public static final class menu {
-        public static final int activity_band_profile=0x7f060000;
-        public static final int activity_band_profile_db=0x7f060001;
-        public static final int activity_become_afeeder=0x7f060002;
-        public static final int activity_display_profile=0x7f060003;
-        public static final int activity_feed_all=0x7f060004;
-        public static final int activity_login=0x7f060005;
-        public static final int activity_main=0x7f060006;
-        public static final int activity_search=0x7f060007;
-        public static final int activity_search_results=0x7f060008;
-        public static final int activity_step_four=0x7f060009;
-        public static final int activity_test_fan_out=0x7f06000a;
+        public static final int menu=0x7f060000;
     }
     public static final class string {
-        public static final int about_text=0x7f04001b;
-        public static final int add_band_name_hint=0x7f04000a;
-        public static final int add_new_band_button=0x7f040008;
-        public static final int add_password_hint=0x7f04002d;
-        public static final int add_username_hint=0x7f04002c;
-        public static final int amount_of_members_hint=0x7f040010;
+        public static final int about=0x7f040002;
+        public static final int about_text=0x7f04001d;
+        public static final int add_band_name_hint=0x7f04000c;
+        public static final int add_new_band_button=0x7f04000a;
+        public static final int add_password_hint=0x7f04002f;
+        public static final int add_username_hint=0x7f04002e;
+        public static final int amount_of_members_hint=0x7f040012;
         /**  activity_step_two 
          */
-        public static final int amount_of_members_text=0x7f04000f;
+        public static final int amount_of_members_text=0x7f040011;
         public static final int app_name=0x7f040000;
-        public static final int band_feed_symbol_description=0x7f040007;
-        public static final int band_name_hint=0x7f04001f;
+        public static final int band_feed_symbol_description=0x7f040009;
+        public static final int band_name_hint=0x7f040021;
         /**  activity_step_one 
          */
-        public static final int band_name_text=0x7f040009;
-        public static final int genre2_text=0x7f04000d;
-        public static final int genre3_text=0x7f04000e;
-        public static final int genre_text=0x7f04000b;
-        public static final int globals=0x7f040003;
-        public static final int login=0x7f040033;
-        public static final int logo_text=0x7f040016;
-        public static final int menu_settings=0x7f040001;
-        public static final int next=0x7f040002;
-        public static final int password_login_text=0x7f040032;
-        public static final int password_text=0x7f04002b;
-        public static final int profile_sub_toall_button=0x7f04002f;
-        public static final int receive_test_message=0x7f040028;
-        public static final int search=0x7f040020;
-        public static final int search_band_name_text=0x7f04001e;
-        public static final int search_for_bands=0x7f04001d;
-        public static final int select_prompt=0x7f04000c;
-        public static final int send_from_text=0x7f040026;
-        public static final int send_message_hint=0x7f040024;
-        public static final int send_message_text=0x7f040023;
-        public static final int send_test_message=0x7f040025;
-        public static final int signup=0x7f040034;
-        public static final int soundCloud_hint=0x7f040018;
-        public static final int soundCloud_text=0x7f040017;
-        public static final int test=0x7f040004;
+        public static final int band_name_text=0x7f04000b;
+        public static final int genre2_text=0x7f04000f;
+        public static final int genre3_text=0x7f040010;
+        public static final int genre_text=0x7f04000d;
+        public static final int log_out=0x7f040004;
+        public static final int login=0x7f040035;
+        public static final int logo_text=0x7f040018;
+        public static final int next=0x7f040005;
+        public static final int password_login_text=0x7f040034;
+        public static final int password_text=0x7f04002d;
+        public static final int profile_sub_toall_button=0x7f040031;
+        public static final int receive_test_message=0x7f04002a;
+        public static final int search=0x7f040022;
+        public static final int search_band_name_text=0x7f040020;
+        public static final int search_for_bands=0x7f04001f;
+        public static final int select_prompt=0x7f04000e;
+        public static final int send_feedback=0x7f040003;
+        public static final int send_from_text=0x7f040028;
+        public static final int send_message_hint=0x7f040026;
+        public static final int send_message_text=0x7f040025;
+        public static final int send_test_message=0x7f040027;
+        public static final int settings=0x7f040001;
+        public static final int signup=0x7f040036;
+        public static final int soundCloud_hint=0x7f04001a;
+        public static final int soundCloud_text=0x7f040019;
+        public static final int test=0x7f040006;
         /**  activity_about 
          */
-        public static final int title_activity_about=0x7f04001a;
+        public static final int title_activity_about=0x7f04001c;
         /**  activity_display_profile 
          */
-        public static final int title_activity_display_profile=0x7f04002e;
+        public static final int title_activity_display_profile=0x7f040030;
         /**   activity_login 
          */
-        public static final int title_activity_login=0x7f040030;
+        public static final int title_activity_login=0x7f040032;
         /**  activity_main 
          */
-        public static final int title_activity_main=0x7f040006;
+        public static final int title_activity_main=0x7f040008;
         /**  activity_receive_messages 
          */
-        public static final int title_activity_receive_messages=0x7f040027;
+        public static final int title_activity_receive_messages=0x7f040029;
         /**  activity_browse 
          */
-        public static final int title_activity_search=0x7f04001c;
-        public static final int title_activity_search_results=0x7f040021;
+        public static final int title_activity_search=0x7f04001e;
+        public static final int title_activity_search_results=0x7f040023;
         /**  activity_send_messagest 
          */
-        public static final int title_activity_send_messages=0x7f040022;
+        public static final int title_activity_send_messages=0x7f040024;
         /**  activity_signup 
          */
-        public static final int title_activity_signup=0x7f040029;
-        public static final int title_activity_step=0x7f040005;
-        public static final int town_hint=0x7f040013;
-        public static final int town_text=0x7f040012;
-        public static final int username_login_text=0x7f040031;
-        public static final int username_text=0x7f04002a;
-        public static final int webpage_hint=0x7f040015;
+        public static final int title_activity_signup=0x7f04002b;
+        public static final int title_activity_step=0x7f040007;
+        public static final int town_hint=0x7f040015;
+        public static final int town_text=0x7f040014;
+        public static final int username_login_text=0x7f040033;
+        public static final int username_text=0x7f04002c;
+        public static final int webpage_hint=0x7f040017;
         /**  activity_step_four 
          */
-        public static final int webpage_text=0x7f040014;
-        public static final int where_text=0x7f040011;
-        public static final int you_are_text=0x7f040019;
+        public static final int webpage_text=0x7f040016;
+        public static final int where_text=0x7f040013;
+        public static final int you_are_text=0x7f04001b;
     }
     public static final class style {
         public static final int AppTheme=0x7f050000;

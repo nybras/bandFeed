@@ -12,11 +12,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ public class SignUp extends Activity implements OnClickListener {
 	private ProgressDialog progressDialog;
 	private boolean signedUp;
 	private AppendToLog logIt;
+	private String name;
 
 	// url to create new profile
 	private static String CreateProfileURL = "http://bandfeed.co.uk/api/create_user.php";
@@ -51,11 +53,10 @@ public class SignUp extends Activity implements OnClickListener {
 		next.setOnClickListener(this);
 
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_become_afeeder, menu);
-		return true;
+	
+	private void closeKeyboard() {
+		InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 	}
 
 	class CreateUser extends AsyncTask<String, String, String> {
@@ -63,6 +64,7 @@ public class SignUp extends Activity implements OnClickListener {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
+			closeKeyboard();
 			progressDialog = new ProgressDialog(SignUp.this);
 			progressDialog.setMessage("Creating account..");
 			progressDialog.setIndeterminate(false);
@@ -74,9 +76,6 @@ public class SignUp extends Activity implements OnClickListener {
 		protected String doInBackground(String... args) {
 
 			JSONParser jsonParser = new JSONParser();
-			
-			String name = usernameEditText
-					.getText().toString().trim();
 
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -110,7 +109,8 @@ public class SignUp extends Activity implements OnClickListener {
 					else {
 						// TODO deal with queue not being created!
 						signedUp = false;
-						logIt.append(name + " FAILED TO CREATE ACCOUNT IN DATABASE");
+						logIt.append(name
+								+ " FAILED TO CREATE ACCOUNT IN DATABASE");
 					}
 
 				} else {
@@ -131,7 +131,9 @@ public class SignUp extends Activity implements OnClickListener {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
 			if (signedUp) {
-				Intent i = new Intent(getApplicationContext(), Login.class);
+				Intent i = new Intent(getApplicationContext(), Login.class)
+						.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				finish();
 				startActivity(i);
 			} else {
 				informUser();
@@ -140,14 +142,22 @@ public class SignUp extends Activity implements OnClickListener {
 	}
 
 	public void onClick(View v) {
+		String p1 = passwordEditText.getText().toString().trim();
+		String p2 = password2EditText.getText().toString().trim();
+		String name = usernameEditText.getText().toString().trim();
 
-		if (passwordEditText.getText().toString().trim()
-				.equals(password2EditText.getText().toString().trim())) {
-			new CreateUser().execute();
-		} else {
-			Toast toast = Toast.makeText(this, "Passwords don't match",
+		if (p1.equals("") || p2.equals("") || name.equals("")) {
+			Toast toast = Toast.makeText(this, "Please enter all fields",
 					Toast.LENGTH_SHORT);
 			toast.show();
+		} else {
+			if (p1.equals(p2)) {
+				new CreateUser().execute();
+			} else {
+				Toast toast = Toast.makeText(this, "Passwords don't match",
+						Toast.LENGTH_SHORT);
+				toast.show();
+			}
 		}
 
 	}

@@ -2,9 +2,11 @@
 <resources>
 
     <string name="app_name">bandFeed</string>
-    <string name="menu_settings">Settings</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="send_feedback">Send Feedback</string>
+    <string name="log_out">Log out</string>
     <string name="next">Next</string>
-    <string name="globals">Globals</string>
     <string name="test">test</string>
     <string name="title_activity_step">Add your band</string>
 

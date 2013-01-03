@@ -13,13 +13,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ public class Login extends Activity implements OnClickListener {
 	private ProgressDialog progressDialog;
 	private boolean loggedIn;
 	private AppendToLog logIt;
+	private SharedPreferences prefs;
 
 	private static String loginUserURL = "http://bandfeed.co.uk/api/login_user.php";
 
@@ -44,6 +46,7 @@ public class Login extends Activity implements OnClickListener {
 
 		loggedIn = false;
 		logIt = new AppendToLog();
+		prefs = getSharedPreferences("userPrefs", 0);
 
 		usernameEditText = (EditText) findViewById(R.id.add_username_login_edit);
 		passwordEditText = (EditText) findViewById(R.id.add_password_login_edit);
@@ -55,12 +58,10 @@ public class Login extends Activity implements OnClickListener {
 		signUp.setOnClickListener(this);
 
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_login, menu);
-		return true;
+	
+	private void closeKeyboard() {
+		InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 	}
 
 	public void onClick(View v) {
@@ -91,6 +92,7 @@ public class Login extends Activity implements OnClickListener {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
+			closeKeyboard();
 			progressDialog = new ProgressDialog(Login.this);
 			progressDialog.setMessage("Checking details..");
 			progressDialog.setIndeterminate(false);
@@ -103,8 +105,7 @@ public class Login extends Activity implements OnClickListener {
 
 			JSONParser jsonParser = new JSONParser();
 
-			String name = usernameEditText
-					.getText().toString().trim();
+			String name = usernameEditText.getText().toString().trim();
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("name", name));
@@ -127,7 +128,6 @@ public class Login extends Activity implements OnClickListener {
 					// successfully logged in
 					logIt.append(name + " LOGGED IN");
 
-					final SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
 					Editor editor = prefs.edit();
 					editor.putString("userName", usernameEditText.getText()
 							.toString().trim());
@@ -142,7 +142,7 @@ public class Login extends Activity implements OnClickListener {
 						// array
 						editor.putInt("numOfBands", bandsObj.length());
 						editor.commit();
-						
+
 						for (int i = 0; i < bandsObj.length(); i++) {
 							JSONObject band = bandsObj.getJSONObject(i);
 							editor.putString("band" + i, band.getString("band"));
@@ -171,7 +171,9 @@ public class Login extends Activity implements OnClickListener {
 
 			if (loggedIn) {
 				Intent i = new Intent(getApplicationContext(),
-						MainActivity.class);
+						MainActivity.class)
+						.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				finish();
 				startActivity(i);
 			} else {
 				informUser();

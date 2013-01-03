@@ -15,8 +15,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.SparseArray;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -86,6 +89,44 @@ public class ReceiveMessages extends Activity implements OnClickListener {
 		backButton.setOnClickListener(this);
 		linearLayout.addView(backButton);
 
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.menu, menu);
+		return true;
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// respond to menu item selection
+		Toast toast = null;
+		switch (item.getItemId()) {
+		case R.id.about:
+			startActivity(new Intent(this, About.class));
+			return true;
+		case R.id.settings:
+			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
+					Toast.LENGTH_SHORT);
+			toast.show();
+			return true;
+		case R.id.send_feedback:
+			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
+					Toast.LENGTH_SHORT);
+			toast.show();
+			return true;
+		case R.id.log_out:
+			final SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
+			Editor editor = prefs.edit();
+			editor.clear();
+			editor.commit();
+			//startActivity(new Intent(this, MainActivity.class));
+			Intent intent = new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        finish();
+	        startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 	
 	private String getUsername() {
