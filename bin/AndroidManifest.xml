@@ -48,7 +48,7 @@
         <activity
             android:name="com.fyp.bandfeed.StepFour"
             android:label="@string/title_activity_step" >
-        </activity>>
+        </activity>
         <activity
             android:name="com.fyp.bandfeed.BrowseCriteria"
             android:label="@string/title_activity_search" >
@@ -77,7 +77,22 @@
             android:name="com.fyp.bandfeed.Login"
             android:label="@string/title_activity_login" >
         </activity>
+        <activity
+            android:name="com.fyp.bandfeed.UpdateBiography"
+            android:label="@string/title_activity_update_biography" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.UpdateSamples"
+            android:label="@string/title_activity_update_samples" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.UpdateWebpage"
+            android:label="@string/title_activity_update_webpage" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.Subscribe"
+            android:label="@string/title_activity_subscribe" >
+        </activity>
     </application>
 
 </manifest>
-

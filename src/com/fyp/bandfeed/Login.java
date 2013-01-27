@@ -58,10 +58,12 @@ public class Login extends Activity implements OnClickListener {
 		signUp.setOnClickListener(this);
 
 	}
-	
+
 	private void closeKeyboard() {
-		InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-		inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		InputMethodManager inputManager = (InputMethodManager) this
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputManager.hideSoftInputFromWindow(this.getCurrentFocus()
+				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 	}
 
 	public void onClick(View v) {

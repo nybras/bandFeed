@@ -36,10 +36,7 @@ public class ResultsFromSearch extends Activity implements OnClickListener {
 	private ProgressDialog progressDialog;
 	private String profile;
 
-	// url to create new profile
 	private static String GetProfileURL = "http://bandfeed.co.uk/api/read_profile.php";
-	// private static String CreateProfileURL =
-	// "http://129.168.0.3:3401/bandFeed/api/create_profile.php";
 
 	// JSON NODE names
 	private static final String TAG_SUCCESS = "success";
@@ -137,9 +134,6 @@ public class ResultsFromSearch extends Activity implements OnClickListener {
 	}
 
 	public void onClick(View v) {
-		// Intent i = null;
-		// i = new Intent(this, BandProfileDB.class);
-		// i.putExtra("profile", ids.get(v.getId()));
 		profile = ids.get(v.getId());
 		new OpenProfile().execute();
 

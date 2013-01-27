@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="30dip" >
+
+    <CheckBox
+        android:id="@+id/checkNews"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="20dip"
+        android:paddingRight="20dip"
+        android:button="@null"
+        android:drawableRight="@drawable/box"
+        android:text="@string/check_news" />
+
+    <CheckBox
+        android:id="@+id/checkGigs"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="20dip"
+        android:paddingRight="20dip"
+        android:button="@null"
+        android:drawableRight="@drawable/box"
+        android:text="@string/check_gigs" />
+
+    <CheckBox
+        android:id="@+id/checkUpdates"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="20dip"
+        android:paddingRight="20dip"
+        android:button="@null"
+        android:drawableRight="@drawable/box"
+        android:text="@string/check_updates" />
+
+    <CheckBox
+        android:id="@+id/checkReleases"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="20dip"
+        android:paddingRight="20dip"
+        android:button="@null"
+        android:drawableRight="@drawable/box"
+        android:text="@string/check_releases" />
+
+    <TextView
+        android:id="@+id/padding"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingBottom="40dip" />
+
+    <Button
+        android:id="@+id/subscribe_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/subscribe" />
+    
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/cancel" />
+
+</LinearLayout>

@@ -55,7 +55,7 @@
             android:id="@+id/profile_biography"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:text="@string/test"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="@string/test" />
-
+<!--  
         <TextView
             android:id="@+id/profile_discography"
             android:layout_width="wrap_content"
@@ -95,6 +95,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="@string/test" />
+            
+            -->
 
         <TextView
             android:id="@+id/profile_samples"
@@ -167,12 +169,12 @@
             android:text="@string/test" />
 
         <Button
-            android:id="@+id/profile_sub_toall"
+            android:id="@+id/profile_subscriptions"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/profile_sub_toall_button" />
+            android:text="@string/profile_subscriptions_button" />
     </LinearLayout>
 
 </ScrollView>

@@ -81,15 +81,28 @@ public class ConnectToRabbitMQ {
 		}
 	}
 
-	public boolean createBind() {
+	public boolean createBind(String rKey) {
 		try {
 			if (connectToRabbitMQ()) {
-				channel.queueBind(queue, exchange, "");
-				logIt.append("BIND CREATED BETWEEN " + queue + " AND " + exchange);
+				channel.queueBind(queue, exchange, rKey);
+				logIt.append("BIND " + rKey + " CREATED BETWEEN " + queue + " AND " + exchange);
 			}
 			return true;
 		} catch (IOException e) {
-			logIt.append("FAILED TO BIND " + queue + " AND " + exchange);
+			logIt.append("FAILED TO CREATE BIND " + rKey + " FOR " + queue + " AND " + exchange);
+			return false;
+		}
+	}
+	
+	public boolean deleteBind(String rKey) {
+		try {
+			if (connectToRabbitMQ()) {
+				channel.queueUnbind(queue, exchange, rKey);
+				logIt.append("BIND " + rKey + " DELETED BETWEEN " + queue + " AND " + exchange);
+			}
+			return true;
+		} catch (IOException e) {
+			logIt.append("FAILED TO DELETE BIND " + rKey + " FOR " + queue + " AND " + exchange);
 			return false;
 		}
 	}
@@ -153,6 +166,8 @@ public class ConnectToRabbitMQ {
 	 * @return success
 	 */
 	public boolean connectToRabbitMQ() {
+		
+		//TODO user account with restricted permissions needs making
 		try {
 			ConnectionFactory connectionFactory = new ConnectionFactory();
 			connectionFactory.setUsername("admin");
