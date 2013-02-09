@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="30dip" >
+
+        <TextView
+            android:id="@+id/link_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+        
+        <TextView
+            android:id="@+id/space"
+            android:layout_width="fill_parent"
+            android:layout_height="10dip"/>
+
+         <Spinner
+            android:id="@+id/link_name_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/select_prompt" />
+         
+         <TextView
+            android:id="@id/space"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"/>
+
+        <Button
+            android:id="@+id/link_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/link_name_button" />
+        
+        <Button
+            android:id="@+id/cancel_link_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/cancel_profile_button" />
+    </LinearLayout>
+
+</ScrollView>

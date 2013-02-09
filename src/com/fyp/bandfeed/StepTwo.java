@@ -7,12 +7,12 @@
 
 package com.fyp.bandfeed;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.EditText;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +41,12 @@ public class StepTwo extends Activity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_step_two);
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// gets the activity's default ActionBar
+			ActionBar actionBar = getActionBar();
+			actionBar.show();
+		}
 
 		Bundle extras = getIntent().getExtras();
 		bandName = extras.getString("bandName");
@@ -233,36 +238,20 @@ public class StepTwo extends Activity implements
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu, menu);
+		getMenuInflater().inflate(R.menu.menu2, menu);
 		return true;
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// respond to menu item selection
-		Toast toast = null;
 		switch (item.getItemId()) {
 		case R.id.about:
 			startActivity(new Intent(this, About.class));
 			return true;
-		case R.id.settings:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
 		case R.id.send_feedback:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
-		case R.id.log_out:
-			final SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
-			Editor editor = prefs.edit();
-			editor.clear();
-			editor.commit();
-			//startActivity(new Intent(this, MainActivity.class));
-			Intent intent = new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        finish();
-	        startActivity(intent);
+			Intent i = new Intent(this, SendFeedback.class);
+			i.putExtra("page", "StepTwo");
+			startActivity(i);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

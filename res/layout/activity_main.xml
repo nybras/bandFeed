@@ -1,31 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:padding="30dip" >
-    
-    <!-- + adds something for the first time -->
-    <ImageView
-        android:id="@+id/band_feed_logo_image" 
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center"
-        android:paddingBottom="20dip"
-        android:src="@drawable/band_feed_equally_sized"
-        android:contentDescription="@string/band_feed_symbol_description" />
-    
-    <Button 
-        android:id="@+id/add_new_band_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_new_band_button" /> 
-        
-    <Button 
-        android:id="@+id/wtf_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/wtf_button" />    
+    android:layout_height="fill_parent" >
 
-</LinearLayout>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mainlayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="30dip" >
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="150dip"
+            android:layout_height="150dip"
+            android:layout_gravity="center"
+            android:contentDescription="@string/band_feed_symbol_description"
+            android:scaleType="centerCrop"
+            android:src="@drawable/band_feed_equally_sized" />
+
+        <TextView
+            android:id="@+id/spacing"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="20dip" />
+
+        <TextView
+            android:id="@+id/welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <TextView
+            android:id="@+id/swipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+        <TextView
+            android:id="@+id/swipe2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@id/spacing"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="20dip" />
+
+        <Button
+            android:id="@+id/create_profile_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/create_profile" />
+
+        <Button
+            android:id="@+id/browse_bands_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/browse_bands" />
+    </LinearLayout>
+
+</ScrollView>

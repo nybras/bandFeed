@@ -20,7 +20,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -49,22 +51,31 @@ public class DisplayProfile extends Activity implements OnClickListener,
 	private SharedPreferences prefs;
 	private ArrayList<String> bands;
 	private TextView bioText, samplesText, webpageText;
+	private int amountOfMembers;
+	private String[] membersOfBand;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_display_profile);
-		bands = new ArrayList<String>();
 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// gets the activity's default ActionBar
+			ActionBar actionBar = getActionBar();
+			actionBar.show();
+		}
+
+		Bundle extras = getIntent().getExtras();
+		band_name = extras.getString("band_name");
+		bands = new ArrayList<String>();
 		prefs = getSharedPreferences("userPrefs", 0);
+		amountOfMembers = extras.getInt("amountOfMembers");
+		membersOfBand = new String[amountOfMembers];
 
 		int numOfBands = prefs.getInt("numOfBands", 0);
 		for (int i = 0; i < numOfBands; i++) {
 			bands.add(prefs.getString("band" + i, null));
 		}
-
-		Bundle extras = getIntent().getExtras();
-		band_name = extras.getString("band_name");
 
 		if (extras.getInt("image") == 1) {
 			profileImage = (ImageView) findViewById(R.id.profile_image);
@@ -82,10 +93,11 @@ public class DisplayProfile extends Activity implements OnClickListener,
 
 		TextView membersText = (TextView) findViewById(R.id.profile_members_text);
 		StringBuilder sb = new StringBuilder();
-		for (int j = 0; j < extras.getInt("amountOfMembers"); j++) {
+		for (int j = 0; j < amountOfMembers; j++) {
+			membersOfBand[j] = extras.getString("name" + j);
 			sb.append(extras.getString("name" + j) + " - "
 					+ extras.getString("role" + j));
-			if (j < extras.getInt("amountOfMembers") - 1) {
+			if (j < amountOfMembers - 1) {
 				sb.append("\n");
 			}
 
@@ -186,13 +198,16 @@ public class DisplayProfile extends Activity implements OnClickListener,
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu, menu);
+		getMenuInflater().inflate(R.menu.menu2, menu);
 		return true;
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+		// The following checks to see if any updates have been made to the
+		// profile recently, for example the user may have just updated
+		// the biography.
 		// TODO Needs the rest completed!
 		if (prefs.contains("bio")) {
 			bioText.setText(prefs.getString("bio", null));
@@ -216,32 +231,14 @@ public class DisplayProfile extends Activity implements OnClickListener,
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// respond to menu item selection
-		Toast toast = null;
 		switch (item.getItemId()) {
 		case R.id.about:
 			startActivity(new Intent(this, About.class));
 			return true;
-		case R.id.settings:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
 		case R.id.send_feedback:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
-		case R.id.log_out:
-			// final SharedPreferences prefs = getSharedPreferences("userPrefs",
-			// 0);
-			Editor editor = prefs.edit();
-			editor.clear();
-			editor.commit();
-			// startActivity(new Intent(this, MainActivity.class));
-			Intent intent = new Intent(this, MainActivity.class)
-					.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			finish();
-			startActivity(intent);
+			Intent i = new Intent(this, SendFeedback.class);
+			i.putExtra("page", "DisplayProfile");
+			startActivity(i);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -253,13 +250,6 @@ public class DisplayProfile extends Activity implements OnClickListener,
 		new Subscriptions().execute();
 
 	}
-
-	// private void closeKeyboard() {
-	// InputMethodManager inputManager = (InputMethodManager) this
-	// .getSystemService(Context.INPUT_METHOD_SERVICE);
-	// inputManager.hideSoftInputFromWindow(this.getCurrentFocus()
-	// .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-	// }
 
 	private void getImage() {
 		new Thread(new Runnable() {
@@ -292,19 +282,15 @@ public class DisplayProfile extends Activity implements OnClickListener,
 
 	public boolean onLongClick(View v) {
 
+		Intent i = null;
 		if (bands.contains(band_name)) {
 
-			Intent i = null;
-			@SuppressWarnings("unused")
-			String section = null;
 			switch (v.getId()) {
 			// MEMBERS
 			case R.id.profile_members_text:
-				section = "members";
 				// TODO create appropriate update profile section for this
 				break;
 			case R.id.profile_members:
-				section = "members";
 				// TODO create appropriate update profile section for this
 				break;
 			// BIOGRAPHY
@@ -324,16 +310,13 @@ public class DisplayProfile extends Activity implements OnClickListener,
 			// break;
 			// GENRES (only one listener)
 			case R.id.profile_genres:
-				section = "genres";
 				// TODO create appropriate update profile section for this
 				break;
 			// LOCATION
 			case R.id.profile_location_text:
-				section = "location";
 				// TODO create appropriate update profile section for this
 				break;
 			case R.id.profile_location:
-				section = "location";
 				// TODO create appropriate update profile section for this
 				break;
 			// case R.id.profile_gigs_text:
@@ -359,6 +342,26 @@ public class DisplayProfile extends Activity implements OnClickListener,
 			case R.id.profile_webpage:
 				i = new Intent(this, UpdateWebpage.class);
 				i.putExtra("bandName", band_name);
+				startActivity(i);
+				break;
+			}
+		} else {
+			// If user is not the band of this profile but would like to
+			// link them self to it..
+			switch (v.getId()) {
+			// MEMBERS
+			case R.id.profile_members_text:
+				i = new Intent(this, RequestLink.class);
+				i.putExtra("bandName", band_name);
+				i.putExtra("membersOfBand", membersOfBand);
+				//i.putExtra("amountOfMembers", amountOfMembers);
+				startActivity(i);
+				break;
+			case R.id.profile_members:
+				i = new Intent(this, RequestLink.class);
+				i.putExtra("bandName", band_name);
+				i.putExtra("membersOfBand", membersOfBand);
+				//i.putExtra("amountOfMembers", amountOfMembers);
 				startActivity(i);
 				break;
 			}
@@ -452,8 +455,8 @@ public class DisplayProfile extends Activity implements OnClickListener,
 			progressDialog.dismiss();
 			if (subscriptions) {
 				Intent i = new Intent(DisplayProfile.this, Subscribe.class);
-					i.putExtra("subs", subs);
-					i.putExtra("bandName", band_name);
+				i.putExtra("subs", subs);
+				i.putExtra("bandName", band_name);
 				startActivity(i);
 			} else {
 				informUser();

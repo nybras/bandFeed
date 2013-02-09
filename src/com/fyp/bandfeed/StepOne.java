@@ -9,18 +9,29 @@ package com.fyp.bandfeed;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -34,17 +45,30 @@ public class StepOne extends Activity implements OnItemSelectedListener,
 	private ArrayList<String> genres;
 	private Spinner firstGenreSpinner, secondGenreSpinner, thirdGenreSpinner;
 	private EditText bandNameEditText;
+	private boolean nameNotInUse;
+	private ProgressDialog progressDialog;
+
+	private static String CheckNameURL = "http://bandfeed.co.uk/api/check_band_name.php";
+	// JSON NODE names
+	private static final String TAG_SUCCESS = "success";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_step_one);
 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// gets the activity's default ActionBar
+			ActionBar actionBar = getActionBar();
+			actionBar.show();
+		}
+
 		bandNameEditText = (EditText) findViewById(R.id.add_band_name_edit);
 
 		genres = new ArrayList<String>();
 		generateGenres();
 		Collections.sort(genres);
+		nameNotInUse = false;
 
 		// Search R.layout to see different layout styles
 		// Connecting an arrayList up to a Spinner - first genre spinner
@@ -83,79 +107,26 @@ public class StepOne extends Activity implements OnItemSelectedListener,
 	}
 
 	public void onClick(View v) {
-		String genre1 = (String) firstGenreSpinner
-				.getItemAtPosition(firstGenreSpinner.getSelectedItemPosition());
-		String genre2 = (String) secondGenreSpinner
-				.getItemAtPosition(secondGenreSpinner.getSelectedItemPosition());
-		String genre3 = (String) thirdGenreSpinner
-				.getItemAtPosition(thirdGenreSpinner.getSelectedItemPosition());
-		String bandName = bandNameEditText.getText().toString();
-
-		// SOMETHING TO LOOK INTO
-		// Instead of doing getText().toString().equals("") or vice-versa, it
-		// may be faster to do getText().length() == 0
-		if (bandName.equals("") || genre1.equals(" Select..")
-				|| genre2.equals(" Select..") || genre3.equals(" Select..")) {
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			// Dialog Message
-			builder.setMessage("Please enter all fields!")
-					.setCancelable(false)
-					.setNegativeButton("OK",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									dialog.cancel();
-								}
-							});
-			AlertDialog alert = builder.create();
-			alert.show();
-
-		} else {
-
-			Intent i = new Intent(this, StepTwo.class);
-			i.putExtra("bandName", bandName.trim());
-			i.putExtra("genre1", genre1);
-			i.putExtra("genre2", genre2);
-			i.putExtra("genre3", genre3);
-			startActivity(i);
-
-		}
+		new CheckName().execute();
 
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu, menu);
+		getMenuInflater().inflate(R.menu.menu2, menu);
 		return true;
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// respond to menu item selection
-		Toast toast = null;
 		switch (item.getItemId()) {
 		case R.id.about:
 			startActivity(new Intent(this, About.class));
 			return true;
-		case R.id.settings:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
 		case R.id.send_feedback:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
-		case R.id.log_out:
-			final SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
-			Editor editor = prefs.edit();
-			editor.clear();
-			editor.commit();
-			//startActivity(new Intent(this, MainActivity.class));
-			Intent intent = new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        finish();
-	        startActivity(intent);
+			Intent i = new Intent(this, SendFeedback.class);
+			i.putExtra("page", "StepOne");
+			startActivity(i);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -205,4 +176,131 @@ public class StepOne extends Activity implements OnItemSelectedListener,
 		// Do nothing
 	}
 
+	private void closeKeyboard() {
+		InputMethodManager inputManager = (InputMethodManager) this
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputManager.hideSoftInputFromWindow(this.getCurrentFocus()
+				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+	}
+
+	class CheckName extends AsyncTask<String, String, String> {
+
+		JSONParser jsonParser = new JSONParser();
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			closeKeyboard();
+			progressDialog = new ProgressDialog(StepOne.this);
+			progressDialog
+					.setMessage("Checking to see if Band already exists..");
+			progressDialog.setIndeterminate(false);
+			progressDialog.setCancelable(true);
+			progressDialog.show();
+		}
+
+		/**
+		 * Creating profile
+		 * */
+		@Override
+		protected String doInBackground(String... args) {
+
+			// Building Parameters
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("band_name", bandNameEditText
+					.getText().toString()));
+
+			// getting JSON Object
+			// Note that create profile url accepts POST method
+			JSONObject json = jsonParser.makeHttpRequest(CheckNameURL, "GET",
+					params);
+
+			// check log cat for response
+			Log.d("Create Response", json.toString());
+
+			// check for success tag
+			try {
+				int success = json.getInt(TAG_SUCCESS);
+
+				if (success == 1) {
+					// successfully created profile
+					nameNotInUse = true;
+				} else {
+					nameNotInUse = false;
+				}
+			} catch (JSONException e) {
+				nameNotInUse = false;
+			}
+
+			return null;
+		}
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		@Override
+		protected void onPostExecute(String file_url) {
+			// dismiss the dialog once done
+			progressDialog.dismiss();
+
+			if (nameNotInUse == false) {
+				Toast toast = Toast
+						.makeText(
+								StepOne.this,
+								"Band already exists! Use a different band name or request to be linked to the existing band profile (see 'About' for more instructions).",
+								Toast.LENGTH_LONG);
+				toast.show();
+			} else {
+				checkFields();
+			}
+
+		}
+
+	}
+
+	private void checkFields() {
+		String genre1 = (String) firstGenreSpinner
+				.getItemAtPosition(firstGenreSpinner.getSelectedItemPosition());
+		String genre2 = (String) secondGenreSpinner
+				.getItemAtPosition(secondGenreSpinner.getSelectedItemPosition());
+		String genre3 = (String) thirdGenreSpinner
+				.getItemAtPosition(thirdGenreSpinner.getSelectedItemPosition());
+		String bandName = bandNameEditText.getText().toString();
+
+		// SOMETHING TO LOOK INTO
+		// Instead of doing getText().toString().equals("") or vice-versa,
+		// it
+		// may be faster to do getText().length() == 0
+		if (bandName.equals("") || genre1.equals(" Select..")
+				|| genre2.equals(" Select..") || genre3.equals(" Select..")
+				|| nameNotInUse == false) {
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			// Dialog Message
+			builder.setMessage("Please enter all fields!")
+					.setCancelable(false)
+					.setNegativeButton("OK",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									dialog.cancel();
+								}
+							});
+			AlertDialog alert = builder.create();
+			alert.show();
+
+		} else {
+
+			Intent i = new Intent(this, StepTwo.class);
+			i.putExtra("bandName", bandName.trim());
+			i.putExtra("genre1", genre1);
+			i.putExtra("genre2", genre2);
+			i.putExtra("genre3", genre3);
+			startActivity(i);
+
+		}
+	}
 }

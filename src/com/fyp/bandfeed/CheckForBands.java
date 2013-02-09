@@ -58,7 +58,7 @@ public class CheckForBands {
 			}
 
 		} catch (JSONException e) {
-			e.printStackTrace();
+			return bands;
 		}
 		return null;
 

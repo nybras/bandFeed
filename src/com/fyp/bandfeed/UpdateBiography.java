@@ -9,13 +9,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -40,6 +44,12 @@ public class UpdateBiography extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_update_biography);
 		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// gets the activity's default ActionBar
+			ActionBar actionBar = getActionBar();
+			actionBar.show();
+		}
+		
 		prefs = getSharedPreferences("userPrefs", 0);
 		updated = false;
 
@@ -58,12 +68,28 @@ public class UpdateBiography extends Activity implements OnClickListener {
 		Button cancel = (Button) findViewById(R.id.cancel_biography_button);
 		cancel.setOnClickListener(this);
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu, menu);
+		getMenuInflater().inflate(R.menu.menu2, menu);
 		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// respond to menu item selection
+		switch (item.getItemId()) {
+		case R.id.about:
+			startActivity(new Intent(this, About.class));
+			return true;
+		case R.id.send_feedback:
+			Intent i = new Intent(this, SendFeedback.class);
+			i.putExtra("page", "UpdateBiography");
+			startActivity(i);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	public void onClick(View v) {

@@ -10,11 +10,13 @@
     <string name="test">test</string>
     <string name="title_activity_step">Add your band</string>
     <string name="type">Type here..</string>
+    <string name="band_feed_symbol_description">bandFeed image</string>
 
     <!-- activity_main -->
     <string name="title_activity_main">bandFeed</string>
-    <string name="band_feed_symbol_description">Image</string>
-    <string name="add_new_band_button">Add your band</string>
+    <string name="create_profile">Create a band profile</string>
+    <string name="browse_bands">Browse bands</string>
+    <string name="swipe">Swipe left to flick through your feeds.</string>
 
     <!-- activity_step_one -->
     <string name="band_name_text">Enter the name of your band</string>
@@ -57,6 +59,7 @@
     <string name="send_message_hint">Type message..</string>
     <string name="send_test_message">Send</string>
     <string name="send_from_text">Message to be sent from which band?</string>
+    <string name="select_topic_text">Select the topic type of your message</string>
 
     <!-- activity_receive_messages -->
     <string name="title_activity_receive_messages">Receive messages</string>
@@ -88,8 +91,8 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_update_samples">Update Samples</string>
     <string name="title_activity_update_webpage">Update Webpage</string>
-    
-    <!--  activity_subscribe -->
+
+    <!-- activity_subscribe -->
     <string name="title_activity_subscribe">Subscribe</string>
     <string name="check_news">General News</string>
     <string name="check_gigs">Gigs</string>
@@ -97,5 +100,30 @@
     <string name="check_updates">Profile Updates</string>
     <string name="subscribe">Subscribe</string>
     <string name="cancel">Cancel</string>
+
+    <!-- activity_send_feedback -->
+    <string name="title_activity_send_feedback">SendFeedback</string>
+    <string name="send_feedback_text">All constructive feedback will be greatly apprieciated and will help me to produce a better app. Please use this service to also submit any bugs you may come across.</string>
+    <string name="submit_button">Submit</string>
+    <string name="send_device_text">Please state the device you\'re using e.g \'Samsung Galaxy S3\'.</string>
+    <string name="send_version_text">Please state the version of Android you\'re running e.g. \'4.0.3\'. \n If you are not sure you can find the android version located in \'Settings\' > \'About phone\' > \'Android version\'.</string>
+    <string name="select_page_text">If the comment you wish to make was in releation to the page in which you pressed the \'Send Feedback\' icon (the previous page), please tick the following box, otherwise just leave it blank.</string>
+    <string name="check_page">Yes the comment is releated to the previous page.</string>
+
+    <!-- Feeds -->
+    <string name="title_activity_all_feed">All Feed</string>
+    <string name="title_activity_news_feed">General News Feed</string>
+    <string name="title_activity_gigs_feed">Gigs Feed</string>
+    <string name="title_activity_releases_feed">Releases Feed</string>
+    <string name="title_activity_updates_feed">Updates Feed</string>
+
+    <!-- activity_request_link -->
+    <string name="title_activity_request_link">Request Link</string>
+    <string name="link_name_button">Send link</string>
+    
+    <!-- activity_deal_with_link_request -->
+    <string name="title_activity_deal_with_link_request">Accept Link Request?</string>
+    <string name="accept_button">Accept</string>
+    
 
 </resources>

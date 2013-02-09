@@ -3,11 +3,15 @@ package com.fyp.bandfeed;
 import java.util.ArrayList;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -19,7 +23,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 public class Subscribe extends Activity implements OnClickListener {
 
 	private CheckBox cNews, cGigs, cReleases, cUpdates;
-	//private boolean news, gigs, releases, updates = false;
+	// private boolean news, gigs, releases, updates = false;
 	private ProgressDialog progressDialog;
 	private String bandName;
 	private ArrayList<String> subs;
@@ -28,6 +32,12 @@ public class Subscribe extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_subscribe);
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// gets the activity's default ActionBar
+			ActionBar actionBar = getActionBar();
+			actionBar.show();
+		}
 
 		Bundle extras = getIntent().getExtras();
 		subs = extras.getStringArrayList("subs");
@@ -96,7 +106,7 @@ public class Subscribe extends Activity implements OnClickListener {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_subscribe, menu);
+		getMenuInflater().inflate(R.menu.menu2, menu);
 		return true;
 	}
 
@@ -123,7 +133,8 @@ public class Subscribe extends Activity implements OnClickListener {
 
 			// NEWS
 			if (cNews.isChecked() && !subs.contains("news")) {
-				// if news has been selected and wasn't already selected, then create bind
+				// if news has been selected and wasn't already selected, then
+				// create bind
 				ConnectToRabbitMQ connection = new ConnectToRabbitMQ(bandName,
 						username.trim());
 				if (connection.createBind("news")) {
@@ -132,7 +143,7 @@ public class Subscribe extends Activity implements OnClickListener {
 				} else {
 					newsSubCreated = false;
 				}
-			} else if (!cNews.isChecked() && subs.contains("news")){
+			} else if (!cNews.isChecked() && subs.contains("news")) {
 				// if new is unticked but was previously ticked then delete bind
 				// Unbind!
 				ConnectToRabbitMQ connection = new ConnectToRabbitMQ(bandName,
@@ -143,9 +154,8 @@ public class Subscribe extends Activity implements OnClickListener {
 				} else {
 					newsSubCreated = false;
 				}
-			}
-			else {
-				//Do nothing, everything is fine!
+			} else {
+				// Do nothing, everything is fine!
 				newsSubCreated = true;
 			}
 
@@ -159,7 +169,7 @@ public class Subscribe extends Activity implements OnClickListener {
 				} else {
 					gigsSubCreated = false;
 				}
-			} else if (!cGigs.isChecked() && subs.contains("gigs")){
+			} else if (!cGigs.isChecked() && subs.contains("gigs")) {
 				// Unbind!
 				ConnectToRabbitMQ connection = new ConnectToRabbitMQ(bandName,
 						username.trim());
@@ -169,9 +179,8 @@ public class Subscribe extends Activity implements OnClickListener {
 				} else {
 					gigsSubCreated = false;
 				}
-			}
-			else {
-				//Do nothing, everything is fine!
+			} else {
+				// Do nothing, everything is fine!
 				gigsSubCreated = true;
 			}
 
@@ -185,7 +194,7 @@ public class Subscribe extends Activity implements OnClickListener {
 				} else {
 					releasesSubCreated = false;
 				}
-			} else if (!cReleases.isChecked() && subs.contains("releases")){
+			} else if (!cReleases.isChecked() && subs.contains("releases")) {
 				// Unbind!
 				ConnectToRabbitMQ connection = new ConnectToRabbitMQ(bandName,
 						username.trim());
@@ -195,9 +204,8 @@ public class Subscribe extends Activity implements OnClickListener {
 				} else {
 					releasesSubCreated = false;
 				}
-			} 
-			else {
-				//Do nothing, everything is fine!
+			} else {
+				// Do nothing, everything is fine!
 				releasesSubCreated = true;
 			}
 
@@ -221,9 +229,8 @@ public class Subscribe extends Activity implements OnClickListener {
 				} else {
 					updatesSubCreated = false;
 				}
-			}
-			else {
-				//Do nothing, everything is fine!
+			} else {
+				// Do nothing, everything is fine!
 				updatesSubCreated = true;
 			}
 
@@ -237,18 +244,17 @@ public class Subscribe extends Activity implements OnClickListener {
 
 			if (newsSubCreated && gigsSubCreated && releasesSubCreated
 					&& updatesSubCreated) {
+				informUserSubscript("Subscriptions successfully changed!");
 				Subscribe.this.finish();
 			} else {
-				informUserSubscript();
+				informUserSubscript("Failed to edit Subscriptions, try again later!");
 			}
 		}
 	}
 
-	public void informUserSubscript() {
+	public void informUserSubscript(String msg) {
 
-		Toast toast = Toast.makeText(this,
-				"Failed to edit Subscriptions, try again later",
-				Toast.LENGTH_SHORT);
+		Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
 		toast.show();
 	}
 
@@ -261,6 +267,23 @@ public class Subscribe extends Activity implements OnClickListener {
 			finish();
 		}
 
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// respond to menu item selection
+		switch (item.getItemId()) {
+		case R.id.about:
+			startActivity(new Intent(this, About.class));
+			return true;
+		case R.id.send_feedback:
+			Intent i = new Intent(this, SendFeedback.class);
+			i.putExtra("page", "Subscribe");
+			startActivity(i);
+			return true;
+		case R.id.log_out:
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 }

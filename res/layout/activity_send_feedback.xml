@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="30dip" >
+
+        <TextView
+            android:id="@+id/send_feedback_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/send_feedback_text" />
+
+        <EditText
+            android:id="@+id/send_feedback_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/type"
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine|textAutoComplete"
+            android:minHeight="40dip" />
+        
+        <TextView
+            android:id="@+id/spacing"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="10dip" />
+
+        <TextView
+            android:id="@+id/send_device_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/send_device_text" />
+
+        <EditText
+            android:id="@+id/send_device_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/type"
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine|textAutoComplete" />
+        
+        <TextView
+            android:id="@id/spacing"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="10dip" />
+
+        <TextView
+            android:id="@+id/send_version_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/send_version_text" />
+
+        <EditText
+            android:id="@+id/send_version_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/type"
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine|textAutoComplete" />
+        
+        <TextView
+            android:id="@id/spacing"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="10dip" />
+
+        <TextView
+            android:id="@+id/select_page_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/select_page_text" />
+        
+        <TextView
+            android:id="@id/spacing"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="10dip" />
+
+        <CheckBox
+            android:id="@+id/checkPage"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:button="@null"
+            android:drawableRight="@drawable/box"
+            android:paddingLeft="20dip"
+            android:paddingRight="20dip"
+            android:text="@string/check_page" />
+        
+        <TextView
+            android:id="@id/spacing"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="40dip" />
+
+        <Button
+            android:id="@+id/submit_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/submit_button" />
+
+        <Button
+            android:id="@+id/cancel_feedback_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/cancel" />
+    </LinearLayout>
+
+</ScrollView>

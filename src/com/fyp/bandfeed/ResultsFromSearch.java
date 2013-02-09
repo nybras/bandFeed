@@ -10,133 +10,99 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import android.widget.Toast;
 
-public class ResultsFromSearch extends Activity implements OnClickListener {
+public class ResultsFromSearch extends Activity {
 
 	private Bundle extras;
-	private SparseArray<String> ids;
 	private ProgressDialog progressDialog;
 	private String profile;
+	private ListView list;
+	private LazyAdapter adapter;
+	private ArrayList<Entry> listOfEntries;
 
 	private static String GetProfileURL = "http://bandfeed.co.uk/api/read_profile.php";
 
 	// JSON NODE names
 	private static final String TAG_SUCCESS = "success";
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_all_feed);
 
-
-		ids = new SparseArray<String>();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// gets the activity's default ActionBar
+			ActionBar actionBar = getActionBar();
+			actionBar.show();
+		}
+		
+		listOfEntries = new ArrayList<Entry>();
+		//logIt = new AppendToLog();
+		list = (ListView) findViewById(R.id.listView1);
+		adapter = new LazyAdapter(this, null, listOfEntries);
+		list.setAdapter(adapter);
 		extras = getIntent().getExtras();
-
-		// set up a scrollable view that is linear with a vertical orientation
-		ScrollView scrollView = new ScrollView(this);
-		LinearLayout.LayoutParams lp;
-		lp = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.FILL_PARENT,
-				LinearLayout.LayoutParams.FILL_PARENT);
-		// Need to read up on this
-		LinearLayout linearLayout = new LinearLayout(this);
-		linearLayout.setOrientation(LinearLayout.VERTICAL);
-		linearLayout.setGravity(Gravity.CENTER);
-		scrollView.addView(linearLayout);
-
-		linearLayout.setPadding(30, 30, 30, 30);
-
-		this.setContentView(scrollView, lp);
 
 		if (extras.getBoolean("success")) {
 			for (int i = 0; i < extras.getInt("numOfReturns"); i++) {
-				String bandName = extras.getString("band_name"+i);
-				Button profileButton = new Button(this);
-				// button to next activity
-				Integer id = findId(1);
-				profileButton.setId(id);
-				ids.put(id, bandName);
-				profileButton.setText(bandName);
-				profileButton.setOnClickListener(this);
-				linearLayout.addView(profileButton);
+				Entry entry = new Entry();
+				entry.setBandName(extras.getString("band_name"+i));
+				entry.setGenre1(extras.getString("genre1-"+i));
+				entry.setGenre2(extras.getString("genre2-"+i));
+				entry.setGenre3(extras.getString("genre3-"+i));
+				listOfEntries.add(entry);
 			}
 		} else {
-			TextView noProfileText = new TextView(this);
-			noProfileText.setText("No profiles match..");
-			linearLayout.addView(noProfileText);
+			
+			Toast toast = Toast.makeText(this, "No profiles match.. Try a new search!", Toast.LENGTH_LONG);
+			toast.show();
 		}
-	}
+		
+		list.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				
+				profile = listOfEntries.get(position).getBandName();
+				new OpenProfile().execute();
 
-	private int findId(int id) {
-		// create an ID
-		View v = findViewById(id);
-		while (v != null) {
-			v = findViewById(++id);
-		}
-		return id++;
-
+			}
+		});
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu, menu);
+		getMenuInflater().inflate(R.menu.menu2, menu);
 		return true;
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// respond to menu item selection
-		Toast toast = null;
 		switch (item.getItemId()) {
 		case R.id.about:
 			startActivity(new Intent(this, About.class));
 			return true;
-		case R.id.settings:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
 		case R.id.send_feedback:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
-		case R.id.log_out:
-			final SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
-			Editor editor = prefs.edit();
-			editor.clear();
-			editor.commit();
-			//startActivity(new Intent(this, MainActivity.class));
-			Intent intent = new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        finish();
-	        startActivity(intent);
+			Intent i = new Intent(this, SendFeedback.class);
+			i.putExtra("page", "ResultsFromSearch");
+			startActivity(i);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-
-	public void onClick(View v) {
-		profile = ids.get(v.getId());
-		new OpenProfile().execute();
-
 	}
 
 	class OpenProfile extends AsyncTask<String, String, String> {
@@ -178,9 +144,9 @@ public class ResultsFromSearch extends Activity implements OnClickListener {
 				success = json.getInt(TAG_SUCCESS);
 
 				if (success == 1) {
-					// successfully received product details
-					JSONArray profileObj = json.getJSONArray("bprofile"); // JSON
-																			// array
+					// successfully received profile details
+					// JSON array
+					JSONArray profileObj = json.getJSONArray("bprofile"); 
 					JSONArray membersObj = json.getJSONArray("bmembers");
 
 					// get first object from JSON Array

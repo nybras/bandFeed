@@ -10,19 +10,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class BrowseCriteria extends Activity implements OnClickListener {
 
@@ -40,6 +39,13 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
+		
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// gets the activity's default ActionBar
+			ActionBar actionBar = getActionBar();
+			actionBar.show();
+		}
 
 		View findResults = findViewById(R.id.search_button);
 		findResults.setOnClickListener(this);
@@ -50,36 +56,21 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu, menu);
+		getMenuInflater().inflate(R.menu.menu2, menu);
 		return true;
 	}
 	
+	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// respond to menu item selection
-		Toast toast = null;
 		switch (item.getItemId()) {
 		case R.id.about:
 			startActivity(new Intent(this, About.class));
 			return true;
-		case R.id.settings:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
 		case R.id.send_feedback:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
-		case R.id.log_out:
-			final SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
-			Editor editor = prefs.edit();
-			editor.clear();
-			editor.commit();
-			//startActivity(new Intent(this, MainActivity.class));
-			Intent intent = new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        finish();
-	        startActivity(intent);
+			Intent i = new Intent(this, SendFeedback.class);
+			i.putExtra("page", "BrowseCriteria");
+			startActivity(i);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -125,14 +116,6 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 				JSONObject json = jsonParser.makeHttpRequest(GetProfileNames,
 						"GET", params);
 
-				// TODO NEED TO CREATE A PHP API THAN ONLY RETEIVES NAMES AND
-				// GENRES OR WHATEVER DEPENDING ON SEARCH CRITERIA
-				// TODO NEED TO CREATE A PHP API THAN ONLY RETEIVES NAMES AND
-				// GENRES OR WHATEVER DEPENDING ON SEARCH CRITERIA
-				// TODO NEED TO CREATE A PHP API THAN ONLY RETEIVES NAMES AND
-				// GENRES OR WHATEVER DEPENDING ON SEARCH CRITERIA
-				// e.g. need to change the getProfileURL to the new api!!
-
 				// check log cat for response
 				Log.d("Profile Response", json.toString());
 
@@ -142,12 +125,9 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 
 				if (success == 1) {
 					// successfully received product details
-					JSONArray profileObj = json.getJSONArray("names"); // JSON
-																			// array
-
-					
-					
-					
+					// JSON array
+					JSONArray profileObj = json.getJSONArray("names"); 
+																			
 
 					Intent i = new Intent(getApplicationContext(),
 							ResultsFromSearch.class);
@@ -159,6 +139,9 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 						// get first object from JSON Array
 						JSONObject profile = profileObj.getJSONObject(num);
 					i.putExtra("band_name" + num, profile.getString("band_name"));
+					i.putExtra("genre1-" + num, profile.getString("genre1"));
+					i.putExtra("genre2-" + num, profile.getString("genre2"));
+					i.putExtra("genre3-" + num, profile.getString("genre3"));
 					}
 					
 					startActivity(i);

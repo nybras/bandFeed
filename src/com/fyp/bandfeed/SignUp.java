@@ -15,6 +15,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -54,6 +56,29 @@ public class SignUp extends Activity implements OnClickListener {
 
 	}
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.menu2, menu);
+		return true;
+	}
+
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// respond to menu item selection
+		switch (item.getItemId()) {
+		case R.id.about:
+			startActivity(new Intent(this, About.class));
+			return true;
+		case R.id.send_feedback:
+			Intent i = new Intent(this, SendFeedback.class);
+			i.putExtra("page", "SignUp");
+			startActivity(i);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
 	private void closeKeyboard() {
 		InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
 		inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
@@ -76,6 +101,7 @@ public class SignUp extends Activity implements OnClickListener {
 		protected String doInBackground(String... args) {
 
 			JSONParser jsonParser = new JSONParser();
+			
 
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -144,7 +170,7 @@ public class SignUp extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		String p1 = passwordEditText.getText().toString().trim();
 		String p2 = password2EditText.getText().toString().trim();
-		String name = usernameEditText.getText().toString().trim();
+		name = usernameEditText.getText().toString().trim();
 
 		if (p1.equals("") || p2.equals("") || name.equals("")) {
 			Toast toast = Toast.makeText(this, "Please enter all fields",

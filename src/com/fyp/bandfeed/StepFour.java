@@ -19,7 +19,9 @@ import java.util.List;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -74,8 +76,13 @@ public class StepFour extends Activity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_step_four);
 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// gets the activity's default ActionBar
+			ActionBar actionBar = getActionBar();
+			actionBar.show();
+		}
+
 		profileCreated = false;
-		
 		logIt = new AppendToLog();
 
 		imageSelector = (ImageView) findViewById(R.id.select_logo);
@@ -105,44 +112,30 @@ public class StepFour extends Activity implements OnClickListener,
 		nextButton.setOnClickListener(this);
 
 	}
-	
+
 	private void closeKeyboard() {
-		InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-		inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		InputMethodManager inputManager = (InputMethodManager) this
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputManager.hideSoftInputFromWindow(this.getCurrentFocus()
+				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu, menu);
+		getMenuInflater().inflate(R.menu.menu2, menu);
 		return true;
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// respond to menu item selection
-		Toast toast = null;
 		switch (item.getItemId()) {
 		case R.id.about:
 			startActivity(new Intent(this, About.class));
 			return true;
-		case R.id.settings:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
 		case R.id.send_feedback:
-			toast = Toast.makeText(this, "Not implemented yet, coming soon!",
-					Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
-		case R.id.log_out:
-			final SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
-			Editor editor = prefs.edit();
-			editor.clear();
-			editor.commit();
-			//startActivity(new Intent(this, MainActivity.class));
-			Intent intent = new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        finish();
-	        startActivity(intent);
+			Intent i = new Intent(this, SendFeedback.class);
+			i.putExtra("page", "StepFour");
+			startActivity(i);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -217,6 +210,9 @@ public class StepFour extends Activity implements OnClickListener,
 
 	class CreateNewProfile extends AsyncTask<String, String, String> {
 
+		SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
+		String username = prefs.getString("userName", null);
+		
 		private static final String ImageResponse = "ImageResponse";
 		JSONParser jsonParser = new JSONParser();
 
@@ -267,8 +263,6 @@ public class StepFour extends Activity implements OnClickListener,
 			params.add(new BasicNameValuePair("webpage", wp));
 			params.add(new BasicNameValuePair("soundCloud", sc));
 			params.add(new BasicNameValuePair("user_accepted", name));
-			final SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
-			final String username = prefs.getString("userName", null);
 			params.add(new BasicNameValuePair("user_name", username));
 
 			if (isSelected()) {
@@ -298,7 +292,6 @@ public class StepFour extends Activity implements OnClickListener,
 				if (success == 1) {
 					// successfully created profile
 					logIt.append(bandName + " CREATED BAND PROFILE");
-					
 
 					// CREATE EXCHANGE
 					ConnectToRabbitMQ connection = new ConnectToRabbitMQ(
@@ -308,8 +301,9 @@ public class StepFour extends Activity implements OnClickListener,
 						connection.dispose();
 
 						profileCreated = true;
-						String un = prefs.getString("userName", null);
-						CheckForBands nb = new CheckForBands(un);
+						
+						
+						CheckForBands nb = new CheckForBands(username);
 						ArrayList<String> bands = nb.check();
 						Editor editor = prefs.edit();
 						for (int i = 0; i < bands.size(); i++) {
@@ -317,11 +311,12 @@ public class StepFour extends Activity implements OnClickListener,
 						}
 						editor.putInt("numOfBands", bands.size());
 						editor.commit();
-						
+
 					} else {
-						informUser("Failed to create Exchange");
+						informUser("Failed to create Exchange",0);
 						profileCreated = false;
-						logIt.append(bandName + " FAILED TO CREATE BAND PROFILE");
+						logIt.append(bandName
+								+ " FAILED TO CREATE BAND PROFILE");
 					}
 				} else {
 					profileCreated = false;
@@ -351,20 +346,38 @@ public class StepFour extends Activity implements OnClickListener,
 			progressDialog.dismiss();
 
 			if (profileCreated == false) {
-				informUser("Failed to create Profile");
+				informUser("Failed to create profile, please try again later!",
+						0);
 				// TODO DELETE EXISTIING PROFILE ENTRY IF APPLICABLE
+				Intent i = new Intent(getApplicationContext(),
+						MainActivity.class)
+						.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				finish();
+				startActivity(i);
+			} else {
+				informUser(
+						"Profile successfully created. You can now swipe left to send messages to your followers!",
+						1);
+				// TODO DELETE EXISTIING PROFILE ENTRY IF APPLICABLE
+				Intent i = new Intent(getApplicationContext(),
+						MainActivity.class)
+						.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				finish();
+				startActivity(i);
 			}
-			Intent i = new Intent(getApplicationContext(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        finish();
-	        startActivity(i);
 
 		}
 
 	}
 
-	public void informUser(String msg) {
-		Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
-		toast.show();
+	public void informUser(String msg, int n) {
+		if (n == 0) {
+			Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+			toast.show();
+		} else {
+			Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+			toast.show();
+		}
 
 	}
 

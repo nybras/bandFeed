@@ -54,6 +54,10 @@ public class ConnectToRabbitMQ {
 	public Channel getChannel() {
 		return channel;
 	}
+	
+	public void setQueue(String queue) {
+		this.queue = queue;
+	}
 
 	public boolean createExchange() {
 		try {
@@ -64,6 +68,19 @@ public class ConnectToRabbitMQ {
 			return true;
 		} catch (IOException e) {
 			logIt.append(exchange + " EXCHANGE FAILED");
+			return false;
+		}
+	}
+	
+	public boolean deleteExchange() {
+		try {
+			if (connectToRabbitMQ()) {
+				channel.exchangeDelete(exchange);
+				logIt.append(exchange + " EXCHANGE DELETED");
+			}
+			return true;
+		} catch (IOException e) {
+			logIt.append(exchange + " EXCHANGE FAILED TO BE DELETED");
 			return false;
 		}
 	}
@@ -107,11 +124,11 @@ public class ConnectToRabbitMQ {
 		}
 	}
 
-	public boolean sendMessage(byte[] message, String strMes) {
+	public boolean sendMessage(byte[] message, String key, String strMes) {
 		
 		try {
 			if (connectToRabbitMQ()) {
-				channel.basicPublish(exchange, "", null, message);
+				channel.basicPublish(exchange, key, null, message);
 				logIt.append(exchange + " PUBLISHED MESSAGE: " + strMes);
 			}
 			return true;

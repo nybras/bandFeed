@@ -5,11 +5,13 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="7"
+        android:minSdkVersion="10"
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- To allow for android 2.3 revert back to minSdk 10 and change the theme back to @style/AppTheme -->
 
     <application
         android:allowBackup="true"
@@ -18,7 +20,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.fyp.bandfeed.MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,43 +30,48 @@
         </activity>
         <activity
             android:name="com.fyp.bandfeed.StepOne"
-            android:label="@string/title_activity_step" >
+            android:label="@string/title_activity_step"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.About"
-            android:label="@string/title_activity_about" >
+            android:label="@string/title_activity_about"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.StepTwo"
-            android:label="@string/title_activity_step" >
+            android:label="@string/title_activity_step"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.StepThree"
-            android:label="@string/title_activity_step" >
+            android:label="@string/title_activity_step"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.StepThreeA"
-            android:label="@string/title_activity_step" >
+            android:label="@string/title_activity_step"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.StepFour"
-            android:label="@string/title_activity_step" >
+            android:label="@string/title_activity_step"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.BrowseCriteria"
-            android:label="@string/title_activity_search" >
+            android:label="@string/title_activity_search"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.ResultsFromSearch"
-            android:label="@string/title_activity_search_results" >
-        </activity>
-        <activity
-            android:name="com.fyp.bandfeed.ReceiveMessages"
-            android:label="@string/title_activity_receive_messages" >
+            android:label="@string/title_activity_search_results"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.SendMessages"
-            android:label="@string/title_activity_send_messages" >
+            android:label="@string/title_activity_send_messages"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.SignUp"
@@ -71,7 +79,8 @@
         </activity>
         <activity
             android:name="com.fyp.bandfeed.DisplayProfile"
-            android:label="@string/title_activity_display_profile" >
+            android:label="@string/title_activity_display_profile"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.Login"
@@ -79,19 +88,60 @@
         </activity>
         <activity
             android:name="com.fyp.bandfeed.UpdateBiography"
-            android:label="@string/title_activity_update_biography" >
+            android:label="@string/title_activity_update_biography"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.UpdateSamples"
-            android:label="@string/title_activity_update_samples" >
+            android:label="@string/title_activity_update_samples"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.UpdateWebpage"
-            android:label="@string/title_activity_update_webpage" >
+            android:label="@string/title_activity_update_webpage"
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name="com.fyp.bandfeed.Subscribe"
-            android:label="@string/title_activity_subscribe" >
+            android:label="@string/title_activity_subscribe"
+            android:launchMode="singleTop" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.SendFeedback"
+            android:label="@string/title_activity_send_feedback" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.AllFeed"
+            android:label="@string/title_activity_all_feed"
+            android:launchMode="singleTop" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.NewsFeed"
+            android:label="@string/title_activity_news_feed"
+            android:launchMode="singleTop" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.GigsFeed"
+            android:label="@string/title_activity_gigs_feed"
+            android:launchMode="singleTop" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.ReleasesFeed"
+            android:label="@string/title_activity_releases_feed"
+            android:launchMode="singleTop" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.UpdatesFeed"
+            android:label="@string/title_activity_updates_feed"
+            android:launchMode="singleTop" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.RequestLink"
+            android:label="@string/title_activity_request_link" >
+        </activity>
+        <activity
+            android:name="com.fyp.bandfeed.DealWithLinkRequest"
+            android:label="@string/title_activity_deal_with_link_request" >
         </activity>
     </application>
 
