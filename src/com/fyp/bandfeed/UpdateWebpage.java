@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.util.ArrayList;
@@ -32,18 +38,13 @@ public class UpdateWebpage extends Activity implements OnClickListener {
 	private EditText webpageEdit;
 	private ProgressDialog progressDialog;
 	private String bandName;
-	private boolean updated;
 	private SharedPreferences prefs;
-
-	private static String UpdateProfileURL = "http://bandfeed.co.uk/api/update_profile.php";
-	// JSON NODE names
-	private static final String TAG_SUCCESS = "success";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_update_webpage);
-		
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			// gets the activity's default ActionBar
 			ActionBar actionBar = getActionBar();
@@ -51,7 +52,6 @@ public class UpdateWebpage extends Activity implements OnClickListener {
 		}
 
 		prefs = getSharedPreferences("userPrefs", 0);
-		updated = false;
 
 		Bundle extras = getIntent().getExtras();
 		bandName = extras.getString("bandName");
@@ -61,7 +61,7 @@ public class UpdateWebpage extends Activity implements OnClickListener {
 				.setText("Update your Webpage url here. If you don't have a webpage just leave the text field blank");
 
 		webpageEdit = (EditText) findViewById(R.id.update_webpage_edit);
-		webpageEdit.setText(extras.getString("bio"));
+		webpageEdit.setText(extras.getString("webpage"));
 
 		Button update = (Button) findViewById(R.id.update_webpage_button);
 		update.setOnClickListener(this);
@@ -69,7 +69,7 @@ public class UpdateWebpage extends Activity implements OnClickListener {
 		Button cancel = (Button) findViewById(R.id.cancel_webpage_button);
 		cancel.setOnClickListener(this);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -107,6 +107,9 @@ public class UpdateWebpage extends Activity implements OnClickListener {
 	class UpdateWeb extends AsyncTask<String, String, String> {
 
 		JSONParser jsonParser = new JSONParser();
+		private static final String UpdateProfileURL = "http://bandfeed.co.uk/api/update_profile.php";
+		private boolean connection = false;
+		private boolean updated = false;
 
 		@Override
 		protected void onPreExecute() {
@@ -122,38 +125,37 @@ public class UpdateWebpage extends Activity implements OnClickListener {
 		@Override
 		protected String doInBackground(String... args) {
 
-			// SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
-			// String username = prefs.getString("userName", null);
-
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("band_name", bandName));
-			params.add(new BasicNameValuePair("webpage", webpageEdit
-					.getText().toString()));
+			params.add(new BasicNameValuePair("webpage", webpageEdit.getText()
+					.toString()));
 
 			// getting JSON Object
-			// Note that create profile url accepts POST method
 			JSONObject json = jsonParser.makeHttpRequest(UpdateProfileURL,
 					"POST", params);
 
-			// check log cat for response
-			Log.d("Create Response", json.toString());
+			if (json != null) {
+				try {
+					// check log cat for response
+					Log.d("Create Response", json.toString());
 
-			// check for success tag
-			try {
-				int success = json.getInt(TAG_SUCCESS);
+					// check for success tag
+					if (json.getInt("success") == 1) {
+						// successfully created profile
+						AppendToLog logIt = new AppendToLog();
+						logIt.append(bandName + " UPDATED WEBPAGE");
+						updated = true;
 
-				if (success == 1) {
-					// successfully created profile
-					AppendToLog logIt = new AppendToLog();
-					logIt.append(bandName + " UPDATED WEBPAGE");
-					updated = true;
-
-				} else {
+					} else {
+						updated = false;
+					}
+				} catch (JSONException e) {
 					updated = false;
 				}
-			} catch (JSONException e) {
-				updated = false;
+				connection = true;
+			} else {
+				connection = false;
 			}
 
 			return null;
@@ -163,14 +165,19 @@ public class UpdateWebpage extends Activity implements OnClickListener {
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
-			if (updated) {
-				informUser("Webpage updated!");
-				Editor editor = prefs.edit();
-				editor.putString("webpage", webpageEdit.getText().toString());
-				editor.commit();
-				UpdateWebpage.this.finish();
+			if (connection) {
+				if (updated) {
+					informUser("Webpage updated!");
+					Editor editor = prefs.edit();
+					editor.putString("webpage", webpageEdit.getText()
+							.toString());
+					editor.commit();
+					UpdateWebpage.this.finish();
+				} else {
+					informUser("Update failed, try again later!");
+				}
 			} else {
-				informUser("Update failed!");
+				informUser("No internet connection!");
 			}
 		}
 	}

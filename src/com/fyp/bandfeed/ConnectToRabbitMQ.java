@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.io.IOException;
@@ -38,16 +44,16 @@ public class ConnectToRabbitMQ {
 
 	}
 
-	public void dispose() {
+	public boolean dispose() {
 
 		try {
 			if (connection != null)
 				connection.close();
 			if (channel != null)
 				channel.abort();
+			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return false;
 		}
 	}
 	
@@ -193,8 +199,6 @@ public class ConnectToRabbitMQ {
 			
 			connection = connectionFactory.newConnection();
 			channel = connection.createChannel();
-
-			
 			
 		} catch (IOException e) {
 			return false;

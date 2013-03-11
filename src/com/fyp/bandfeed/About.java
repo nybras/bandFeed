@@ -1,6 +1,6 @@
 /**
  * @author Brett Flitter
- * @version Prototype1 - 01/08/2012
+ * @version Prototype1 - 20/02/2013
  * @title Project bandFeed
  */
 
@@ -15,5 +15,7 @@ public class About extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        
+        //The whole layout is constructed in it's XML file
     }
 }

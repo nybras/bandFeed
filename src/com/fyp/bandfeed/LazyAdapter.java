@@ -61,7 +61,7 @@ public class LazyAdapter extends BaseAdapter {
 					+ listOfEntries.get(position).getGenre2() + " \\ "
 					+ listOfEntries.get(position).getGenre3());
 			ImageView bImage = (ImageView) vi.findViewById(R.id.thumb2);
-			imageLoader.DisplayImage(null, listOfEntries.get(position), bImage);
+			imageLoader.DisplayImage(listOfEntries.get(position).getBandName(), bImage);
 			return vi;
 
 		} else {
@@ -84,7 +84,7 @@ public class LazyAdapter extends BaseAdapter {
 				textMessage.setText(listOfFeeds.get(position).getMessage());
 				ImageView image = (ImageView) vi.findViewById(R.id.thumb);
 				imageLoader
-						.DisplayImage(listOfFeeds.get(position), null, image);
+						.DisplayImage(listOfFeeds.get(position).getName(), image);
 				return vi;
 			} else {
 				TextView textTitle = (TextView) vi.findViewById(R.id.title);
@@ -99,7 +99,7 @@ public class LazyAdapter extends BaseAdapter {
 						+ ". To follow this up click this message!");
 				ImageView image = (ImageView) vi.findViewById(R.id.thumb);
 				imageLoader
-						.DisplayImage(listOfFeeds.get(position), null, image);
+						.DisplayImage(listOfFeeds.get(position).getName(), image);
 				return vi;
 			}
 		}

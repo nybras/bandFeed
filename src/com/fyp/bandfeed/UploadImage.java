@@ -14,28 +14,28 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import android.graphics.Bitmap;
 
+// Not my code!!!
 
 public class UploadImage {
 	InputStream inputStream;
 	ArrayList<NameValuePair> nameValuePairs;
-	
+
 	public UploadImage() {
 		nameValuePairs = new ArrayList<NameValuePair>();
 	}
 
 	public void getPicture(Bitmap bitmap, String bandName) {
 
-		//Bitmap bitmap = BitmapFactory.decodeFile(“/sdcard/android.jpg”);
+		// Bitmap bitmap = BitmapFactory.decodeFile(“/sdcard/android.jpg”);
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream); // compress to
-																// which format
-																// you want.
+		bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
+		// compress to which format you want.
 		byte[] byte_arr = stream.toByteArray();
 		String image_str = Base64.encodeBytes(byte_arr);
-		
+
 		nameValuePairs.add(new BasicNameValuePair("image", image_str));
 		nameValuePairs.add(new BasicNameValuePair("bandName", bandName));
-		
+
 	}
 
 	public String makeConnection() {
@@ -45,7 +45,7 @@ public class UploadImage {
 					"http://bandfeed.co.uk/images/upload_image.php");
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 			HttpResponse response = httpclient.execute(httppost);
-			
+
 			String the_string_response = convertResponseToString(response);
 			return the_string_response;
 
@@ -62,22 +62,19 @@ public class UploadImage {
 		String res = "";
 		StringBuffer buffer = new StringBuffer();
 		inputStream = response.getEntity().getContent();
-		int contentLength = (int) response.getEntity().getContentLength(); // getting
-																			// content
-																			// length…..
+		int contentLength = (int) response.getEntity().getContentLength();
+		// getting content length…..
 
 		if (contentLength < 0) {
 			// Picture will not send
-			//TODO deal with this
+			// TODO deal with this
 		} else {
 			byte[] data = new byte[512];
 			int len = 0;
 			try {
 				while (-1 != (len = inputStream.read(data))) {
-					buffer.append(new String(data, 0, len)); // converting to
-																// string and
-																// appending to
-																// stringbuffer…..
+					buffer.append(new String(data, 0, len));
+					// converting to string and appending to stringbuffer…..
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -89,13 +86,8 @@ public class UploadImage {
 			}
 			res = buffer.toString(); // converting stringbuffer to string…..
 
-//			Toast.makeText(UploadImage.this, "Result : " + res,
-//					Toast.LENGTH_LONG).show();
-			// System.out.println("Response => " +
-			// EntityUtils.toString(response.getEntity()));
 		}
 		return res;
 	}
-	
 
 }

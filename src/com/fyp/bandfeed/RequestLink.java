@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.util.ArrayList;
@@ -39,9 +45,7 @@ public class RequestLink extends Activity implements OnItemSelectedListener,
 	private ProgressDialog progressDialog;
 	private SharedPreferences prefs;
 	private String bandName;
-	private static final String CheckMembersURL = "http://bandfeed.co.uk/api/users_accepted.php";
-	// JSON NODE names
-	private static final String TAG_SUCCESS = "success";
+	private ArrayList<String> membersOfBand;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,8 @@ public class RequestLink extends Activity implements OnItemSelectedListener,
 		extras = getIntent().getExtras();
 		bandName = extras.getString("bandName");
 		prefs = getSharedPreferences("userPrefs", 0);
+		membersOfBand = extras.getStringArrayList("membersOfBand");
+		membersOfBand.add(0, " Select..");
 
 		TextView linkText = (TextView) findViewById(R.id.link_textview);
 		linkText.setText("If you wish to be linked to the "
@@ -65,9 +71,9 @@ public class RequestLink extends Activity implements OnItemSelectedListener,
 
 		membersSpinner = (Spinner) findViewById(R.id.link_name_spinner);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, getMembers());
+				android.R.layout.simple_list_item_1, membersOfBand);
 		// Style of drop down
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
 		// Set the adapter to the spinner
 		membersSpinner.setAdapter(adapter);
 		// Listen for a selected item
@@ -108,18 +114,7 @@ public class RequestLink extends Activity implements OnItemSelectedListener,
 	}
 
 	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private ArrayList<String> getMembers() {
-		String[] membersOfBand = extras.getStringArray("membersOfBand");
-		ArrayList<String> members = new ArrayList<String>();
-		members.add(" Select..");
-		for (int i = 0; i < membersOfBand.length; i++) {
-			members.add(membersOfBand[i]);
-		}
-		return members;
+		//Do nothing
 	}
 
 	public void onClick(View v) {
@@ -152,13 +147,14 @@ public class RequestLink extends Activity implements OnItemSelectedListener,
 			finish();
 			break;
 		}
-
 	}
 
 	class CreateConnectionAndSendReq extends AsyncTask<String, String, String> {
 
+		private static final String CheckMembersURL = "http://bandfeed.co.uk/api/users_accepted.php";
 		JSONParser jsonParser = new JSONParser();
-		Boolean messagesSent = true;
+		private boolean messagesSent = true;
+		private boolean connection = false;
 
 		/**
 		 * Before starting background thread Show Progress Dialog
@@ -189,73 +185,75 @@ public class RequestLink extends Activity implements OnItemSelectedListener,
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("band_name", bandName));
 
-			// getting JSON Object
-			// Note that create profile url accepts POST method
 			JSONObject json = jsonParser.makeHttpRequest(CheckMembersURL,
 					"GET", params);
 
-			// check log cat for response
-			Log.d("Create Response", json.toString());
+			if (json != null) {
+				try {
+					// check log cat for response
+					Log.d("Create Response", json.toString());
 
-			// check for success tag
-			try {
-				int success = json.getInt(TAG_SUCCESS);
-
-				if (success == 1) {
-					// successfully received profile details
-					// JSON array
-					JSONArray users = json.getJSONArray("users");
-					// Gets the user_accepted including those that have the
-					// value null.
-					for (int i = 0; i < users.length(); i++) {
-						JSONObject user = users.getJSONObject(i);
-						if (user.getString("user_accepted").equals("null")) {
-							// Do nothing!
-						} else {
-							usersAccepted.add(user.getString("user_accepted"));
+					if (json.getInt("success") == 1) {
+						// successfully received profile details
+						// JSON array
+						JSONArray users = json.getJSONArray("users");
+						// Gets the user_accepted including those that have the
+						// value null.
+						for (int i = 0; i < users.length(); i++) {
+							JSONObject user = users.getJSONObject(i);
+							if (user.getString("user_accepted").equals("null")) {
+								// Do nothing!
+							} else {
+								usersAccepted.add(user
+										.getString("user_accepted"));
+							}
 						}
+					} else {
+						messagesSent = false;
 					}
-				} else {
+
+				} catch (JSONException e) {
 					messagesSent = false;
 				}
 
-			} catch (JSONException e) {
-				messagesSent = false;
-			}
+				// If the above connection to the database failed to retrieve
+				// the user names,
+				// then don't bother carrying out the next connection to
+				// RabbitMQ
+				if (messagesSent) {
+					ConnectToRabbitMQ connection = new ConnectToRabbitMQ(
+							userName, null);
 
-			// If the above connection to the database failed to retrieve the
-			// user names
-			// then don't bother carrying out the next connection to RabbitMQ
-			if (messagesSent) {
-				ConnectToRabbitMQ connection = new ConnectToRabbitMQ(userName,
-						null);
+					if (connection.createExchange()) {
+						// Successfully created exchange!
 
-				if (connection.createExchange()) {
-					// Successfully created exchange!
-
-					for (String user : usersAccepted) {
-						// Keep looping provided messages are being sent.
-						// Change queue destination each loop to next user
-						connection.setQueue(user);
-						// Bind to the users queue
-						// and send message to user's queue
-						if (connection.createBind("news")
-								&& connection.sendMessage(message.getBytes(),
-										"news", message)) {
-							// Great at least one member has had the message
-							// sent to them!
-							messagesSent = true;
+						for (String user : usersAccepted) {
+							// Keep looping provided messages are being sent.
+							// Change queue destination each loop to next user
+							connection.setQueue(user);
+							// Bind to the users queue
+							// and send message to user's queue
+							if (connection.createBind("news")
+									&& connection
+											.sendMessage(message.getBytes(),
+													"news", message)) {
+								// Great at least one member has had the message
+								// sent to them!
+								messagesSent = true;
+							}
 						}
+						connection.deleteExchange();
+						connection.dispose();
+
+					} else {
+						// Failed to create exchange!
+						messagesSent = false;
 					}
-					connection.deleteExchange();
-					connection.dispose();
-
-				} else {
-					// Failed to create exchange!
-					messagesSent = false;
 				}
+				connection = true;
+			} else {
+				connection = false;
 			}
-
 			return null;
 		}
 
@@ -266,17 +264,20 @@ public class RequestLink extends Activity implements OnItemSelectedListener,
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
-			if (messagesSent) {
-				RequestLink.this.finish();
+			if (connection) {
+				if (messagesSent) {
+					RequestLink.this.finish();
+				} else {
+					informUser("Failed to send a link request, try again later!");
+				}
 			} else {
-				Toast toast = Toast.makeText(RequestLink.this,
-						"Failed to send a link request, try again later!",
-						Toast.LENGTH_SHORT);
-				toast.show();
+				informUser("No internet connection!");
 			}
-
 		}
-
 	}
 
+	private void informUser(String msg) {
+		Toast toast = Toast.makeText(RequestLink.this, msg, Toast.LENGTH_SHORT);
+		toast.show();
+	}
 }

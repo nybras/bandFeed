@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.util.ArrayList;
@@ -23,7 +29,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 public class Subscribe extends Activity implements OnClickListener {
 
 	private CheckBox cNews, cGigs, cReleases, cUpdates;
-	// private boolean news, gigs, releases, updates = false;
 	private ProgressDialog progressDialog;
 	private String bandName;
 	private ArrayList<String> subs;

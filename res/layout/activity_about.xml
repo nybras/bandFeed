@@ -4,7 +4,6 @@
     android:layout_height="fill_parent" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -12,9 +11,22 @@
 
         <TextView
             android:id="@+id/about_textview"
+            android:textIsSelectable="true"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="10dip"
             android:text="@string/about_text" />
+        
+        <TextView
+            android:id="@+id/instructions_textview"
+            android:textIsSelectable="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/instructions_text" />
+        
+
+        
+        
     </LinearLayout>
 
 </ScrollView>

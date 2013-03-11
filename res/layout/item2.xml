@@ -5,6 +5,7 @@
 
     <TextView
         android:id="@+id/genres"
+        android:textIsSelectable="false"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/bandName"
@@ -16,6 +17,7 @@
 
     <TextView
         android:id="@+id/bandName"
+        android:textIsSelectable="false"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
@@ -31,9 +33,10 @@
         android:layout_height="50dip"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginRight="10dp"
         android:scaleType="centerCrop"
-        android:paddingLeft="5dp"
+        android:gravity="center"
         android:contentDescription="@string/band_feed_symbol_description" />
 
 </RelativeLayout>

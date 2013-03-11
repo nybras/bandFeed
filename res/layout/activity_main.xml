@@ -4,13 +4,19 @@
     android:layout_height="fill_parent" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mainlayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="30dip" >
-
+        
+        <TextView
+            android:id="@+id/reco1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="true"
+            android:gravity="center" />
+        
         <ImageView
             android:id="@+id/profile_image"
             android:layout_width="150dip"
@@ -19,36 +25,49 @@
             android:contentDescription="@string/band_feed_symbol_description"
             android:scaleType="centerCrop"
             android:src="@drawable/band_feed_equally_sized" />
+        
+        <TextView
+            android:id="@+id/reco2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="true"
+            android:gravity="center" />
 
         <TextView
             android:id="@+id/spacing"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:minHeight="20dip" />
+            android:minHeight="20dip"
+            android:textIsSelectable="true" />
 
         <TextView
             android:id="@+id/welcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textIsSelectable="true"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-        
+
         <TextView
             android:id="@+id/swipe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:textIsSelectable="true" />
+
         <TextView
             android:id="@+id/swipe2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
+            android:layout_gravity="center"
+            android:textIsSelectable="true" />
+        
         <TextView
             android:id="@id/spacing"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:minHeight="20dip" />
+            android:minHeight="20dip"
+            android:textIsSelectable="true" />
 
         <Button
             android:id="@+id/create_profile_button"
@@ -63,6 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/browse_bands" />
+
     </LinearLayout>
 
 </ScrollView>

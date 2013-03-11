@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.util.ArrayList;
@@ -32,12 +38,7 @@ public class UpdateSamples extends Activity implements OnClickListener {
 	private EditText samplesEdit;
 	private ProgressDialog progressDialog;
 	private String bandName;
-	private boolean updated;
 	private SharedPreferences prefs;
-
-	private static String UpdateProfileURL = "http://bandfeed.co.uk/api/update_profile.php";
-	// JSON NODE names
-	private static final String TAG_SUCCESS = "success";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +50,8 @@ public class UpdateSamples extends Activity implements OnClickListener {
 			ActionBar actionBar = getActionBar();
 			actionBar.show();
 		}
-		
+
 		prefs = getSharedPreferences("userPrefs", 0);
-		updated = false;
 
 		Bundle extras = getIntent().getExtras();
 		bandName = extras.getString("bandName");
@@ -61,7 +61,7 @@ public class UpdateSamples extends Activity implements OnClickListener {
 				.setText("Update your SoundCloud url here. If you don't have an account just leave the text field blank");
 
 		samplesEdit = (EditText) findViewById(R.id.update_samples_edit);
-		samplesEdit.setText(extras.getString("bio"));
+		samplesEdit.setText(extras.getString("samples"));
 
 		Button update = (Button) findViewById(R.id.update_samples_button);
 		update.setOnClickListener(this);
@@ -69,7 +69,7 @@ public class UpdateSamples extends Activity implements OnClickListener {
 		Button cancel = (Button) findViewById(R.id.cancel_samples_button);
 		cancel.setOnClickListener(this);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -107,6 +107,9 @@ public class UpdateSamples extends Activity implements OnClickListener {
 	class UpdateSamps extends AsyncTask<String, String, String> {
 
 		JSONParser jsonParser = new JSONParser();
+		private static final String UpdateProfileURL = "http://bandfeed.co.uk/api/update_profile.php";
+		private boolean connection = false;
+		private boolean updated = false;
 
 		@Override
 		protected void onPreExecute() {
@@ -122,38 +125,35 @@ public class UpdateSamples extends Activity implements OnClickListener {
 		@Override
 		protected String doInBackground(String... args) {
 
-			// SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
-			// String username = prefs.getString("userName", null);
-
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("band_name", bandName));
 			params.add(new BasicNameValuePair("soundCloud", samplesEdit
 					.getText().toString()));
 
-			// getting JSON Object
-			// Note that create profile url accepts POST method
 			JSONObject json = jsonParser.makeHttpRequest(UpdateProfileURL,
 					"POST", params);
 
-			// check log cat for response
-			Log.d("Create Response", json.toString());
+			if (json != null) {
+				try {
+					// check log cat for response
+					Log.d("Create Response", json.toString());
 
-			// check for success tag
-			try {
-				int success = json.getInt(TAG_SUCCESS);
+					if (json.getInt("success") == 1) {
+						// successfully created profile
+						AppendToLog logIt = new AppendToLog();
+						logIt.append(bandName + " UPDATED SAMPLES");
+						updated = true;
 
-				if (success == 1) {
-					// successfully created profile
-					AppendToLog logIt = new AppendToLog();
-					logIt.append(bandName + " UPDATED SAMPLES");
-					updated = true;
-
-				} else {
+					} else {
+						updated = false;
+					}
+				} catch (JSONException e) {
 					updated = false;
 				}
-			} catch (JSONException e) {
-				updated = false;
+				connection = true;
+			} else {
+				connection = false;
 			}
 
 			return null;
@@ -163,14 +163,20 @@ public class UpdateSamples extends Activity implements OnClickListener {
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
-			if (updated) {
-				informUser("Samples updated!");
-				Editor editor = prefs.edit();
-				editor.putString("samples", samplesEdit.getText().toString());
-				editor.commit();
-				UpdateSamples.this.finish();
+			if (connection) {
+
+				if (updated) {
+					informUser("Samples updated!");
+					Editor editor = prefs.edit();
+					editor.putString("samples", samplesEdit.getText()
+							.toString());
+					editor.commit();
+					UpdateSamples.this.finish();
+				} else {
+					informUser("Update failed, try again later!");
+				}
 			} else {
-				informUser("Update failed!");
+				informUser("No internet connection!");
 			}
 		}
 	}

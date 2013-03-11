@@ -1,13 +1,11 @@
 /**
- x * @author Brett Flitter
- * @version Prototype1 - 25/08/2012
- * @edited 21/09/2012
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
  * @title Project bandFeed
  */
 
 package com.fyp.bandfeed;
 
-//import android.os.StrictMode;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
@@ -50,26 +48,15 @@ import android.widget.Toast;
 public class StepFour extends Activity implements OnClickListener,
 		OnItemSelectedListener {
 
-	private String bandName;
+	private String imageResponse, name;
 	private ImageView imageSelector;
 	private static final int SELECT_PHOTO = 1;
-	private Bundle extras;
 	private Bitmap bitmap;
-	private boolean profileCreated;
-	private boolean selected;
+	private boolean selected = false;
 	private EditText webpage, soundCloudPage;
-	private String imageResponse;
 	private Spinner nameSpinner;
 	private ArrayList<String> names;
-	private String name;
-	private AppendToLog logIt;
-
-	private ProgressDialog progressDialog;
-
-	// url to create new profile
-	private static String CreateProfileURL = "http://bandfeed.co.uk/api/create_profile.php";
-	// JSON NODE names
-	private static final String TAG_SUCCESS = "success";
+	private AppendToLog logIt = new AppendToLog();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -82,26 +69,22 @@ public class StepFour extends Activity implements OnClickListener,
 			actionBar.show();
 		}
 
-		profileCreated = false;
-		logIt = new AppendToLog();
-
 		imageSelector = (ImageView) findViewById(R.id.select_logo);
 		imageSelector.setOnClickListener(this);
 
 		webpage = (EditText) findViewById(R.id.webpage_edit);
+		webpage.setText("http://www.");
 		soundCloudPage = (EditText) findViewById(R.id.soundCloud_edit);
-		extras = getIntent().getExtras();
-		bandName = extras.getString("bandName");
-		setSelected(false);
+		soundCloudPage.setText("http://www.");
 
 		names = new ArrayList<String>();
 		generateNames();
 
 		nameSpinner = (Spinner) findViewById(R.id.you_are_spinner);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, getNames());
+				android.R.layout.simple_list_item_1, getNames());
 		// Style of drop down
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
 
 		// Set the adapter to the spinner
 		nameSpinner.setAdapter(adapter);
@@ -210,11 +193,19 @@ public class StepFour extends Activity implements OnClickListener,
 
 	class CreateNewProfile extends AsyncTask<String, String, String> {
 
+		private static final String CreateProfileURL = "http://bandfeed.co.uk/api/create_profile.php";
+
 		SharedPreferences prefs = getSharedPreferences("userPrefs", 0);
 		String username = prefs.getString("userName", null);
-		
+		String bandName = Globals.getBANDNAME();
 		private static final String ImageResponse = "ImageResponse";
 		JSONParser jsonParser = new JSONParser();
+
+		private boolean connection = false;
+		private boolean profileCreated = false;
+		private boolean exchangeCreated = false;
+		private ProgressDialog progressDialog = new ProgressDialog(
+				StepFour.this);
 
 		/**
 		 * Before starting background thread Show Progress Dialog
@@ -223,7 +214,6 @@ public class StepFour extends Activity implements OnClickListener,
 		protected void onPreExecute() {
 			super.onPreExecute();
 			closeKeyboard();
-			progressDialog = new ProgressDialog(StepFour.this);
 			progressDialog.setMessage("Uploading Profile..");
 			progressDialog.setIndeterminate(false);
 			progressDialog.setCancelable(true);
@@ -238,18 +228,14 @@ public class StepFour extends Activity implements OnClickListener,
 
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("band_name", bandName.toString()));
-			params.add(new BasicNameValuePair("genre1", extras
-					.getString("genre1")));
-			params.add(new BasicNameValuePair("genre2", extras
-					.getString("genre1")));
-			params.add(new BasicNameValuePair("genre3", extras
-					.getString("genre3")));
-			params.add(new BasicNameValuePair("county", extras
-					.getString("county")));
-			params.add(new BasicNameValuePair("town", extras.getString("town")));
+			params.add(new BasicNameValuePair("band_name", bandName));
+			params.add(new BasicNameValuePair("genre1", Globals.getGENRE1()));
+			params.add(new BasicNameValuePair("genre2", Globals.getGENRE2()));
+			params.add(new BasicNameValuePair("genre3", Globals.getGENRE3()));
+			params.add(new BasicNameValuePair("county", Globals.getCOUNTY()));
+			params.add(new BasicNameValuePair("town", Globals.getTOWN()));
 			params.add(new BasicNameValuePair("amountOfMembers", ""
-					+ extras.getInt("amountOfMembers")));
+					+ Globals.getNUMOFMEMBERS()));
 			params.add(new BasicNameValuePair("bio", "Not available yet"));
 
 			String sc = soundCloudPage.getText().toString().trim();
@@ -270,63 +256,71 @@ public class StepFour extends Activity implements OnClickListener,
 			} else {
 				params.add(new BasicNameValuePair("image", "" + 0));
 			}
-			for (int i = 0; i < extras.getInt("amountOfMembers"); i++) {
-				params.add(new BasicNameValuePair("name" + i, extras
-						.getString("names" + i)));
-				params.add(new BasicNameValuePair("role" + i, extras
-						.getString("roles" + i)));
+			for (int i = 0; i < Globals.getNUMOFMEMBERS(); i++) {
+				params.add(new BasicNameValuePair("name" + i, Globals
+						.getMEMBERS().get(i)));
+				params.add(new BasicNameValuePair("role" + i, Globals
+						.getROLES().get(i)));
 			}
 
 			// getting JSON Object
-			// Note that create profile url accepts POST method
 			JSONObject json = jsonParser.makeHttpRequest(CreateProfileURL,
 					"POST", params);
 
-			// check log cat for response
-			Log.d("Create Response", json.toString());
+			// Test for connection
+			if (json != null) {
 
-			// check for success tag
-			try {
-				int success = json.getInt(TAG_SUCCESS);
+				try {
+					// check log cat for response
+					Log.d("Create Response", json.toString());
 
-				if (success == 1) {
-					// successfully created profile
-					logIt.append(bandName + " CREATED BAND PROFILE");
-
-					// CREATE EXCHANGE
-					ConnectToRabbitMQ connection = new ConnectToRabbitMQ(
-							bandName.toString(), null);
-					if (connection.createExchange()) {
-						// connection and exchange has been made
-						connection.dispose();
+					if (json.getInt("success") == 1) {
+						// successfully created profile
+						logIt.append(bandName + " CREATED BAND PROFILE");
 
 						profileCreated = true;
-						
-						
-						CheckForBands nb = new CheckForBands(username);
-						ArrayList<String> bands = nb.check();
-						Editor editor = prefs.edit();
-						for (int i = 0; i < bands.size(); i++) {
-							editor.putString("band" + i, bands.get(i));
-						}
-						editor.putInt("numOfBands", bands.size());
-						editor.commit();
+						// CREATE EXCHANGE
+						ConnectToRabbitMQ connection = new ConnectToRabbitMQ(
+								bandName.toString(), null);
+						if (connection.createExchange()) {
+							// connection and exchange has been made
+							connection.dispose();
 
+							exchangeCreated = true;
+
+							// Exchange created, update user's list of bands to
+							// enable message sending
+							CheckForBands nb = new CheckForBands(username);
+							ArrayList<String> bands = nb.check();
+							Editor editor = prefs.edit();
+							for (int i = 0; i < bands.size(); i++) {
+								editor.putString("band" + i, bands.get(i));
+							}
+							editor.putInt("numOfBands", bands.size());
+							editor.commit();
+
+						} else {
+							// Failed to create exchange
+							exchangeCreated = false;
+							logIt.append(bandName
+									+ " FAILED TO CREATE EXCHANGE");
+						}
 					} else {
-						informUser("Failed to create Exchange",0);
+						// Failed to create profile in database
 						profileCreated = false;
 						logIt.append(bandName
 								+ " FAILED TO CREATE BAND PROFILE");
 					}
-				} else {
+				} catch (JSONException e) {
 					profileCreated = false;
-					logIt.append(bandName + " FAILED TO CREATE BAND PROFILE");
 				}
-			} catch (JSONException e) {
-				profileCreated = false;
+				connection = true;
+			} else {
+				// Failed to make http connection
+				connection = false;
 			}
-
 			if (isSelected()) {
+				// If image is selected up loaded image
 				UploadImage uploadImage = new UploadImage();
 				uploadImage.getPicture(bitmap, bandName.toString());
 				imageResponse = uploadImage.makeConnection();
@@ -345,27 +339,45 @@ public class StepFour extends Activity implements OnClickListener,
 			// dismiss the dialog once done
 			progressDialog.dismiss();
 
-			if (profileCreated == false) {
-				informUser("Failed to create profile, please try again later!",
-						0);
-				// TODO DELETE EXISTIING PROFILE ENTRY IF APPLICABLE
-				Intent i = new Intent(getApplicationContext(),
-						MainActivity.class)
-						.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				finish();
-				startActivity(i);
+			if (connection) {
+				if (profileCreated == false) {
+					// Connection made but profile wasn't created in database
+					informUser("Failed to create profile, try again later!", 0);
+					// Return to main activity
+					returnToMain();
+				} else {
+					// Profile was created in Database
+					if (exchangeCreated) {
+						// Exchange created too!
+						informUser("Profile successfully created. "
+								+ "You can now swipe left "
+								+ "to send messages to your followers!", 1);
+						// Return to main activity
+						returnToMain();
+					} else {
+						// Database was created but Exchange wasn't!
+						// Inform user!
+						informUser(
+								"Sorry but part of your profile failed to be created. "
+										+ "Please delete your profile and then "
+										+ "recreate it to enable "
+										+ "message sending!", 1);
+						// Return to main activity
+						returnToMain();
+					}
+				}
 			} else {
-				informUser(
-						"Profile successfully created. You can now swipe left to send messages to your followers!",
-						1);
-				// TODO DELETE EXISTIING PROFILE ENTRY IF APPLICABLE
-				Intent i = new Intent(getApplicationContext(),
-						MainActivity.class)
-						.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				finish();
-				startActivity(i);
+				// No connection made
+				informUser("No internet connection, try again later!", 0);
 			}
 
+		}
+
+		private void returnToMain() {
+			Intent i = new Intent(getApplicationContext(), MainActivity.class)
+					.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			finish();
+			startActivity(i);
 		}
 
 	}
@@ -418,7 +430,7 @@ public class StepFour extends Activity implements OnClickListener,
 	}
 
 	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
+		// Do nothing!
 
 	}
 
@@ -429,8 +441,8 @@ public class StepFour extends Activity implements OnClickListener,
 	private void generateNames() {
 
 		names.add(" Select..");
-		for (int i = 0; i < extras.getInt("amountOfMembers"); i++) {
-			names.add(extras.getString("names" + i));
+		for (int i = 0; i < Globals.getNUMOFMEMBERS(); i++) {
+			names.add(Globals.getMEMBERS().get(i));
 		}
 	}
 }

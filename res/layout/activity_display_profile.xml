@@ -4,7 +4,6 @@
     android:layout_height="fill_parent" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -12,8 +11,8 @@
 
         <ImageView
             android:id="@+id/profile_image"
-            android:layout_width="100dip"
-            android:layout_height="100dip"
+            android:layout_width="150dip"
+            android:layout_height="150dip"
             android:layout_gravity="center"
             android:contentDescription="@string/band_feed_symbol_description"
             android:scaleType="centerCrop"
@@ -65,38 +64,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="@string/test" />
-<!--  
-        <TextView
-            android:id="@+id/profile_discography"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/test"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
-            android:id="@+id/profile_discography_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="@string/test" />
-
-        <TextView
-            android:id="@+id/profile_gigs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/test"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
-            android:id="@+id/profile_gigs_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="@string/test" />
-            
-            -->
 
         <TextView
             android:id="@+id/profile_samples"

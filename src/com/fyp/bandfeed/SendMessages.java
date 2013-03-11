@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.util.ArrayList;
@@ -33,7 +39,6 @@ public class SendMessages extends SwipeActivity implements OnClickListener,
 	private ProgressDialog progressDialog;
 	private String EXCHANGE_NAME;
 	private Spinner bandSpinner, topicSpinner;
-	private boolean messageSent;
 	private ArrayList<String> bands;
 	private SharedPreferences prefs;
 	private int numOfBands;
@@ -49,9 +54,9 @@ public class SendMessages extends SwipeActivity implements OnClickListener,
 
 		topicSpinner = (Spinner) findViewById(R.id.topic_spinner);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, getTopics());
+				android.R.layout.simple_list_item_1, getTopics());
 		// Style of drop down
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
 
 		// Set the adapter to the spinner
 		topicSpinner.setAdapter(adapter);
@@ -62,9 +67,9 @@ public class SendMessages extends SwipeActivity implements OnClickListener,
 		if (numOfBands > 1) {
 
 			ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,
-					android.R.layout.simple_spinner_item, getBands());
+					android.R.layout.simple_list_item_1, getBands());
 			// Style of drop down
-			adapter2.setDropDownViewResource(android.R.layout.simple_spinner_item);
+			adapter2.setDropDownViewResource(android.R.layout.simple_list_item_1);
 
 			// Set the adapter to the spinner
 			bandSpinner.setAdapter(adapter2);
@@ -80,8 +85,6 @@ public class SendMessages extends SwipeActivity implements OnClickListener,
 
 		sendButton = (Button) findViewById(R.id.send_test_message_button);
 		sendButton.setOnClickListener(this);
-
-		messageSent = false;
 
 	}
 
@@ -116,6 +119,8 @@ public class SendMessages extends SwipeActivity implements OnClickListener,
 
 	class CreateConnection extends AsyncTask<String, String, String> {
 
+		private boolean messageSent = false;
+
 		/**
 		 * Before starting background thread Show Progress Dialog
 		 * */
@@ -141,8 +146,7 @@ public class SendMessages extends SwipeActivity implements OnClickListener,
 				topic = "gigs";
 			} else if (topic.equals("Profile Update")) {
 				topic = "updates";
-			}
-			else {
+			} else {
 				topic = "releases";
 			}
 			String message = "<feed type=\"" + topic + "\"><name>"
@@ -158,7 +162,6 @@ public class SendMessages extends SwipeActivity implements OnClickListener,
 				messageSent = true;
 
 			} else {
-				// TODO if message wasn't sent
 				messageSent = false;
 			}
 
@@ -175,16 +178,15 @@ public class SendMessages extends SwipeActivity implements OnClickListener,
 
 			if (messageSent) {
 				SendMessages.this.finish();
-			}
-			else {
-				Toast toast = Toast.makeText(SendMessages.this,
-						"Failed to send message to your followers, try again later!",
-						Toast.LENGTH_SHORT);
+			} else {
+				Toast toast = Toast
+						.makeText(
+								SendMessages.this,
+								"Failed to send message to your followers, try again later!",
+								Toast.LENGTH_SHORT);
 				toast.show();
 			}
-
 		}
-
 	}
 
 	public void onClick(View v) {
@@ -230,7 +232,7 @@ public class SendMessages extends SwipeActivity implements OnClickListener,
 	}
 
 	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
+		// Do nothing
 
 	}
 
@@ -257,16 +259,15 @@ public class SendMessages extends SwipeActivity implements OnClickListener,
 	@Override
 	protected void left() {
 		// Do nothing!
-		
+
 	}
 
 	@Override
 	protected void right() {
-		Intent i = new Intent(getApplicationContext(),
-				MainActivity.class)
+		Intent i = new Intent(getApplicationContext(), MainActivity.class)
 				.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		finish();
 		startActivity(i);
-		
+
 	}
 }

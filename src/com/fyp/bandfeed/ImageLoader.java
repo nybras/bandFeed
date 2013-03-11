@@ -36,28 +36,23 @@ public class ImageLoader {
 
 	final int stub_id = R.drawable.band_feed_equally_sized;
 
-	public void DisplayImage(Feed f, Entry e, ImageView imageView) {
+	// public void DisplayImage(Feed f, Entry e, ImageView imageView) {
+	public void DisplayImage(String name, ImageView imageView) {
 		String url = null;
-		if (e == null) {
-			Feed feed = f;
-			url = "http://bandfeed.co.uk/images/" + feed.getName()
-					+ ".jpg";
-		}
-		else {
-			Entry entry = e;
-			url = "http://bandfeed.co.uk/images/" + entry.getBandName()
-					+ ".jpg";
-		}
-			imageViews.put(imageView, url);
-			Bitmap bitmap = memoryCache.get(url);
 
-			if (bitmap != null)
-				imageView.setImageBitmap(bitmap);
-			else {
-				queuePhoto(url, imageView);
-				imageView.setImageResource(stub_id);
-			}
+		url = "http://bandfeed.co.uk/images/" + name + ".jpg";
+		url = url.replace(" ", "%20");
 		
+		imageViews.put(imageView, url);
+		Bitmap bitmap = memoryCache.get(url);
+
+		if (bitmap != null)
+			imageView.setImageBitmap(bitmap);
+		else {
+			queuePhoto(url, imageView);
+			imageView.setImageResource(stub_id);
+		}
+
 	}
 
 	private void queuePhoto(String url, ImageView imageView) {
@@ -90,7 +85,7 @@ public class ImageLoader {
 			bitmap = decodeFile(f);
 			return bitmap;
 		} catch (Throwable ex) {
-			ex.printStackTrace();
+			// ex.printStackTrace();
 			if (ex instanceof OutOfMemoryError)
 				memoryCache.clear();
 			return null;
@@ -108,7 +103,7 @@ public class ImageLoader {
 			stream1.close();
 
 			// Find the correct scale value. It should be the power of 2.
-			final int REQUIRED_SIZE = 70;
+			final int REQUIRED_SIZE = 150;
 			int width_tmp = o.outWidth, height_tmp = o.outHeight;
 			int scale = 1;
 			while (true) {

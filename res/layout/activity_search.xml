@@ -38,6 +38,29 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingBottom="10dip" />
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="10dip"
+            android:text="@string/search_genre_text" />
+
+        <AutoCompleteTextView
+            android:id="@+id/genres_search"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:completionHint="@string/genre_search_completion_hint"
+            android:completionThreshold="1"
+            android:dropDownHeight="250dp"
+            android:dropDownWidth="wrap_content"
+            android:hint="@string/genre_search_hint"
+            android:inputType="textAutoComplete" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:paddingBottom="30dip" />
 
         <Button

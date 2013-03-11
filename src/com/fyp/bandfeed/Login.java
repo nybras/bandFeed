@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.util.ArrayList;
@@ -32,22 +38,14 @@ public class Login extends Activity implements OnClickListener {
 	private EditText usernameEditText;
 	private EditText passwordEditText;
 	private ProgressDialog progressDialog;
-	private boolean loggedIn;
 	private AppendToLog logIt;
 	private SharedPreferences prefs;
-
-	private static String loginUserURL = "http://bandfeed.co.uk/api/login_user.php";
-
-	// JSON NODE names
-	private static final String TAG_SUCCESS = "success";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		
 
-		loggedIn = false;
 		logIt = new AppendToLog();
 		prefs = getSharedPreferences("userPrefs", 0);
 
@@ -68,14 +66,13 @@ public class Login extends Activity implements OnClickListener {
 		inputManager.hideSoftInputFromWindow(this.getCurrentFocus()
 				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.menu2, menu);
 		return true;
 	}
 
-	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// respond to menu item selection
 		switch (item.getItemId()) {
@@ -117,6 +114,10 @@ public class Login extends Activity implements OnClickListener {
 
 	class LoginUser extends AsyncTask<String, String, String> {
 
+		private boolean connection = false;
+		private boolean loggedIn = false;
+		private static final String loginUserURL = "http://bandfeed.co.uk/api/login_user.php";
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -145,47 +146,57 @@ public class Login extends Activity implements OnClickListener {
 			JSONObject json = jsonParser.makeHttpRequest(loginUserURL, "GET",
 					params);
 
-			// check log cat for response
-			Log.d("Create Response", json.toString());
+			if (json != null) {
+				try {
+					// check log cat for response
+					Log.d("Create Response", json.toString());
 
-			// check for success tag
-			try {
-				int success = json.getInt(TAG_SUCCESS);
+					if (json.getInt("success") == 1) {
+						// successfully logged in
+						JSONArray userObj = json.getJSONArray("user");
+						JSONObject uname = userObj.getJSONObject(0);
 
-				if (success == 1) {
-					// successfully logged in
-					logIt.append(name + " LOGGED IN");
-
-					Editor editor = prefs.edit();
-					editor.putString("userName", usernameEditText.getText()
-							.toString().trim());
-					editor.commit();
-
-					loggedIn = true;
-
-					int success2 = json.getInt("success2");
-
-					if (success2 == 1) {
-						JSONArray bandsObj = json.getJSONArray("bands"); // JSON
-						// array
-						editor.putInt("numOfBands", bandsObj.length());
+						Editor editor = prefs.edit();
+						editor.putString("userName", uname.getString("username"));
+						editor.putString("genre1", uname.getString("genre1"));
+						editor.putString("genre2", uname.getString("genre2"));
+						editor.putString("genre3", uname.getString("genre3"));
 						editor.commit();
+						
+						logIt.append(uname.getString("username") + " LOGGED IN");
 
-						for (int i = 0; i < bandsObj.length(); i++) {
-							JSONObject band = bandsObj.getJSONObject(i);
-							editor.putString("band" + i, band.getString("band"));
+						loggedIn = true;
+
+						// Gets user's bands
+						if (json.getInt("success2") == 1) {
+							JSONArray bandsObj = json.getJSONArray("bands");
+							editor.putInt("numOfBands", bandsObj.length());
 							editor.commit();
-						}
-					}
 
-				} else {
+							for (int i = 0; i < bandsObj.length(); i++) {
+								JSONObject band = bandsObj.getJSONObject(i);
+								editor.putString("band" + i,
+										band.getString("band"));
+								editor.commit();
+							}
+						}
+
+					} else {
+						// User failed to log in
+						loggedIn = false;
+						logIt.append(name + " FAILED TO LOG IN");
+
+					}
+				} catch (JSONException e) {
 					// User failed to log in
 					loggedIn = false;
 					logIt.append(name + " FAILED TO LOG IN");
-
 				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+				//Connection made regardless of login
+				connection = true;
+			} else {
+				//No internet connection
+				connection = false;
 			}
 
 			return null;
@@ -197,28 +208,27 @@ public class Login extends Activity implements OnClickListener {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
 
-			if (loggedIn) {
-				Intent i = new Intent(getApplicationContext(),
-						MainActivity.class)
-						.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				finish();
-				startActivity(i);
+			if (connection) {
+				if (loggedIn) {
+					Intent i = new Intent(getApplicationContext(),
+							MainActivity.class)
+							.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					finish();
+					startActivity(i);
+				} else {
+					informUser("Login unsuccessful, please check your username and password");
+				}
 			} else {
-				informUser();
+				informUser("No internet connection!");
 			}
 		}
 	}
 
-	public void informUser() {
+	public void informUser(String msg) {
 
-		if (!loggedIn) {
-			Toast toast = Toast
-					.makeText(
-							this,
-							"Login unsuccessful, please check your username and password",
-							Toast.LENGTH_SHORT);
-			toast.show();
-		}
+		Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+		toast.show();
+
 	}
 
 }

@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.util.ArrayList;
@@ -28,7 +34,6 @@ public class DealWithLinkRequest extends Activity implements OnClickListener {
 
 	private String user, member, band;
 	private ProgressDialog progressDialog;
-	private static final String userAcceptedURL = "http://www.bandfeed.co.uk/api/user_accepted.php";
 	AppendToLog logIt = new AppendToLog();
 
 	@Override
@@ -91,25 +96,21 @@ public class DealWithLinkRequest extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.accept_link_button:
+			// User accepts link request
 			new UpdateUser().execute();
 			break;
 		case R.id.cancel_link_button:
 			finish();
 			break;
-
 		}
-
 	}
 
-	// NEEDS FINISHING FROM HERE!!!
-
 	class UpdateUser extends AsyncTask<String, String, String> {
-		
-		private boolean profileUpdated = false;
 
+		private boolean profileUpdated = false;
+		private boolean connection = false;
 		JSONParser jsonParser = new JSONParser();
-		// JSON NODE names
-		private static final String TAG_SUCCESS = "success";
+		private static final String userAcceptedURL = "http://www.bandfeed.co.uk/api/user_accepted.php";
 
 		/**
 		 * Before starting background thread Show Progress Dialog
@@ -136,35 +137,33 @@ public class DealWithLinkRequest extends Activity implements OnClickListener {
 			params.add(new BasicNameValuePair("name", member));
 			params.add(new BasicNameValuePair("user_accepted", user));
 
-			// getting JSON Object
-			// Note that create profile url accepts POST method
 			JSONObject json = jsonParser.makeHttpRequest(userAcceptedURL,
 					"POST", params);
 
-			// check log cat for response
-			Log.d("Create Response", json.toString());
+			if (json != null) {
+				try {
+					// check log cat for response
+					Log.d("Create Response", json.toString());
 
-			// check for success tag
-			try {
-				int success = json.getInt(TAG_SUCCESS);
-
-				if (success == 1) {
-					// successfully created profile
-					logIt.append("LINK CREATED, " + user + " is linked as "
-							+ member + " in " + band);
-					
-					profileUpdated = true;
-
-				} else {
-
+					if (json.getInt("success") == 1) {
+						// successfully created profile
+						logIt.append("LINK CREATED, " + user + " is linked as "
+								+ member + " in " + band);
+						profileUpdated = true;
+					} else {
+						logIt.append("FAILED TO LINK " + user + " as " + member
+								+ " in " + band);
+					}
+				} catch (JSONException e) {
 					logIt.append("FAILED TO LINK " + user + " as " + member
 							+ " in " + band);
 				}
-			} catch (JSONException e) {
-				logIt.append("FAILED TO LINK " + user + " as " + member
-						+ " in " + band);
+				// Connection was successful regardless of whether it
+				// dealt with link request
+				connection = true;
+			} else {
+				connection = false;
 			}
-
 			return null;
 		}
 
@@ -175,23 +174,23 @@ public class DealWithLinkRequest extends Activity implements OnClickListener {
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
-			
-			if (profileUpdated) {
-				informUser("Link created!");
-				DealWithLinkRequest.this.finish();
+
+			if (connection) {
+				if (profileUpdated) {
+					informUser("Link created!");
+					DealWithLinkRequest.this.finish();
+				} else {
+					informUser("Link failed, try again later!");
+				}
 			}
 			else {
-				informUser("Link failed, try again later!");
+				informUser("No internet connection!");
 			}
-
 		}
-
 	}
-	
+
 	private void informUser(String msg) {
 		Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
 		toast.show();
-				
 	}
-
 }

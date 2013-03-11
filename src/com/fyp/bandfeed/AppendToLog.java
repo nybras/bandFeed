@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.util.ArrayList;
@@ -23,8 +29,7 @@ public class AppendToLog {
 			httpclient.execute(httppost);
 
 		} catch (Exception e) {
-			// Connection Error
-			System.out.println("Error in http connection " + e.toString());
+			//Do nothing, not that important should the event never be logged.
 		}
 
 	}

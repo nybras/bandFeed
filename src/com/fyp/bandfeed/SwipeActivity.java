@@ -7,10 +7,11 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 
 public abstract class SwipeActivity extends Activity {
-	
-	//Code taken from
-	//http://stackoverflow.com/a/8327453
-	
+
+	// Not my code!!!
+	// Code taken from
+	// http://stackoverflow.com/a/8327453
+
 	private static final int SWIPE_MIN_DISTANCE = 40;
 	private static final int SWIPE_MAX_OFF_PATH = 300;
 	private static final int SWIPE_THRESHOLD_VELOCITY = 200;

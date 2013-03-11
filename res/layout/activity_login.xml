@@ -4,7 +4,6 @@
     android:layout_height="fill_parent" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -36,9 +35,10 @@
             android:inputType="textPassword" />
 
         <TextView
-            android:id="@id/username_textview"
+            android:id="@+id/username_textview"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:textIsSelectable="false"
             android:paddingBottom="10dip" />
 
         <Button

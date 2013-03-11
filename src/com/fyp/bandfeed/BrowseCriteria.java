@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.util.ArrayList;
@@ -16,31 +22,30 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class BrowseCriteria extends Activity implements OnClickListener {
 
 	private EditText searchBandName;
-
+	private AutoCompleteTextView textView;
 	private ProgressDialog progressDialog;
-
-	// url to create new profile
-	private static String GetProfileNames = "http://bandfeed.co.uk/api/read_names.php";
-
-	// JSON NODE names
-	private static final String TAG_SUCCESS = "success";
+	private SharedPreferences prefs;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
-		
-		
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			// gets the activity's default ActionBar
 			ActionBar actionBar = getActionBar();
@@ -50,7 +55,28 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 		View findResults = findViewById(R.id.search_button);
 		findResults.setOnClickListener(this);
 
+		prefs = getSharedPreferences("userPrefs", 0);
 		searchBandName = (EditText) findViewById(R.id.search_band_name_edit);
+
+		Genres g = new Genres();
+		// Add genres to list
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, g.getGenres());
+		textView = (AutoCompleteTextView) findViewById(R.id.genres_search);
+		textView.setAdapter(adapter);
+
+		// Instruct user the first time of viewing activity
+		if (!prefs.contains("firstBrowse")) {
+			Toast toast = Toast
+					.makeText(
+							this,
+							"Just go ahead and click Search if you want to view all bands!",
+							Toast.LENGTH_LONG);
+			toast.show();
+			Editor editor = prefs.edit();
+			editor.putString("firstBrowse", "yes");
+			editor.commit();
+		}
 
 	}
 
@@ -59,15 +85,16 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 		getMenuInflater().inflate(R.menu.menu2, menu);
 		return true;
 	}
-	
-	
+
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// respond to menu item selection
 		switch (item.getItemId()) {
 		case R.id.about:
+			// FeedBack button clicked
 			startActivity(new Intent(this, About.class));
 			return true;
 		case R.id.send_feedback:
+			// Feedback button clicked
 			Intent i = new Intent(this, SendFeedback.class);
 			i.putExtra("page", "BrowseCriteria");
 			startActivity(i);
@@ -84,6 +111,10 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 	class SearchForProfiles extends AsyncTask<String, String, String> {
 
 		JSONParser jsonParser = new JSONParser();
+		private static final String GetProfileNames = "http://bandfeed.co.uk/api/read_names.php";
+		private boolean connection = false;
+		private boolean foundEntries = false;
+		Intent i = new Intent(getApplicationContext(), ResultsFromSearch.class);
 
 		/**
 		 * Before starting background thread Show Progress Dialog
@@ -98,64 +129,62 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 			progressDialog.show();
 		}
 
-		/**
-		 * Creating product
-		 * */
 		@Override
 		protected String doInBackground(String... args) {
 
-			int success;
-			try {
-				// Building Parameters
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("band_name", searchBandName
-						.getText().toString().trim()));
+			// Building Parameters
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("band_name", searchBandName
+					.getText().toString().trim()));
+			params.add(new BasicNameValuePair("genre", textView.getText()
+					.toString().trim()));
 
-				// getting JSON Object
-				// Note that create product url accepts POST method
-				JSONObject json = jsonParser.makeHttpRequest(GetProfileNames,
-						"GET", params);
+			// getting JSON Object
+			JSONObject json = jsonParser.makeHttpRequest(GetProfileNames,
+					"GET", params);
 
-				// check log cat for response
-				Log.d("Profile Response", json.toString());
+			if (json != null) {
+				try {
+					// check log cat for response
+					Log.d("Profile Response", json.toString());
 
-				// check for success tag
+					if (json.getInt("success") == 1) {
 
-				success = json.getInt(TAG_SUCCESS);
+						JSONArray profileObj = json.getJSONArray("names");
 
-				if (success == 1) {
-					// successfully received product details
-					// JSON array
-					JSONArray profileObj = json.getJSONArray("names"); 
-																			
+						// The bands found are added to the intents extras
+						i.putExtra("success", true);
+						i.putExtra("numOfReturns", profileObj.length());
+						for (int num = 0; num < profileObj.length(); num++) {
+							// get first object from JSON Array
+							JSONObject profile = profileObj.getJSONObject(num);
+							i.putExtra("band_name" + num,
+									profile.getString("band_name"));
+							i.putExtra("genre1-" + num,
+									profile.getString("genre1"));
+							i.putExtra("genre2-" + num,
+									profile.getString("genre2"));
+							i.putExtra("genre3-" + num,
+									profile.getString("genre3"));
 
-					Intent i = new Intent(getApplicationContext(),
-							ResultsFromSearch.class);
-
-					// TODO Display returned results from search query
-					i.putExtra("success", true); 
-					i.putExtra("numOfReturns", profileObj.length());					
-					for (int num = 0; num < profileObj.length(); num++ ) {
-						// get first object from JSON Array
-						JSONObject profile = profileObj.getJSONObject(num);
-					i.putExtra("band_name" + num, profile.getString("band_name"));
-					i.putExtra("genre1-" + num, profile.getString("genre1"));
-					i.putExtra("genre2-" + num, profile.getString("genre2"));
-					i.putExtra("genre3-" + num, profile.getString("genre3"));
+							// Found at least one band which fitted the user
+							// search criteria
+							foundEntries = true;
+						}
+					} else {
+						// No bands found!
+						foundEntries = false;
 					}
-					
-					startActivity(i);
-
-				} else {
-					// failed to find a profile
-					Intent i = new Intent(getApplicationContext(),
-							ResultsFromSearch.class);
-					i.putExtra("success", false);
-					// TODO Needs "can't find a profile"!
-					startActivity(i);
+				} catch (JSONException e) {
+					// JSON exception
+					foundEntries = false;
 				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+				// Connection was successful regardless of whether it
+				// returned any bands
+				connection = true;
+			} else {
+				// No JSON object returned
+				connection = false;
 			}
 
 			return null;
@@ -168,6 +197,25 @@ public class BrowseCriteria extends Activity implements OnClickListener {
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
+
+			if (!connection) {
+				// No connection so inform user
+				Toast toast = Toast.makeText(BrowseCriteria.this,
+						"No internet connection!", Toast.LENGTH_SHORT);
+				toast.show();
+			} else {
+				if (foundEntries) {
+					// Found at least one band so start activity
+					startActivity(i);
+				} else {
+					// No bands found
+					Toast toast = Toast.makeText(BrowseCriteria.this,
+							"No profiles match.. Try a new search!",
+							Toast.LENGTH_LONG);
+					toast.show();
+				}
+
+			}
 		}
 
 	}

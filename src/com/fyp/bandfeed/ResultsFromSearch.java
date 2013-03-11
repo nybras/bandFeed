@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.util.ArrayList;
@@ -34,11 +40,6 @@ public class ResultsFromSearch extends Activity {
 	private LazyAdapter adapter;
 	private ArrayList<Entry> listOfEntries;
 
-	private static String GetProfileURL = "http://bandfeed.co.uk/api/read_profile.php";
-
-	// JSON NODE names
-	private static final String TAG_SUCCESS = "success";
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,33 +50,27 @@ public class ResultsFromSearch extends Activity {
 			ActionBar actionBar = getActionBar();
 			actionBar.show();
 		}
-		
+
 		listOfEntries = new ArrayList<Entry>();
-		//logIt = new AppendToLog();
+		// logIt = new AppendToLog();
 		list = (ListView) findViewById(R.id.listView1);
 		adapter = new LazyAdapter(this, null, listOfEntries);
 		list.setAdapter(adapter);
 		extras = getIntent().getExtras();
 
-		if (extras.getBoolean("success")) {
-			for (int i = 0; i < extras.getInt("numOfReturns"); i++) {
-				Entry entry = new Entry();
-				entry.setBandName(extras.getString("band_name"+i));
-				entry.setGenre1(extras.getString("genre1-"+i));
-				entry.setGenre2(extras.getString("genre2-"+i));
-				entry.setGenre3(extras.getString("genre3-"+i));
-				listOfEntries.add(entry);
-			}
-		} else {
-			
-			Toast toast = Toast.makeText(this, "No profiles match.. Try a new search!", Toast.LENGTH_LONG);
-			toast.show();
+		for (int i = 0; i < extras.getInt("numOfReturns"); i++) {
+			Entry entry = new Entry();
+			entry.setBandName(extras.getString("band_name" + i));
+			entry.setGenre1(extras.getString("genre1-" + i));
+			entry.setGenre2(extras.getString("genre2-" + i));
+			entry.setGenre3(extras.getString("genre3-" + i));
+			listOfEntries.add(entry);
 		}
-		
+
 		list.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				
+
 				profile = listOfEntries.get(position).getBandName();
 				new OpenProfile().execute();
 
@@ -88,7 +83,7 @@ public class ResultsFromSearch extends Activity {
 		getMenuInflater().inflate(R.menu.menu2, menu);
 		return true;
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// respond to menu item selection
 		switch (item.getItemId()) {
@@ -108,6 +103,11 @@ public class ResultsFromSearch extends Activity {
 	class OpenProfile extends AsyncTask<String, String, String> {
 
 		JSONParser jsonParser = new JSONParser();
+		private static final String GetProfileURL = "http://bandfeed.co.uk/api/read_profile.php";
+		private boolean connection = false;
+		private Intent i = new Intent(getApplicationContext(),
+				DisplayProfile.class);
+		private boolean foundEntries = false;
 
 		/**
 		 * Before starting background thread Show Progress Dialog
@@ -125,64 +125,65 @@ public class ResultsFromSearch extends Activity {
 		@Override
 		protected String doInBackground(String... args) {
 
-			int success;
-			try {
-				// Building Parameters
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("band_name", profile));
+			// Building Parameters
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("band_name", profile));
 
-				// getting JSON Object
-				// Note that create product url accepts POST method
-				JSONObject json = jsonParser.makeHttpRequest(GetProfileURL,
-						"GET", params);
+			// getting JSON Object
+			// Note that create product url accepts POST method
+			JSONObject json = jsonParser.makeHttpRequest(GetProfileURL, "GET",
+					params);
 
-				// check log cat for response
-				Log.d("Profile Response", json.toString());
+			if (json != null) {
+				try {
+					// check log cat for response
+					Log.d("Profile Response", json.toString());
 
-				// check for success tag
+					if (json.getInt("success") == 1) {
 
-				success = json.getInt(TAG_SUCCESS);
+						JSONArray profileObj = json.getJSONArray("bprofile");
+						JSONArray membersObj = json.getJSONArray("bmembers");
 
-				if (success == 1) {
-					// successfully received profile details
-					// JSON array
-					JSONArray profileObj = json.getJSONArray("bprofile"); 
-					JSONArray membersObj = json.getJSONArray("bmembers");
+						// get first object from JSON Array
+						JSONObject profile = profileObj.getJSONObject(0);
+						JSONObject members = membersObj.getJSONObject(0);
 
-					// get first object from JSON Array
-					JSONObject profile = profileObj.getJSONObject(0);
-					JSONObject members = membersObj.getJSONObject(0);
+						// Putting retrieved data in Intent's extras for next
+						// activty
+						i.putExtra("band_name", profile.getString("band_name"));
+						i.putExtra("genre1", profile.getString("genre1"));
+						i.putExtra("genre2", profile.getString("genre2"));
+						i.putExtra("genre3", profile.getString("genre3"));
+						i.putExtra("county", profile.getString("county"));
+						i.putExtra("town", profile.getString("town"));
+						i.putExtra("amountOfMembers",
+								profile.getInt("amountOfMembers"));
+						i.putExtra("soundCloud",
+								profile.getString("soundCloud"));
+						i.putExtra("webpage", profile.getString("webpage"));
+						i.putExtra("image", profile.getInt("image"));
+						i.putExtra("updated_at",
+								profile.getString("updated_at"));
+						i.putExtra("created_at",
+								profile.getString("created_at"));
+						i.putExtra("bio", profile.getString("bio"));
+						i.putExtra("followers", profile.getInt("followers"));
 
-					Intent i = new Intent(getApplicationContext(),
-							DisplayProfile.class);
+						for (int j = 0; j < profile.getInt("amountOfMembers"); j++) {
+							i.putExtra("name" + j,
+									members.getString("name" + j));
+							i.putExtra("role" + j,
+									members.getString("role" + j));
+						}
 
-					// TODO Display returned results from search query
-					i.putExtra("band_name", profile.getString("band_name"));
-					i.putExtra("genre1", profile.getString("genre1"));
-					i.putExtra("genre2", profile.getString("genre2"));
-					i.putExtra("genre3", profile.getString("genre3"));
-					i.putExtra("county", profile.getString("county"));
-					i.putExtra("town", profile.getString("town"));
-					i.putExtra("amountOfMembers",
-							profile.getInt("amountOfMembers"));
-					i.putExtra("soundCloud", profile.getString("soundCloud"));
-					i.putExtra("webpage", profile.getString("webpage"));
-					i.putExtra("image", profile.getInt("image"));
-					i.putExtra("updated_at", profile.getString("updated_at"));
-					i.putExtra("created_at", profile.getString("created_at"));
-					i.putExtra("bio", profile.getString("bio"));
-					i.putExtra("followers", profile.getInt("followers"));
-
-					for (int j = 0; j < profile.getInt("amountOfMembers"); j++) {
-						i.putExtra("name" + j, members.getString("name" + j));
-						i.putExtra("role" + j, members.getString("role" + j));
+						foundEntries = true;
 					}
-
-					startActivity(i);
-
+				} catch (JSONException e) {
+					foundEntries = false;
 				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+				connection = true;
+			} else {
+				connection = false;
 			}
 
 			return null;
@@ -195,7 +196,20 @@ public class ResultsFromSearch extends Activity {
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog once done
 			progressDialog.dismiss();
+			if (connection) {
+				if (foundEntries) {
+					startActivity(i);
+				} else {
+					informUser("Can't open profile, try again later!");
+				}
+			} else {
+				informUser("No internet connection!");
+			}
 		}
+	}
 
+	private void informUser(String msg) {
+		Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+		toast.show();
 	}
 }

@@ -1,3 +1,9 @@
+/**
+ * @author Brett Flitter
+ * @version Prototype1 - 20/02/2013
+ * @title Project bandFeed
+ */
+
 package com.fyp.bandfeed;
 
 import java.util.ArrayList;
@@ -13,7 +19,7 @@ import android.util.Log;
 
 public class CheckForBands {
 
-	private static String UsersBandsURL = "http://bandfeed.co.uk/api/users_bands.php";
+	private static final String UsersBandsURL = "http://bandfeed.co.uk/api/users_bands.php";
 	private String username;
 	private ArrayList<String> bands;
 
@@ -22,7 +28,6 @@ public class CheckForBands {
 		this.username = username;
 		bands = new ArrayList<String>();
 	}
-
 
 	public ArrayList<String> check() {
 
@@ -33,34 +38,30 @@ public class CheckForBands {
 		params.add(new BasicNameValuePair("user_name", username));
 
 		// getting JSON Object
-		// Note that create profile url accepts POST method
 		JSONObject json = jsonParser.makeHttpRequest(UsersBandsURL, "GET",
 				params);
 
-		// check log cat for response
-		Log.d("Create Response", json.toString());
-		try {
-			int success = json.getInt("success");
+		if (json != null) {
+			// check log cat for response
+			Log.d("Create Response", json.toString());
+			try {
+				if (json.getInt("success") == 1) {
+					//Users bands returned from server
+					JSONArray bandsObj = json.getJSONArray("bands"); 
 
-			if (success == 1) {
-				// successfully logged in
-
-				JSONArray bandsObj = json.getJSONArray("bands"); // JSON
-				
-				
-
-				for (int i = 0; i < bandsObj.length(); i++) {
-					JSONObject band = bandsObj.getJSONObject(i);
-					bands.add(band.getString("band"));
+					for (int i = 0; i < bandsObj.length(); i++) {
+						JSONObject band = bandsObj.getJSONObject(i);
+						bands.add(band.getString("band"));
+					}
+					//At least one band found, list of bands returned
+					return bands;
 				}
-				
-				return bands;
+			} catch (JSONException e) {
+				//JSON Exception, can't return any bands
+				return null;
 			}
-
-		} catch (JSONException e) {
-			return bands;
 		}
+		//Returns null if no bands are found
 		return null;
-
 	}
 }

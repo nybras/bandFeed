@@ -1,7 +1,6 @@
 /**
  * @author Brett Flitter
- * @version Prototype1 - 05/08/2012
- * @edited 21/09/2012
+ * @version Prototype1 - 20/02/2013
  * @title Project bandFeed
  */
 
@@ -14,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +30,6 @@ public class StepThree extends Activity implements OnClickListener {
 
 	private EditText[] names, roles;
 	private int amountOfMembers;
-	private String bandName, genre1, genre2, genre3, county, town;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -43,14 +42,7 @@ public class StepThree extends Activity implements OnClickListener {
 			actionBar.show();
 		}
 
-		Bundle extras = getIntent().getExtras();
-		amountOfMembers = extras.getInt("amountOfMembers");
-		bandName = extras.getString("bandName");
-		genre1 = extras.getString("genre1");
-		genre2 = extras.getString("genre2");
-		genre3 = extras.getString("genre3");
-		county = extras.getString("county");
-		town = extras.getString("town");
+		amountOfMembers = Globals.getNUMOFMEMBERS();
 		names = new EditText[amountOfMembers];
 		// array to hold the member's names
 		roles = new EditText[amountOfMembers];
@@ -69,8 +61,6 @@ public class StepThree extends Activity implements OnClickListener {
 		linearLayout.setPadding(60, 60, 60, 60);
 		scrollView.addView(linearLayout);
 
-		
-
 		this.setContentView(scrollView, lp);
 
 		for (int i = 1; i < amountOfMembers + 1; i++) {
@@ -84,12 +74,13 @@ public class StepThree extends Activity implements OnClickListener {
 			editTextName.setId(findId(i));
 			names[i - 1] = editTextName;
 			editTextName.setHint("Type name..");
+			editTextName.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 			editTextName.setGravity(Gravity.CENTER);
 			linearLayout.addView(editTextName);
 
 			TextView textViewInstrument = new TextView(this);
 			textViewInstrument.setText("Enter the role(s) of member " + i
-					+ " e.g. Bassist, Vocalist. Use a comma to seperate roles");
+					+ " e.g. Bassist, Vocalist");
 			textViewInstrument.setGravity(Gravity.CENTER);
 			linearLayout.addView(textViewInstrument);
 
@@ -97,6 +88,7 @@ public class StepThree extends Activity implements OnClickListener {
 			editTextInstrument.setId(findId(i));
 			roles[i - 1] = editTextInstrument;
 			editTextInstrument.setHint("Type role(s)..");
+			editTextInstrument.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 			editTextInstrument.setGravity(Gravity.CENTER);
 			linearLayout.addView(editTextInstrument);
 
@@ -112,7 +104,8 @@ public class StepThree extends Activity implements OnClickListener {
 		nextButton.setText("Next");
 		nextButton.setOnClickListener(this);
 		linearLayout.addView(nextButton);
-		LinearLayout.LayoutParams params = (LayoutParams) nextButton.getLayoutParams();
+		LinearLayout.LayoutParams params = (LayoutParams) nextButton
+				.getLayoutParams();
 		params.width = 300;
 		nextButton.setLayoutParams(params);
 
@@ -152,16 +145,15 @@ public class StepThree extends Activity implements OnClickListener {
 
 	public void onClick(View v) {
 
-		Intent i = null;
 		boolean detailsEntered = true;
 		for (EditText etn : names) {
-			if (etn.getText().toString().equals("")) {
+			if (etn.getText().length() == 0) {
 				// check to see if any names haven't been entered
 				detailsEntered = false;
 			}
 		}
 		for (EditText etr : roles) {
-			if (etr.getText().toString().equals("")) {
+			if (etr.getText().length() == 0) {
 				// check to see if roles haven't been entered
 				detailsEntered = false;
 			}
@@ -169,19 +161,12 @@ public class StepThree extends Activity implements OnClickListener {
 
 		if (detailsEntered) {
 
-			i = new Intent(this, StepFour.class);
-			i.putExtra("bandName", bandName);
-			i.putExtra("genre1", genre1);
-			i.putExtra("genre2", genre2);
-			i.putExtra("genre3", genre3);
-			i.putExtra("amountOfMembers", amountOfMembers);
-			i.putExtra("county", county);
-			i.putExtra("town", town);
 			for (int j = 0; j < amountOfMembers; j++) {
-				i.putExtra("names" + j, names[j].getText().toString().trim());
-				i.putExtra("roles" + j, roles[j].getText().toString().trim());
+				Globals.getMEMBERS().add(names[j].getText().toString().trim());
+				Globals.getROLES().add(roles[j].getText().toString().trim());
 			}
 
+			Intent i = new Intent(this, StepFour.class);
 			startActivity(i);
 
 		} else {
